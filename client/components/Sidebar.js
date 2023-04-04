@@ -20,13 +20,19 @@ export default function Sidebar(props) {
       hiddenBreakpoint="sm"
       width={{ sm: 300 }}
       hidden={!props.opened}
+      sx={{
+        backgroundColor: "#1C2128",
+      }}
     >
       <Stack spacing="md">
         <Card
           shadow="sm"
           radius="md"
-          withBorder
-          sx={{ marginLeft: "auto", marginRight: "auto" }}
+          sx={{
+            margin: "2rem auto",
+            backgroundColor: "#373A40",
+            width: "100%",
+          }}
         >
           <Card.Section>
             <div
@@ -36,13 +42,17 @@ export default function Sidebar(props) {
                 }`,
                 height: "200px",
                 width: "200px",
-                marginLeft: "auto",
-                marginRight: "auto",
+                margin: "0 auto",
               }}
             ></div>
           </Card.Section>
           <Group mt="md" mb="xs" fullWidth>
-            <Text weight={500} size={15}>
+            <Text
+              variant="gradient"
+              gradient={{ from: "#D6336C", to: "#AE3EC9", deg: 45 }}
+              weight={500}
+              size={15}
+            >
               Coordinates
             </Text>
             <Badge color="pink" variant="light">
@@ -61,8 +71,11 @@ export default function Sidebar(props) {
           shadow="sm"
           padding="lg"
           radius="md"
-          withBorder
-          sx={{ marginLeft: "auto", marginRight: "auto" }}
+          sx={{
+            margin: "0 auto",
+            backgroundColor: "#373A40",
+            width: "100%",
+          }}
         >
           <Card.Section>
             <div
@@ -70,6 +83,7 @@ export default function Sidebar(props) {
                 backgroundColor: `${props.chosen}`,
                 height: "200px",
                 width: "200px",
+                margin: "0 auto",
               }}
             ></div>
           </Card.Section>

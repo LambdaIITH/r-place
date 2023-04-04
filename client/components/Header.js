@@ -9,6 +9,8 @@ import {
   MediaQuery,
   useMantineTheme,
   ColorSwatch,
+  Text,
+  Title,
 } from "@mantine/core";
 import { MantineLogo } from "@mantine/ds";
 import { CheckIcon } from "@mantine/core";
@@ -157,7 +159,13 @@ export function Nav(props) {
   ));
 
   return (
-    <Header height={{ base: 100, md: 100 }} p="md">
+    <Header
+      height={{ base: 100, md: 100 }}
+      p="md"
+      sx={{
+        backgroundColor: "#1C2128",
+      }}
+    >
       <Container className={classes.inner}>
         <MediaQuery largerThan="sm" styles={{ display: "none" }}>
           <Burger
@@ -175,7 +183,16 @@ export function Nav(props) {
           {items}
         </Group>
         {/* <MantineLogo size={28} /> */}
-        r/IITH-2022
+        <Title
+          order={1}
+          variant="gradient"
+          gradient={{ from: "#D6336C", to: "#AE3EC9", deg: 45 }}
+          sx={{ fontSize: "1.8rem" }}
+        >
+          {" "}
+          R/IITH-2022
+        </Title>
+
         <Group className={classes.pallete} position="center" spacing="xs">
           {swatches}
         </Group>
