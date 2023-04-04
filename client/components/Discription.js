@@ -56,8 +56,8 @@ const Discription = () => {
         Technology Hyderabad can connect and leave their mark on our digital
         canvas. In this collaborative art project, each alumnus can contribute a
         pixel to create a unique and beautiful image that represents our
-        community. Let's come together and create something special that will
-        last a lifetime. Join us and be a part of the IITH legacy!
+        community. Let&apos;s come together and create something special that
+        will last a lifetime. Join us and be a part of the IITH legacy!
       </Text>
     </Paper>
   );

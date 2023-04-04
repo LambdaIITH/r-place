@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Login from "../components/Login";
-
+import Canvas from "../components/Canvas";
 export default function Home() {
   return (
     <div>
@@ -10,7 +10,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Login />
+        <Canvas />
       </main>
     </div>
   );

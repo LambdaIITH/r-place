@@ -14,6 +14,7 @@ import {
 } from "@mantine/core";
 import { MantineLogo } from "@mantine/ds";
 import { CheckIcon } from "@mantine/core";
+import { colorPalette } from "./Palette";
 const useStyles = createStyles((theme) => ({
   inner: {
     display: "flex",
@@ -41,6 +42,7 @@ const useStyles = createStyles((theme) => ({
     },
   },
   swatches: {
+    border: "0.5px solid #FFF",
     "&:hover": {
       cursor: "pointer",
     },
@@ -96,24 +98,6 @@ export function Nav(props) {
     { link: "/", label: "Hostels" },
     { link: "/", label: "Acads" },
   ];
-  const colorPallete = [
-    "#FFFFFF",
-    "#E4E4E4",
-    "#888888",
-    "#222222",
-    "#FFA7D1",
-    "#E50000",
-    "#E59500",
-    "#A06A42",
-    "#E5D900",
-    "#94E044",
-    "#02BE01",
-    "#00D3DD",
-    "#0083C7",
-    "#0000EA",
-    "#CF6EE4",
-    "#820080",
-  ];
   const [active, setActive] = useState(links[0].link);
   const items = links.map((link, index) => (
     <a
@@ -129,18 +113,7 @@ export function Nav(props) {
       {link.label}
     </a>
   ));
-  // const swatches = Object.keys(theme.colors).map((color) => (
-  //   <ColorSwatch
-  //     key={color}
-  //     color={theme.fn.rgba(theme.colors[color][6], 1)}
-  //     component="button"
-  //     onClick={() => {
-  //       console.log(color);
-  //       console.log(theme.colors);
-  //     }}
-  //   />
-  // ));
-  const swatches = colorPallete.map((color, index) => (
+  const swatches = colorPalette.map((color, index) => (
     <ColorSwatch
       key={index}
       color={color}
@@ -162,9 +135,9 @@ export function Nav(props) {
     <Header
       height={{ base: 100, md: 100 }}
       p="md"
-      sx={{
-        backgroundColor: "#1C2128",
-      }}
+      // sx={{
+      //   backgroundColor: "#1C2128",
+      // }}
     >
       <Container className={classes.inner}>
         <MediaQuery largerThan="sm" styles={{ display: "none" }}>
@@ -182,7 +155,6 @@ export function Nav(props) {
         <Group className={classes.links} spacing={5}>
           {items}
         </Group>
-        {/* <MantineLogo size={28} /> */}
         <Title
           order={1}
           variant="gradient"
@@ -190,7 +162,7 @@ export function Nav(props) {
           sx={{ fontSize: "1.8rem" }}
         >
           {" "}
-          R/IITH-2022
+          r/IITH-2023
         </Title>
 
         <Group className={classes.pallete} position="center" spacing="xs">

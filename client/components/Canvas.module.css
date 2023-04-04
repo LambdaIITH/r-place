@@ -1,0 +1,15 @@
+.wrapper {
+    width: 600px;
+    margin:0 auto;
+  }
+  .gameboard {
+    width: 600px;
+    height:600px;
+    /* border:0.1px solid white; */
+    z-index: 1;
+  }
+  .gameboard div {
+    width: 6px;
+    height: 6px;
+    float: left;
+  }

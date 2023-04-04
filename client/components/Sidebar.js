@@ -13,33 +13,36 @@ import { IconCircleCheck } from "@tabler/icons-react";
 
 export default function Sidebar(props) {
   const theme = useMantineTheme();
-
+  function handleClick() {
+    props.setNew();
+  }
   return (
     <Aside
       p="md"
       hiddenBreakpoint="sm"
       width={{ sm: 300 }}
       hidden={!props.opened}
-      sx={{
-        backgroundColor: "#1C2128",
-      }}
+      // sx={{
+      //   backgroundColor: "#1C2128",
+      // }}
     >
       <Stack spacing="md">
         <Card
-          shadow="sm"
+          shadow="md"
           radius="md"
           sx={{
-            margin: "2rem auto",
-            backgroundColor: "#373A40",
+            margin: "1rem auto",
+            // backgroundColor: "#373A40",
             width: "100%",
           }}
         >
           <Card.Section>
             <div
               style={{
-                backgroundColor: `${
-                  props.selected ? `{props.selected}` : `blue`
-                }`,
+                // backgroundColor: `${
+                //   props.selected ? `{props.selected}` : `grey`
+                // }`,
+                backgroundColor: `${props.selected}`,
                 height: "200px",
                 width: "200px",
                 margin: "0 auto",
@@ -73,7 +76,7 @@ export default function Sidebar(props) {
           radius="md"
           sx={{
             margin: "0 auto",
-            backgroundColor: "#373A40",
+            // backgroundColor: "#373A40",
             width: "100%",
           }}
         >
@@ -87,7 +90,14 @@ export default function Sidebar(props) {
               }}
             ></div>
           </Card.Section>
-          <Button variant="light" color="green" mt="md" radius="md" fullWidth>
+          <Button
+            variant="light"
+            color="green"
+            mt="md"
+            radius="md"
+            fullWidth
+            onClick={handleClick}
+          >
             <Group fullWidth>
               <Text>Save Pixel</Text>
               <IconCircleCheck size={20} />
