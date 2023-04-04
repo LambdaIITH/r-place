@@ -1,11 +1,15 @@
 import { useState } from "react";
-import { AppShell, Aside, Text, useMantineTheme } from "@mantine/core";
+import { AppShell, Text, useMantineTheme } from "@mantine/core";
 import { Nav } from "../components/Header";
+import Sidebar from "../components/Sidebar";
 
 export default function Place() {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
-  const [selected, setSelected] = useState("");
+  const [chosen, setChosen] = useState("");
+  const [x, setX] = useState(0);
+  const [y, setY] = useState(0);
+
   return (
     <AppShell
       styles={{
@@ -20,17 +24,10 @@ export default function Place() {
       asideOffsetBreakpoint="sm"
       aside={
         // <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
-        <Aside
-          p="md"
-          hiddenBreakpoint="sm"
-          width={{ sm: 200, lg: 300 }}
-          hidden={!opened}
-        >
-          <Text>{selected}</Text>
-        </Aside>
+        <Sidebar opened={opened} chosen={chosen} x={x} y={y} />
         // </MediaQuery>
       }
-      header={<Nav setOpened={setOpened} setSelected={setSelected} />}
+      header={<Nav setOpened={setOpened} setChosen={setChosen} />}
     >
       <Text>Canvas</Text>
     </AppShell>

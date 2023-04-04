@@ -3,41 +3,28 @@ import {
   createStyles,
   Header,
   Group,
-  ActionIcon,
   Container,
   Burger,
   rem,
   MediaQuery,
   useMantineTheme,
-  Box,
-  ColorPicker,
-  Text,
-  DEFAULT_THEME,
   ColorSwatch,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import {
-  IconBrandTwitter,
-  IconBrandYoutube,
-  IconBrandInstagram,
-} from "@tabler/icons-react";
 import { MantineLogo } from "@mantine/ds";
-
+import { CheckIcon } from "@mantine/core";
 const useStyles = createStyles((theme) => ({
   inner: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     height: rem(56),
-
     [theme.fn.smallerThan("sm")]: {
       justifyContent: "flex-start",
     },
   },
 
   links: {
-    width: rem(200),
-
+    width: rem(300),
     [theme.fn.smallerThan("sm")]: {
       display: "none",
     },
@@ -51,7 +38,11 @@ const useStyles = createStyles((theme) => ({
       marginLeft: "auto",
     },
   },
-
+  swatches: {
+    "&:hover": {
+      cursor: "pointer",
+    },
+  },
   burger: {
     marginRight: theme.spacing.md,
 
@@ -96,11 +87,12 @@ const useStyles = createStyles((theme) => ({
 export function Nav(props) {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
+  const [chosen, setChosen] = useState("");
   const { classes, cx } = useStyles();
   const links = [
     { link: "/place", label: "Basic" },
-    { link: "/", label: "hostels" },
-    { link: "/", label: "acads" },
+    { link: "/", label: "Hostels" },
+    { link: "/", label: "Acads" },
   ];
   const colorPallete = [
     "#FFFFFF",
@@ -121,9 +113,9 @@ export function Nav(props) {
     "#820080",
   ];
   const [active, setActive] = useState(links[0].link);
-  const items = links.map((link) => (
+  const items = links.map((link, index) => (
     <a
-      key={link.label}
+      key={index}
       href={link.link}
       className={cx(classes.link, {
         [classes.linkActive]: active === link.link,
@@ -146,18 +138,22 @@ export function Nav(props) {
   //     }}
   //   />
   // ));
-  const swatches = colorPallete.map((color) => (
+  const swatches = colorPallete.map((color, index) => (
     <ColorSwatch
-      key={color}
+      key={index}
       color={color}
       component="button"
+      className={classes.swatches}
       // size={20}
       onClick={() => {
         console.log(color);
         console.log(theme.colors);
-        props.setSelected(color);
+        props.setChosen(color);
+        setChosen(color);
       }}
-    />
+    >
+      {chosen === color ? <CheckIcon width={rem(10)} /> : ""}
+    </ColorSwatch>
   ));
 
   return (
@@ -166,7 +162,10 @@ export function Nav(props) {
         <MediaQuery largerThan="sm" styles={{ display: "none" }}>
           <Burger
             opened={opened}
-            onClick={() => setOpened((o) => !o)}
+            onClick={() => {
+              setOpened((o) => !o);
+              props.setOpened((o) => !o);
+            }}
             size="sm"
             color={theme.colors.gray[6]}
             mr="xl"
@@ -175,7 +174,7 @@ export function Nav(props) {
         <Group className={classes.links} spacing={5}>
           {items}
         </Group>
-        <MantineLogo size={28} />
+        {/* <MantineLogo size={28} /> */}
         r/IITH-2022
         <Group className={classes.pallete} position="center" spacing="xs">
           {swatches}
