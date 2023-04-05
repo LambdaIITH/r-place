@@ -39,17 +39,14 @@ export default function Sidebar(props) {
           <Card.Section>
             <div
               style={{
-                // backgroundColor: `${
-                //   props.selected ? `{props.selected}` : `grey`
-                // }`,
-                backgroundColor: `${props.selected}`,
+                backgroundColor: `${props?.current}`,
                 height: "200px",
                 width: "200px",
                 margin: "0 auto",
               }}
             ></div>
           </Card.Section>
-          <Group mt="md" mb="xs" fullWidth>
+          <Group mt="md" mb="xs">
             <Text
               variant="gradient"
               gradient={{ from: "#D6336C", to: "#AE3EC9", deg: 45 }}
@@ -98,7 +95,7 @@ export default function Sidebar(props) {
             fullWidth
             onClick={handleClick}
           >
-            <Group fullWidth>
+            <Group>
               <Text>Save Pixel</Text>
               <IconCircleCheck size={20} />
             </Group>

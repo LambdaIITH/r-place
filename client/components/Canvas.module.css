@@ -1,15 +1,18 @@
-.wrapper {
+/* .wrapper {
     width: 600px;
     margin:0 auto;
   }
-  .gameboard {
+  .canvas {
     width: 600px;
     height:600px;
-    /* border:0.1px solid white; */
+    border:0.1px solid white;
     z-index: 1;
   }
-  .gameboard div {
+  .canvas div {
     width: 6px;
     height: 6px;
     float: left;
-  }
+  } */
+.canvas{
+  
+}

@@ -20,7 +20,7 @@ const useStyles = createStyles((theme) => ({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    height: rem(56),
+    height: rem(70),
     [theme.fn.smallerThan("sm")]: {
       justifyContent: "flex-start",
     },
@@ -34,8 +34,7 @@ const useStyles = createStyles((theme) => ({
   },
 
   pallete: {
-    width: rem(300),
-
+    width: rem(690),
     [theme.fn.smallerThan("sm")]: {
       // width: "auto",
       marginLeft: "auto",
@@ -139,7 +138,7 @@ export function Nav(props) {
       //   backgroundColor: "#1C2128",
       // }}
     >
-      <Container className={classes.inner}>
+      <Container className={classes.inner} size={"xl"}>
         <MediaQuery largerThan="sm" styles={{ display: "none" }}>
           <Burger
             opened={opened}
@@ -165,7 +164,16 @@ export function Nav(props) {
           r/IITH-2023
         </Title>
 
-        <Group className={classes.pallete} position="center" spacing="xs">
+        <Group
+          className={classes.pallete}
+          position="center"
+          spacing="xs"
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(16, 1fr)",
+            gridTemplateRows: "repeat(2, 1fr)",
+          }}
+        >
           {swatches}
         </Group>
       </Container>

@@ -1,33 +1,35 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { AppShell, Text, useMantineTheme } from "@mantine/core";
 import { Nav } from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import Canvas from "../components/Canvas";
 import { colorPalette } from "../components/Palette";
 
-export default function Place(props) {
+export default function Place() {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   const [chosen, setChosen] = useState(""); // from 14 color palette
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
-  const [selected, setSelected] = useState(""); // current color of chosen pixel from canvas
-  function init() {
+  const [current, setCurrent] = useState(""); // current color of chosen pixel from canvas
+  const cellSize = 5; // Size of each grid cell
+  const [colors, setColors] = useState([]);
+  useEffect(() => {
     const colors = [];
     for (let i = 0; i < 100; i++) {
       for (let j = 0; j < 100; j++) {
         colors.push(Math.floor(Math.random() * colorPalette.length));
       }
     }
-    return colors;
-  }
+    console.log(colors);
+    setColors(colors);
+  }, []);
 
-  const [colors, setColors] = useState(init());
   function setNew() {
     const newColors = [...colors];
-    newColors[x * 100 + y] = colorPalette.indexOf(chosen);
+    newColors[y * 100 + x] = colorPalette.indexOf(chosen);
     setColors(newColors);
-    setSelected(chosen);
+    setCurrent(chosen);
   }
   return (
     <AppShell
@@ -48,7 +50,7 @@ export default function Place(props) {
           chosen={chosen}
           x={x}
           y={y}
-          selected={selected}
+          current={current}
           setNew={setNew}
         />
         // </MediaQuery>
@@ -58,8 +60,9 @@ export default function Place(props) {
       <Canvas
         setX={setX}
         setY={setY}
-        setSelected={setSelected}
+        setCurrent={setCurrent}
         colors={colors}
+        cellSize={cellSize}
       />
     </AppShell>
   );
