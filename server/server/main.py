@@ -63,12 +63,10 @@ def verify_auth_token(Authorization: str = Header()):
     return email
 
 def get_user_cooldown(email: str):
-    prev_req_time = queries.get_last_update_by_user(conn, email)
+    prev_req_time = queries.get_last_update_by_user(conn, email)    
+    return (float(time.time()) - float(prev_req_time)) 
     
-    if (float(time.time()) - float(prev_req_time)) < 600:
-        return False
-    
-    return True
+
 
 @app.get("/")
 def read_root():
@@ -89,7 +87,7 @@ async def pixel(x: int, y: int, color: int, email: str = Depends(verify_auth_tok
             status_code=400, detail="Invalid pixel coordinates or color."
         )
 
-    if not get_user_cooldown(email):
+    if (get_user_cooldown(email)>600):
         raise HTTPException(
             status_code=429, detail="You are on cooldown."
         )
@@ -113,3 +111,22 @@ def full_grid():
     Return the full grid.
     """
     return current_grid
+
+@app.get("/cooldown")
+async def cooldown(email: str = Depends(verify_auth_token)):
+    """
+    Return the cooldown time.
+    """
+    return get_user_cooldown(email)
+
+@app.get("/pixel/{row}/{col}/history")
+async def pixel_history(x: int, y: int, email: str = Depends(verify_auth_token)):
+    """
+    Return the history of a pixel.
+    """
+    if (x < 0 or x >= ROWS or y < 0 or y >= COLS):
+        raise HTTPException(
+            status_code=400, detail="Invalid pixel coordinates."
+        )
+    return queries.get_pixel_history(conn, x, y)  
+
