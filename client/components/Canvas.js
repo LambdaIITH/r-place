@@ -1,10 +1,39 @@
 import { useRef, useEffect } from "react";
 import { colorPalette } from "./Palette";
 import styles from "./Canvas.module.css";
-import { Box } from "@mantine/core";
+import { Box, Button, createStyles, rem, Stack } from "@mantine/core";
+import { IconFileDownload } from "@tabler/icons-react";
+
+const useStyles = createStyles((theme) => ({
+  button: {
+    display: "block",
+    lineHeight: 1,
+    padding: `${rem(8)} ${rem(12)}`,
+    borderRadius: theme.radius.sm,
+    textDecoration: "none",
+    color: theme.colors.green[9],
+    fontSize: theme.fontSizes.sm,
+    fontWeight: 500,
+    backgroundColor: theme.colors.green[0],
+    "&:hover": {
+      backgroundColor: theme.colors.green[5],
+    },
+  },
+}));
+
 export default function Canvas({ setX, setY, setCurrent, colors, cellSize }) {
   const canvasRef = useRef(null);
-
+  const { classes, cx } = useStyles();
+  function handleDownload() {
+    const canvas = canvasRef.current;
+    const image = canvas
+      .toDataURL("image/png")
+      .replace("image/png", "image/octet-stream");
+    const link = document.createElement("a");
+    link.download = "my-image.png";
+    link.href = image;
+    link.click();
+  }
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
@@ -36,19 +65,27 @@ export default function Canvas({ setX, setY, setCurrent, colors, cellSize }) {
   }, [setX, setY, setCurrent, colors, cellSize]);
 
   return (
-    <Box
+    <Stack
       sx={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
       }}
     >
+      <Button
+        className={classes.button}
+        onClick={() => {
+          handleDownload();
+        }}
+      >
+        Download <IconFileDownload />{" "}
+      </Button>
       <canvas
         className={styles.canvas}
         ref={canvasRef}
         width={cellSize * 100}
         height={cellSize * 100}
       />
-    </Box>
+    </Stack>
   );
 }

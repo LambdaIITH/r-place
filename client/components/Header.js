@@ -11,10 +11,12 @@ import {
   ColorSwatch,
   Text,
   Title,
+  Button,
 } from "@mantine/core";
 import { MantineLogo } from "@mantine/ds";
 import { CheckIcon } from "@mantine/core";
 import { colorPalette } from "./Palette";
+import { IconFileDownload } from "@tabler/icons-react";
 const useStyles = createStyles((theme) => ({
   inner: {
     display: "flex",
@@ -74,7 +76,20 @@ const useStyles = createStyles((theme) => ({
           : theme.colors.gray[0],
     },
   },
-
+  button: {
+    display: "block",
+    lineHeight: 1,
+    padding: `${rem(8)} ${rem(12)}`,
+    borderRadius: theme.radius.sm,
+    textDecoration: "none",
+    color: theme.colors.green[9],
+    fontSize: theme.fontSizes.sm,
+    fontWeight: 500,
+    backgroundColor: theme.colors.green[0],
+    "&:hover": {
+      backgroundColor: theme.colors.green[5],
+    },
+  },
   linkActive: {
     "&, &:hover": {
       backgroundColor: theme.fn.variant({
@@ -154,11 +169,16 @@ export function Nav(props) {
         <Group className={classes.links} spacing={5}>
           {items}
         </Group>
+        {/* <Group className={classes.links}>
+          <Button className={classes.button}>
+            Download <IconFileDownload />{" "}
+          </Button>
+        </Group> */}
         <Title
           order={1}
           variant="gradient"
           gradient={{ from: "#D6336C", to: "#AE3EC9", deg: 45 }}
-          sx={{ fontSize: "1.8rem" }}
+          sx={{ fontSize: "1.8rem", width: "30%" }}
         >
           {" "}
           r/IITH-2023

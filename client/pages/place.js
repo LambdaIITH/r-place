@@ -12,8 +12,9 @@ export default function Place() {
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
   const [current, setCurrent] = useState(""); // current color of chosen pixel from canvas
-  const cellSize = 5; // Size of each grid cell
+  const cellSize = 8; // Size of each grid cell
   const [colors, setColors] = useState([]);
+
   useEffect(() => {
     const colors = [];
     for (let i = 0; i < 100; i++) {
