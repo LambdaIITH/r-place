@@ -30,7 +30,7 @@ print("Opened database successfully!")
 
 
 def verify_auth_token(Authorization: str = Header()):
-    email = authn_user(Authorization)
+    email = get_user_email(Authorization)
     if email is None:
         raise HTTPException(
             status_code=401, detail="We are not able to authenticate you."
