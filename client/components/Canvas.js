@@ -1,6 +1,5 @@
 import { useRef, useEffect } from "react";
 import { colorPalette } from "./Palette";
-import styles from "./Canvas.module.css";
 import { Box, Button, createStyles, rem, Stack } from "@mantine/core";
 import { IconFileDownload } from "@tabler/icons-react";
 
@@ -80,12 +79,7 @@ export default function Canvas({ setX, setY, setCurrent, colors, cellSize }) {
       >
         Download <IconFileDownload />{" "}
       </Button>
-      <canvas
-        className={styles.canvas}
-        ref={canvasRef}
-        width={cellSize * 100}
-        height={cellSize * 100}
-      />
+      <canvas ref={canvasRef} width={cellSize * 100} height={cellSize * 100} />
     </Stack>
   );
 }
