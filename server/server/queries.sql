@@ -14,3 +14,6 @@ SELECT DISTINCT ON (x, y)
 -- name: log_update
 -- Log a pixel update
 INSERT INTO pixel_logs (x, y, color, email) VALUES (:x, :y, :color, :email) RETURNING id;
+
+-- name: get_last_update_by_user^
+SELECT MAX(extract(epoch from time_stamp)) as last_time FROM pixel_logs WHERE email = :email;
