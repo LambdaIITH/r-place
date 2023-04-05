@@ -8,9 +8,19 @@ authors = ["Rachit Keerti Das <rachitkdas@gmail.com>"]
 python = "^3.9"
 fastapi = "^0.95.0"
 uvicorn = {extras = ["standard"], version = "^0.21.1"}
+python-dotenv = "^1.0.0"
+psycopg2-binary = "^2.9.6"
+google-auth = "^2.17.1"
+requests = "^2.28.2"
+pydantic = "^1.10.7"
+aiosql = "^8.0"
+PyPika = "^0.48.9"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
+isort = "^5.12.0"
+black = "^23.3.0"
+flake8 = "^6.0.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
