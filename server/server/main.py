@@ -67,7 +67,7 @@ def verify_auth_token(Authorization: str = Header()):
 def get_user_cooldown(email: str):
     prev_req_time = queries.get_last_update_by_user(conn, email=email)[0] 
     if prev_req_time is None:
-        return 0
+        return 600
     return (float(time.time()) - float(prev_req_time)) 
 
 @app.get("/")
@@ -91,7 +91,7 @@ async def pixel(x: int, y: int, color: int, email: str = Depends(verify_auth_tok
             status_code=400, detail="Invalid pixel coordinates or color."
         )
 
-    if (get_user_cooldown(email)>COOLDOWN_TIME):
+    if (get_user_cooldown(email)<COOLDOWN_TIME):
         raise HTTPException(
             status_code=429, detail="You are on cooldown."
         )
