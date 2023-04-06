@@ -48,7 +48,7 @@ COLORS = 32
 INITIAL_COLOR = 0
 
 current_grid = [[INITIAL_COLOR for _ in range(COLUMNS)] for _ in range(ROWS)]
-latest_insertion = int(queries.get_last_update(conn)[0])
+latest_insertion = int(queries.get_latest_id(conn)[0])
 
 insertion_lock = Lock()
 
@@ -75,7 +75,7 @@ def is_color_valid(color: int) -> bool:
 
 
 def get_user_cooldown(email: str):
-    time_of_last_update = queries.get_time_of_last_update(conn, email=email)[0]
+    time_of_last_update = queries.get_time_of_last_update(conn, email)[0]
     if time_of_last_update is None:
         return 0
     time_since_last_req = float(time.time()) - float(time_of_last_update)
@@ -111,7 +111,7 @@ async def pixel(row: int, col: int, color: int, email: str = Depends(verify_auth
 
     insertion_lock.acquire()
     current_grid[row][col] = color
-    latest_insertion = int(queries.log_update(conn, email, row, col, color)[0])
+    latest_insertion = int(queries.log_update(conn, row, col, color, email)[0])
     insertion_lock.release()
 
     raise HTTPException(
@@ -127,6 +127,20 @@ def full_grid():
     global current_grid, latest_insertion
 
     return {"grid": current_grid, "last update": latest_insertion}
+
+
+@app.get("/updates/{last_updated}")
+def updates(last_updated: int):
+    """
+    Return the updates since the last update.
+    """
+    global current_grid, latest_insertion
+
+    updates = []
+    for x, y, color in queries.get_updates(conn, last_updated):
+        updates.append({"row": x, "col": y, "color": color})
+
+    return {"updates": updates, "last update": latest_insertion}
 
 
 @app.get("/cooldown")
