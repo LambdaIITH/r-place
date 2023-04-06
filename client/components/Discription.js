@@ -27,11 +27,10 @@ const Discription = () => {
         sx={{
           fontWeight: "bold",
           fontSize: "4.8rem",
-          textTransform: "uppercase",
           letterSpacing: "2px",
         }}
       >
-        R-Place
+        r/Place
       </Title>
       <Image
         alt="r-place logo"

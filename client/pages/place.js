@@ -35,24 +35,30 @@ export default function Place() {
 
   async function loadCanvas() {
     try {
-      const response = await fetch(`/full_grid`, {
+      console.log("loading canvas");
+      const response = await fetch(`http://localhost:8000/full_grid`, {
         method: "GET",
       });
       const temp = await response.json();
-      setColors(temp[0]);
+      // setColors(temp[0]);
+      console.log(temp);
     } catch (err) {
       console.log(err);
     }
   }
   async function postPixel() {
     try {
-      const response = await fetch(`/pixel/${x}/${y}/${chosen}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `http://localhost:8000/pixel/${x}/${y}/${chosen}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const temp = await response.json();
+      // TODO: check for the response do the timer thing
       console.log(temp);
       setNew();
     } catch (err) {
@@ -68,6 +74,7 @@ export default function Place() {
     }
     console.log(colors);
     setColors(colors);
+    loadCanvas();
   }, []);
 
   function setNew() {
