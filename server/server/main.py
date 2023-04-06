@@ -93,11 +93,8 @@ async def pixel(x: int, y: int, color: int, email: str = Depends(verify_auth_tok
         )
     
 
-    queries.log_update(conn, email, x, y, color)
-
-    # get a lock on the pixel
-
     current_grid_lock[x][y].acquire()
+    queries.log_update(conn, email, x, y, color)
     current_grid[x][y] = color
     current_grid_lock[x][y].release()
 
