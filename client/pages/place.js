@@ -6,6 +6,7 @@ import {
   Drawer,
   Group,
   MediaQuery,
+  Menu,
   Text,
   Title,
   useMantineTheme,
@@ -129,15 +130,30 @@ export default function Place() {
         </AppShell>
       </MediaQuery>
       <MediaQuery largerThan="lg" styles={{ display: "none" }}>
-        <Box sx={{ height: "100vh", overflow: "auto" }}>
+        <Box
+          sx={{
+            height: "100vh",
+            // overflow: "auto",
+            width: "100%",
+          }}
+        >
           <Box
             sx={{
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
+              // padding: "10px 20px",
+              // position: "absolute",
+              // top: "0",
+              // left: "50%",
+              // transform: "translate(-50%, 0%)",
+              width: "100%",
+              backgroundColor: "rgba(255, 255, 255)",
+              padding: "10px",
             }}
           >
+            <Box />
             <Title
               variant="gradient"
               gradient={{ from: "#D6336C", to: "#AE3EC9", deg: 45 }}
@@ -145,13 +161,34 @@ export default function Place() {
             >
               r/IITH-2023
             </Title>
-            <Burger
-              opened={opened_m}
-              onClick={toggle_m}
-              aria-label={label}
-            ></Burger>
+            <Menu shadow="md" width={200}>
+              <Menu.Target>
+                <Button>menu</Button>
+              </Menu.Target>
+
+              <Menu.Dropdown>
+                <Menu.Item>Basic</Menu.Item>
+                <Menu.Item>Hostels</Menu.Item>
+                <Menu.Item>Acads</Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
           </Box>
-          <Box>
+          <Box
+            sx={{
+              paddign: "0 100px",
+              // marginTop: "5rem",
+              height: "82%",
+              width: "50%",
+              margin: "0 auto",
+              paddingLeft: "300px",
+              // width: "100%",
+              // position: "absolute",
+              // top: "0",
+              // transform: "translate(-50%, 0%)",
+              overflow: "auto",
+              // left: "50%",
+            }}
+          >
             <Canvas
               setX={setX}
               setY={setY}
@@ -160,8 +197,36 @@ export default function Place() {
               cellSize={cellSize}
               paletteOpen={open_d}
             />
+            {/* <Box
+              sx={{
+                height: "85vh",
+              }}
+            ></Box> */}
           </Box>
 
+          <Box
+            sx={{
+              width: "100%",
+              // position: "absolute",
+              // bottom: "0",
+              // left: "50%",
+              // transform: "translate(-50%, 0%)",
+              backgroundColor: "rgba(255, 255, 255)",
+              padding: "10px",
+            }}
+          >
+            <Button
+              onClick={open_d}
+              sx={{
+                margin: "0 auto",
+                display: "flex",
+                width: "80%",
+                justifyContent: "center",
+              }}
+            >
+              Open Drawer
+            </Button>
+          </Box>
           <Drawer opened={opened_d} onClose={close_d}>
             <Box
               sx={{
@@ -191,10 +256,6 @@ export default function Place() {
               />
             </Box>
           </Drawer>
-
-          <Box>
-            <Button onClick={open_d}>Open Drawer</Button>
-          </Box>
         </Box>
       </MediaQuery>
     </>

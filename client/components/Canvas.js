@@ -60,16 +60,17 @@ export default function Canvas({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        padding: "0 100px",
       }}
     >
-      <Button
+      {/* <Button
         className={classes.button}
         onClick={() => {
           handleDownload();
         }}
       >
         Download <IconFileDownload />{" "}
-      </Button>
+      </Button> */}
       <canvas
         ref={canvasRef}
         width={cellSize * 100}
