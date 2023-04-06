@@ -58,7 +58,7 @@ export default function Canvas({ setX, setY, setCurrent, colors, cellSize }) {
       setCurrent(colorPalette[colors[y * 100 + x]]);
     }
     const canvasListener = document.querySelector("canvas");
-    canvasListener.addEventListener("mousedown", function (e) {
+    canvasListener.addEventListener("click", function (e) {
       getCursorPosition(canvasListener, e);
     });
   }, [setX, setY, setCurrent, colors, cellSize]);

@@ -27,11 +27,11 @@ export default function Place() {
   const cellSize = 8; // Size of each grid cell
   const [colors, setColors] = useState([]);
   // mobile devices - hamburger menu bar
-  const [opened_menu, { toggle }] = useDisclosure(false);
-  const label = opened_menu ? "Close navigation" : "Open navigation";
+  const [opened_m, { toggle: toggle_m }] = useDisclosure(false);
+  const label = opened_m ? "Close navigation" : "Open navigation";
 
   // mobile devices - bottom drawer
-  const [opened_drawer, { open, close }] = useDisclosure(false);
+  const [opened_d, { open: open_d, close: close_d }] = useDisclosure(false);
 
   useEffect(() => {
     const colors = [];
@@ -50,6 +50,8 @@ export default function Place() {
     setColors(newColors);
     setCurrent(chosen);
   }
+
+  const openPallete = () => {};
   return (
     <>
       <MediaQuery smallerThan="lg" styles={{ display: "none" }}>
@@ -88,7 +90,7 @@ export default function Place() {
         </AppShell>
       </MediaQuery>
       <MediaQuery largerThan="lg" styles={{ display: "none" }}>
-        <Box>
+        <Box sx={{ height: "100vh", overflow: "auto" }}>
           <Box
             sx={{
               display: "flex",
@@ -104,24 +106,51 @@ export default function Place() {
             >
               r/IITH-2023
             </Title>
-            <Burger opened={opened_menu} onClick={toggle} aria-label={label} />
+            <Burger opened={opened_m} onClick={toggle_m} aria-label={label} />
           </Box>
-          <Drawer opened={opened} onClose={close} title="Authentication">
-            {/* Drawer content */}
+          <Box>
+            <Canvas
+              setX={setX}
+              setY={setY}
+              setCurrent={setCurrent}
+              colors={colors}
+              cellSize={cellSize}
+              openPallete={openPallete}
+            />
+          </Box>
+
+          <Drawer opened={opened_d} onClose={close_d}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "2rem",
+              }}
+            >
+              <Title
+                variant="gradient"
+                gradient={{ from: "#D6336C", to: "#AE3EC9", deg: 45 }}
+                order={2}
+                sx={{ textAlign: "center" }}
+              >
+                Pallete
+              </Title>
+              <Nav setOpened={setOpened} setChosen={setChosen} />
+              <Sidebar
+                opened={opened}
+                chosen={chosen}
+                x={x}
+                y={y}
+                current={current}
+                setNew={setNew}
+              />
+            </Box>
           </Drawer>
 
           <Box>
-            <Button
-              onClick={opened_drawer}
-              sx={{
-                display: "absolute",
-                bottom: "0",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-              }}
-            >
-              Open Drawer
-            </Button>
+            <Button onClick={open_d}>Open Drawer</Button>
           </Box>
         </Box>
       </MediaQuery>

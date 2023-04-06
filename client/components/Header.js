@@ -12,6 +12,7 @@ import {
   Text,
   Title,
   Button,
+  Box,
 } from "@mantine/core";
 import { MantineLogo } from "@mantine/ds";
 import { CheckIcon } from "@mantine/core";
@@ -37,9 +38,8 @@ const useStyles = createStyles((theme) => ({
 
   pallete: {
     width: rem(690),
-    [theme.fn.smallerThan("sm")]: {
-      // width: "auto",
-      marginLeft: "auto",
+    [theme.fn.smallerThan("lg")]: {
+      width: rem(190),
     },
   },
   swatches: {
@@ -146,57 +146,77 @@ export function Nav(props) {
   ));
 
   return (
-    <Header
-      height={{ base: 100, md: 100 }}
-      p="md"
-      // sx={{
-      //   backgroundColor: "#1C2128",
-      // }}
-    >
-      <Container className={classes.inner} size={"xl"}>
-        <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-          <Burger
-            opened={opened}
-            onClick={() => {
-              setOpened((o) => !o);
-              props.setOpened((o) => !o);
-            }}
-            size="sm"
-            color={theme.colors.gray[6]}
-            mr="xl"
-          />
-        </MediaQuery>
-        <Group className={classes.links} spacing={5}>
-          {items}
-        </Group>
-        {/* <Group className={classes.links}>
+    <>
+      <MediaQuery smallerThan="lg" styles={{ display: "none" }}>
+        <Header
+          height={{ base: 100, md: 100 }}
+          p="md"
+          // sx={{
+          //   backgroundColor: "#1C2128",
+          // }}
+        >
+          <Container className={classes.inner} size={"xl"}>
+            <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+              <Burger
+                opened={opened}
+                onClick={() => {
+                  setOpened((o) => !o);
+                  props.setOpened((o) => !o);
+                }}
+                size="sm"
+                color={theme.colors.gray[6]}
+                mr="xl"
+              />
+            </MediaQuery>
+            <Group className={classes.links} spacing={5}>
+              {items}
+            </Group>
+            {/* <Group className={classes.links}>
           <Button className={classes.button}>
-            Download <IconFileDownload />{" "}
+          Download <IconFileDownload />{" "}
           </Button>
         </Group> */}
-        <Title
-          order={1}
-          variant="gradient"
-          gradient={{ from: "#D6336C", to: "#AE3EC9", deg: 45 }}
-          sx={{ fontSize: "1.8rem", width: "30%" }}
-        >
-          {" "}
-          r/IITH-2023
-        </Title>
+            <Title
+              order={1}
+              variant="gradient"
+              gradient={{ from: "#D6336C", to: "#AE3EC9", deg: 45 }}
+              sx={{ fontSize: "1.8rem", width: "30%" }}
+            >
+              {" "}
+              r/IITH-2023
+            </Title>
 
-        <Group
-          className={classes.pallete}
-          position="center"
-          spacing="xs"
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(16, 1fr)",
-            gridTemplateRows: "repeat(2, 1fr)",
-          }}
-        >
-          {swatches}
-        </Group>
-      </Container>
-    </Header>
+            <Group
+              className={classes.pallete}
+              position="center"
+              spacing="xs"
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(16, 1fr)",
+                gridTemplateRows: "repeat(2, 1fr)",
+              }}
+            >
+              {swatches}
+            </Group>
+          </Container>
+        </Header>
+      </MediaQuery>
+      <MediaQuery largerThan="lg" styles={{ display: "none" }}>
+        <Box>
+          <Group
+            className={classes.pallete}
+            position="center"
+            spacing="xs"
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(8, 1fr)",
+              gridTemplateRows: "repeat(4, 1fr)",
+            }}
+          >
+            {swatches}
+          </Group>
+        </Box>
+      </MediaQuery>
+    </>
   );
 }
