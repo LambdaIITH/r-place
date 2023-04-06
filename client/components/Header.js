@@ -9,15 +9,12 @@ import {
   MediaQuery,
   useMantineTheme,
   ColorSwatch,
-  Text,
   Title,
   Button,
   Box,
 } from "@mantine/core";
-import { MantineLogo } from "@mantine/ds";
 import { CheckIcon } from "@mantine/core";
 import { colorPalette } from "./Palette";
-import { IconFileDownload } from "@tabler/icons-react";
 const useStyles = createStyles((theme) => ({
   inner: {
     display: "flex",

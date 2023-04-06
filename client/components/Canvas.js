@@ -20,7 +20,14 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export default function Canvas({ setX, setY, setCurrent, colors, cellSize }) {
+export default function Canvas({
+  setX,
+  setY,
+  setCurrent,
+  colors,
+  cellSize,
+  paletteOpen,
+}) {
   const canvasRef = useRef(null);
   const { classes, cx } = useStyles();
   function handleDownload() {
@@ -33,6 +40,7 @@ export default function Canvas({ setX, setY, setCurrent, colors, cellSize }) {
     link.href = image;
     link.click();
   }
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
@@ -45,23 +53,6 @@ export default function Canvas({ setX, setY, setCurrent, colors, cellSize }) {
       }
     }
   }, [colors, cellSize]);
-
-  useEffect(() => {
-    function getCursorPosition(canvas, event) {
-      const rect = canvas.getBoundingClientRect();
-      const temp_y = event.clientX - rect.left;
-      const temp_x = event.clientY - rect.top;
-      const x = (temp_x - (temp_x % cellSize)) / cellSize;
-      const y = (temp_y - (temp_y % cellSize)) / cellSize;
-      setX(x);
-      setY(y);
-      setCurrent(colorPalette[colors[y * 100 + x]]);
-    }
-    const canvasListener = document.querySelector("canvas");
-    canvasListener.addEventListener("click", function (e) {
-      getCursorPosition(canvasListener, e);
-    });
-  }, [setX, setY, setCurrent, colors, cellSize]);
 
   return (
     <Stack
@@ -79,7 +70,25 @@ export default function Canvas({ setX, setY, setCurrent, colors, cellSize }) {
       >
         Download <IconFileDownload />{" "}
       </Button>
-      <canvas ref={canvasRef} width={cellSize * 100} height={cellSize * 100} />
+      <canvas
+        ref={canvasRef}
+        width={cellSize * 100}
+        height={cellSize * 100}
+        onClick={(e) => {
+          const canvas = canvasRef.current;
+          const rect = canvas.getBoundingClientRect();
+          const temp_y = e.clientX - rect.left;
+          const temp_x = e.clientY - rect.top;
+          const x = (temp_x - (temp_x % cellSize)) / cellSize;
+          const y = (temp_y - (temp_y % cellSize)) / cellSize;
+          setX(x);
+          setY(y);
+          setCurrent(colorPalette[colors[y * 100 + x]]);
+          if (paletteOpen) {
+            paletteOpen();
+          }
+        }}
+      />
     </Stack>
   );
 }

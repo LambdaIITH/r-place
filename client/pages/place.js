@@ -33,6 +33,32 @@ export default function Place() {
   // mobile devices - bottom drawer
   const [opened_d, { open: open_d, close: close_d }] = useDisclosure(false);
 
+  async function loadCanvas() {
+    try {
+      const response = await fetch(`/full_grid`, {
+        method: "GET",
+      });
+      const temp = await response.json();
+      setColors(temp[0]);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async function postPixel() {
+    try {
+      const response = await fetch(`/pixel/${x}/${y}/${chosen}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const temp = await response.json();
+      console.log(temp);
+      setNew();
+    } catch (err) {
+      console.log(err);
+    }
+  }
   useEffect(() => {
     const colors = [];
     for (let i = 0; i < 100; i++) {
@@ -51,7 +77,6 @@ export default function Place() {
     setCurrent(chosen);
   }
 
-  const openPallete = () => {};
   return (
     <>
       <MediaQuery smallerThan="lg" styles={{ display: "none" }}>
@@ -67,7 +92,6 @@ export default function Place() {
           navbarOffsetBreakpoint="sm"
           asideOffsetBreakpoint="sm"
           aside={
-            // <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
             <Sidebar
               opened={opened}
               chosen={chosen}
@@ -76,7 +100,6 @@ export default function Place() {
               current={current}
               setNew={setNew}
             />
-            // </MediaQuery>
           }
           header={<Nav setOpened={setOpened} setChosen={setChosen} />}
         >
@@ -106,7 +129,11 @@ export default function Place() {
             >
               r/IITH-2023
             </Title>
-            <Burger opened={opened_m} onClick={toggle_m} aria-label={label} />
+            <Burger
+              opened={opened_m}
+              onClick={toggle_m}
+              aria-label={label}
+            ></Burger>
           </Box>
           <Box>
             <Canvas
@@ -115,7 +142,7 @@ export default function Place() {
               setCurrent={setCurrent}
               colors={colors}
               cellSize={cellSize}
-              openPallete={openPallete}
+              paletteOpen={open_d}
             />
           </Box>
 
