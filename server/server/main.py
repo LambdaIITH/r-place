@@ -18,7 +18,7 @@ load_dotenv()
 COLS = 100
 ROWS = 100
 COLORS = 32
-COOLDOWN_TIME = 600 # in seconds
+COOLDOWN_TIME = 600  # in seconds
 
 DATABASE = os.getenv("DATABASE")
 POSTGRES_USER = os.getenv("POSTGRES_USER")
@@ -56,6 +56,7 @@ insertion_lock = Lock()
 for x, y, color in queries.get_full_grid(conn):
     current_grid[x][y] = color
 
+
 def verify_auth_token(Authorization: str = Header()):
     email = get_user_email(Authorization)
     if email is None:
@@ -64,13 +65,21 @@ def verify_auth_token(Authorization: str = Header()):
         )
     return email
 
+
+def are_bounds_valid(row: int, col: int) -> bool:
+    return 0 <= row < ROWS and 0 <= col < COLS
+
+
+def is_color_valid(color: int) -> bool:
+    return 0 <= color < COLORS
+
+
 def get_user_cooldown(email: str):
     time_of_last_update = queries.get_time_of_last_update(conn, email=email)[0]
     if time_of_last_update is None:
         return 0
     time_since_last_req = float(time.time()) - float(time_of_last_update)
-    return max(COOLDOWN_TIME-time_since_last_req, 0) 
-
+    return max(COOLDOWN_TIME-time_since_last_req, 0)
 
 
 @app.get("/")
@@ -85,29 +94,30 @@ async def auth(email: str = Depends(verify_auth_token)):
     """
     return {"email": email}
 
+
 @app.post("/pixel/{row}/{col}/{color}}")
-async def pixel(x: int, y: int, color: int, email: str = Depends(verify_auth_token)):
+async def pixel(row: int, col: int, color: int, email: str = Depends(verify_auth_token)):
     global insertion_lock, current_grid, latest_insertion
 
-    if (x < 0 or x >= ROWS or y < 0 or y >= COLS or color < 0 or color >= COLORS):
+    if not are_bounds_valid(row, col) or not is_color_valid(color):
         raise HTTPException(
             status_code=400, detail="Invalid pixel coordinates or color."
         )
 
-    if (get_user_cooldown(email)>0):
+    if (get_user_cooldown(email) > 0):
         raise HTTPException(
             status_code=429, detail="You are on cooldown."
         )
-    
 
     insertion_lock.acquire()
-    current_grid[x][y] = color
-    latest_insertion = int(queries.log_update(conn, email, x, y, color)[0])
+    current_grid[row][col] = color
+    latest_insertion = int(queries.log_update(conn, email, row, col, color)[0])
     insertion_lock.release()
 
     raise HTTPException(
         status_code=200, detail="Pixel updated."
     )
+
 
 @app.get("/full_grid")
 def full_grid():
@@ -115,8 +125,9 @@ def full_grid():
     Return the full grid and the latest insertion id.
     """
     global current_grid, latest_insertion
-    
-    return {"grid" : current_grid, "last update" : latest_insertion}
+
+    return {"grid": current_grid, "last update": latest_insertion}
+
 
 @app.get("/cooldown")
 async def cooldown(email: str = Depends(verify_auth_token)):
@@ -125,21 +136,21 @@ async def cooldown(email: str = Depends(verify_auth_token)):
     """
     return get_user_cooldown(email)
 
+
 @app.get("/pixel/{row}/{col}/history")
-async def pixel_history(x: int, y: int, email: str = Depends(verify_auth_token)):
+async def pixel_history(row: int, col: int, email: str = Depends(verify_auth_token)):
     """
     Return the history of a pixel (last 5 updates).
     """
-    if (x < 0 or x >= ROWS or y < 0 or y >= COLS):
+    if not are_bounds_valid(row, col):
         raise HTTPException(
             status_code=400, detail="Invalid pixel coordinates."
         )
-    result = queries.get_pixel_history(conn, x, y)
-    
+    result = queries.get_pixel_history(conn, row, col)
+
     # parse this list of tuples into a list of dicts
     res_final = []
     for row in result:
         res_final.append({"email": row[0], "timestamp": row[1], "color": row[2]})
 
     return res_final
-
