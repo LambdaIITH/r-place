@@ -9,10 +9,10 @@ import {
   MediaQuery,
   useMantineTheme,
   ColorSwatch,
-  Text,
   Title,
+  Button,
+  Box,
 } from "@mantine/core";
-import { MantineLogo } from "@mantine/ds";
 import { CheckIcon } from "@mantine/core";
 import { colorPalette } from "./Palette";
 const useStyles = createStyles((theme) => ({
@@ -20,7 +20,7 @@ const useStyles = createStyles((theme) => ({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    height: rem(56),
+    height: rem(70),
     [theme.fn.smallerThan("sm")]: {
       justifyContent: "flex-start",
     },
@@ -34,11 +34,9 @@ const useStyles = createStyles((theme) => ({
   },
 
   pallete: {
-    width: rem(300),
-
-    [theme.fn.smallerThan("sm")]: {
-      // width: "auto",
-      marginLeft: "auto",
+    width: rem(690),
+    [theme.fn.smallerThan("lg")]: {
+      width: rem(190),
     },
   },
   swatches: {
@@ -75,7 +73,20 @@ const useStyles = createStyles((theme) => ({
           : theme.colors.gray[0],
     },
   },
-
+  button: {
+    display: "block",
+    lineHeight: 1,
+    padding: `${rem(8)} ${rem(12)}`,
+    borderRadius: theme.radius.sm,
+    textDecoration: "none",
+    color: theme.colors.green[9],
+    fontSize: theme.fontSizes.sm,
+    fontWeight: 500,
+    backgroundColor: theme.colors.green[0],
+    "&:hover": {
+      backgroundColor: theme.colors.green[5],
+    },
+  },
   linkActive: {
     "&, &:hover": {
       backgroundColor: theme.fn.variant({
@@ -132,43 +143,77 @@ export function Nav(props) {
   ));
 
   return (
-    <Header
-      height={{ base: 100, md: 100 }}
-      p="md"
-      // sx={{
-      //   backgroundColor: "#1C2128",
-      // }}
-    >
-      <Container className={classes.inner}>
-        <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-          <Burger
-            opened={opened}
-            onClick={() => {
-              setOpened((o) => !o);
-              props.setOpened((o) => !o);
-            }}
-            size="sm"
-            color={theme.colors.gray[6]}
-            mr="xl"
-          />
-        </MediaQuery>
-        <Group className={classes.links} spacing={5}>
-          {items}
-        </Group>
-        <Title
-          order={1}
-          variant="gradient"
-          gradient={{ from: "#D6336C", to: "#AE3EC9", deg: 45 }}
-          sx={{ fontSize: "1.8rem" }}
+    <>
+      <MediaQuery smallerThan="lg" styles={{ display: "none" }}>
+        <Header
+          height={{ base: 100, md: 100 }}
+          p="md"
+          // sx={{
+          //   backgroundColor: "#1C2128",
+          // }}
         >
-          {" "}
-          r/IITH-2023
-        </Title>
+          <Container className={classes.inner} size={"xl"}>
+            <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+              <Burger
+                opened={opened}
+                onClick={() => {
+                  setOpened((o) => !o);
+                  props.setOpened((o) => !o);
+                }}
+                size="sm"
+                color={theme.colors.gray[6]}
+                mr="xl"
+              />
+            </MediaQuery>
+            <Group className={classes.links} spacing={5}>
+              {items}
+            </Group>
+            {/* <Group className={classes.links}>
+          <Button className={classes.button}>
+          Download <IconFileDownload />{" "}
+          </Button>
+        </Group> */}
+            <Title
+              order={1}
+              variant="gradient"
+              gradient={{ from: "#D6336C", to: "#AE3EC9", deg: 45 }}
+              sx={{ fontSize: "1.8rem", width: "30%" }}
+            >
+              {" "}
+              r/IITH-2023
+            </Title>
 
-        <Group className={classes.pallete} position="center" spacing="xs">
-          {swatches}
-        </Group>
-      </Container>
-    </Header>
+            <Group
+              className={classes.pallete}
+              position="center"
+              spacing="xs"
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(16, 1fr)",
+                gridTemplateRows: "repeat(2, 1fr)",
+              }}
+            >
+              {swatches}
+            </Group>
+          </Container>
+        </Header>
+      </MediaQuery>
+      <MediaQuery largerThan="lg" styles={{ display: "none" }}>
+        <Box>
+          <Group
+            className={classes.pallete}
+            position="center"
+            spacing="xs"
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(8, 1fr)",
+              gridTemplateRows: "repeat(4, 1fr)",
+            }}
+          >
+            {swatches}
+          </Group>
+        </Box>
+      </MediaQuery>
+    </>
   );
 }

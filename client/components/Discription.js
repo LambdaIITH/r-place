@@ -12,7 +12,7 @@ const Discription = () => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: "3rem",
+        gap: "2.8rem",
         height: "100vh",
         padding: "0 5rem",
         textAlign: "left",
@@ -26,7 +26,7 @@ const Discription = () => {
         order={1}
         sx={{
           fontWeight: "bold",
-          fontSize: "5rem",
+          fontSize: "4.8rem",
           textTransform: "uppercase",
           letterSpacing: "2px",
         }}
@@ -45,19 +45,21 @@ const Discription = () => {
         gradient={{ from: "#D6336C", to: "#AE3EC9", deg: 45 }}
         sx={{
           fontWeight: "medium",
-          fontSize: "1.4rem",
+          fontSize: "1.2rem",
           letterSpacing: "1px",
           wordSpacing: "1px",
           marginTop: "2rem",
+          "@media (max-width: 1400px)": {
+            fontSize: "1.05rem",
+          },
         }}
       >
-        Welcome to our IITH Alumni r/place app, brought to you by Lambda - the
-        software development club. Graduating alumni of the Indian Institute of
-        Technology Hyderabad can connect and leave their mark on our digital
-        canvas. In this collaborative art project, each alumnus can contribute a
-        pixel to create a unique and beautiful image that represents our
-        community. Let&apos;s come together and create something special that
-        will last a lifetime. Join us and be a part of the IITH legacy!
+        Welcome to our IITH Alumni r/place app. Graduating Students of IITH can
+        connect and leave their mark on our digital canvas. In this
+        collaborative art project, each alumnus can contribute a pixel to create
+        a unique and beautiful image that represents our community. Let&apos;s
+        come together and create something special that will last a lifetime.
+        Join us and be a part of the IITH legacy!
       </Text>
     </Paper>
   );

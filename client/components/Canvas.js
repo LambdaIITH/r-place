@@ -1,24 +1,94 @@
-import styles from "./Canvas.module.css";
-import { useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import { colorPalette } from "./Palette";
-export default function Canvas(props) {
+import { Box, Button, createStyles, rem, Stack } from "@mantine/core";
+import { IconFileDownload } from "@tabler/icons-react";
+
+const useStyles = createStyles((theme) => ({
+  button: {
+    display: "block",
+    lineHeight: 1,
+    padding: `${rem(8)} ${rem(12)}`,
+    borderRadius: theme.radius.sm,
+    textDecoration: "none",
+    color: theme.colors.green[9],
+    fontSize: theme.fontSizes.sm,
+    fontWeight: 500,
+    backgroundColor: theme.colors.green[0],
+    "&:hover": {
+      backgroundColor: theme.colors.green[5],
+    },
+  },
+}));
+
+export default function Canvas({
+  setX,
+  setY,
+  setCurrent,
+  colors,
+  cellSize,
+  paletteOpen,
+}) {
+  const canvasRef = useRef(null);
+  const { classes, cx } = useStyles();
+  function handleDownload() {
+    const canvas = canvasRef.current;
+    const image = canvas
+      .toDataURL("image/png")
+      .replace("image/png", "image/octet-stream");
+    const link = document.createElement("a");
+    link.download = "my-image.png";
+    link.href = image;
+    link.click();
+  }
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+
+    // Draw the grid
+    for (let x = 0; x < 100; x++) {
+      for (let y = 0; y < 100; y++) {
+        context.fillStyle = colorPalette[colors[x * 100 + y]];
+        context.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+      }
+    }
+  }, [colors, cellSize]);
+
   return (
-    <div className={`${styles.wrapper}`}>
-      <div className={`${styles.gameboard}`}>
-        {props?.colors.map((color, index) => {
-          return (
-            <div
-              key={index}
-              style={{ backgroundColor: `${colorPalette[color]}` }}
-              onClick={() => {
-                props.setX(Math.floor(index / 100));
-                props.setY(index % 100);
-                props.setSelected(colorPalette[color]);
-              }}
-            ></div>
-          );
-        })}
-      </div>
-    </div>
+    <Stack
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Button
+        className={classes.button}
+        onClick={() => {
+          handleDownload();
+        }}
+      >
+        Download <IconFileDownload />{" "}
+      </Button>
+      <canvas
+        ref={canvasRef}
+        width={cellSize * 100}
+        height={cellSize * 100}
+        onClick={(e) => {
+          const canvas = canvasRef.current;
+          const rect = canvas.getBoundingClientRect();
+          const temp_y = e.clientX - rect.left;
+          const temp_x = e.clientY - rect.top;
+          const x = (temp_x - (temp_x % cellSize)) / cellSize;
+          const y = (temp_y - (temp_y % cellSize)) / cellSize;
+          setX(x);
+          setY(y);
+          setCurrent(colorPalette[colors[y * 100 + x]]);
+          if (paletteOpen) {
+            paletteOpen();
+          }
+        }}
+      />
+    </Stack>
   );
 }
