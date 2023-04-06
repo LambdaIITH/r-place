@@ -41,8 +41,8 @@ print("Opened database successfully!")
 
 queries = aiosql.from_path("queries.sql", "psycopg2")
 
-ROWS = 100
-COLUMNS = 100
+ROWS = 80
+COLUMNS = 80
 COLORS = 32
 
 INITIAL_COLOR = 0
