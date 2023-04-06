@@ -11,7 +11,7 @@ SELECT DISTINCT ON (x, y)
   WHERE id > :id
   ORDER BY x, y, id DESC;
 
--- name: log_update
+-- name: log_update!
 -- Log a pixel update
 INSERT INTO pixel_logs (x, y, color, email) VALUES (:x, :y, :color, :email) RETURNING id;
 

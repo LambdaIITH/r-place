@@ -41,7 +41,14 @@ export default function Place() {
       });
       const temp = await response.json();
       // setColors(temp[0]);
-      console.log(temp);
+      const colors = [];
+      for (let i = 0; i < 100; i++) {
+        for (let j = 0; j < 100; j++) {
+          colors.push(temp[i][j]);
+        }
+      }
+      console.log(colors);
+      setColors(colors);
     } catch (err) {
       console.log(err);
     }
@@ -49,31 +56,33 @@ export default function Place() {
   async function postPixel() {
     try {
       const response = await fetch(
-        `http://localhost:8000/pixel/${x}/${y}/${chosen}`,
+        `http://localhost:8000/pixel/${x}/${y}/${colorPalette.indexOf(chosen)}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "http://127.0.0.1:3000",
           },
         }
       );
       const temp = await response.json();
       // TODO: check for the response do the timer thing
       console.log(temp);
+
       setNew();
     } catch (err) {
       console.log(err);
     }
   }
   useEffect(() => {
-    const colors = [];
-    for (let i = 0; i < 100; i++) {
-      for (let j = 0; j < 100; j++) {
-        colors.push(Math.floor(Math.random() * colorPalette.length));
-      }
-    }
-    console.log(colors);
-    setColors(colors);
+    // const colors = [];
+    // for (let i = 0; i < 100; i++) {
+    //   for (let j = 0; j < 100; j++) {
+    //     colors.push(Math.floor(Math.random() * colorPalette.length));
+    //   }
+    // }
+    // console.log(colors);
+    // setColors(colors);
     loadCanvas();
   }, []);
 
@@ -105,7 +114,7 @@ export default function Place() {
               x={x}
               y={y}
               current={current}
-              setNew={setNew}
+              setNew={postPixel}
             />
           }
           header={<Nav setOpened={setOpened} setChosen={setChosen} />}

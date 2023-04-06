@@ -9,7 +9,7 @@ from psycopg2.extras import Json, RealDictCursor
 from pydantic import BaseModel
 import aiosql
 import json
-
+from fastapi.middleware.cors import CORSMiddleware
 from auth import get_user_email
 
 load_dotenv()
@@ -26,6 +26,22 @@ POSTGRES_PORT = os.getenv("POSTGRES_PORT")
 
 
 app = FastAPI()
+
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    # allow_origins=origins,
+    allow_origins=["*"],
+    # allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 queries = aiosql.from_path("./queries.sql", "psycopg2")
 
 conn = psycopg2.connect(
@@ -80,8 +96,12 @@ async def auth(email: str = Depends(verify_auth_token)):
     """
     return {"email": email}
 
-@app.post("/pixel/{row}/{col}/{color}}")
-async def pixel(x: int, y: int, color: int, email: str = Depends(verify_auth_token)):
+
+# async def pixel(x: int, y: int, color: int, email: str = Depends(verify_auth_token)):
+@app.post("/pixel/{x}/{y}/{color}")
+async def pixel(x: int, y: int, color: int):
+    email: str = "cs21btech11033@iith.ac.in"
+    print(x, y, color)
     if (x < 0 or x >= ROWS or y < 0 or y >= COLS or color < 0 or color >= COLORS):
         raise HTTPException(
             status_code=400, detail="Invalid pixel coordinates or color."
@@ -90,9 +110,9 @@ async def pixel(x: int, y: int, color: int, email: str = Depends(verify_auth_tok
     if not get_user_cooldown(email):
         raise HTTPException(
             status_code=429, detail="You are on cooldown."
-        )
-    
-
+    )
+    print("Updating pixel")
+    print(conn, email, x, y, color)
     queries.log_update(conn, email, x, y, color)
 
     raise HTTPException(
