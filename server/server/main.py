@@ -65,10 +65,13 @@ def verify_auth_token(Authorization: str = Header()):
     return email
 
 def get_user_cooldown(email: str):
-    prev_req_time = queries.get_last_update_by_user(conn, email=email)[0] 
-    if prev_req_time is None:
-        return 600
-    return (float(time.time()) - float(prev_req_time)) 
+    time_of_last_update = queries.get_time_of_last_update(conn, email=email)[0]
+    if time_of_last_update is None:
+        return 0
+    time_since_last_req = float(time.time()) - float(time_of_last_update)
+    return max(COOLDOWN_TIME-time_since_last_req, 0) 
+
+
 
 @app.get("/")
 def read_root():
@@ -91,7 +94,7 @@ async def pixel(x: int, y: int, color: int, email: str = Depends(verify_auth_tok
             status_code=400, detail="Invalid pixel coordinates or color."
         )
 
-    if (get_user_cooldown(email)<COOLDOWN_TIME):
+    if (get_user_cooldown(email)>0):
         raise HTTPException(
             status_code=429, detail="You are on cooldown."
         )
@@ -132,7 +135,8 @@ async def pixel_history(x: int, y: int, email: str = Depends(verify_auth_token))
             status_code=400, detail="Invalid pixel coordinates."
         )
     result = queries.get_pixel_history(conn, x, y)
-    # parse this to a list of tuples into a list of dicts
+    
+    # parse this list of tuples into a list of dicts
     res_final = []
     for row in result:
         res_final.append({"email": row[0], "timestamp": row[1], "color": row[2]})
