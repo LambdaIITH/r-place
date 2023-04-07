@@ -85,9 +85,10 @@ def is_color_valid(color: int) -> bool:
 
 
 def get_user_cooldown(email: str):
-    time_since_last_req = float(queries.get_time_since_last_update(conn, email=email)[0])
-    print(time_since_last_req)
-    return max(COOLDOWN_TIME-time_since_last_req, 0)
+    time_since_last_req = queries.get_time_since_last_update(conn, email=email)[0]
+    if time_since_last_req is None:
+        return 0
+    return max(COOLDOWN_TIME-float(time_since_last_req), 0)
 
 
 @app.get("/")
