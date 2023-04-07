@@ -22,16 +22,15 @@ const Discription = () => {
     >
       <Title
         variant="gradient"
-        gradient={{ from: "#D6336C", to: "#AE3EC9", deg: 45 }}
+        gradient={{ from: "#C2255C", to: "#9C36B5", deg: 45 }}
         order={1}
         sx={{
           fontWeight: "bold",
           fontSize: "4.8rem",
-          textTransform: "uppercase",
           letterSpacing: "2px",
         }}
       >
-        R-Place
+        r/Place
       </Title>
       <Image
         alt="r-place logo"
@@ -42,7 +41,7 @@ const Discription = () => {
       />
       <Text
         variant="gradient"
-        gradient={{ from: "#D6336C", to: "#AE3EC9", deg: 45 }}
+        gradient={{ from: "#C2255C", to: "#9C36B5", deg: 45 }}
         sx={{
           fontWeight: "medium",
           fontSize: "1.2rem",
@@ -50,7 +49,7 @@ const Discription = () => {
           wordSpacing: "1px",
           marginTop: "2rem",
           "@media (max-width: 1400px)": {
-            fontSize: "1.05rem",
+            fontSize: "1rem",
           },
         }}
       >
