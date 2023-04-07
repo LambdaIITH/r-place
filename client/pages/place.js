@@ -7,6 +7,7 @@ import {
   Group,
   MediaQuery,
   Menu,
+  Notification,
   Text,
   Title,
   useMantineTheme,
@@ -17,16 +18,20 @@ import Canvas from "../components/Canvas";
 import { colorPalette } from "../components/Palette";
 import { useDisclosure } from "@mantine/hooks";
 import { Burger } from "@mantine/core";
-
+import { IconX } from "@tabler/icons-react";
 export default function Place() {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   const [chosen, setChosen] = useState(""); // from 14 color palette
-  const [x, setX] = useState(0);
-  const [y, setY] = useState(0);
+
+  const [col, setCol] = useState(0);
+  const [row, setRow] = useState(0);
+
   const [current, setCurrent] = useState(""); // current color of chosen pixel from canvas
   const cellSize = 8; // Size of each grid cell
   const [colors, setColors] = useState([]);
+  const [cooldown, setCooldown] = useState(0);
+  const gridSize = 80;
   // mobile devices - hamburger menu bar
   const [opened_m, { toggle: toggle_m }] = useDisclosure(false);
   const label = opened_m ? "Close navigation" : "Open navigation";
@@ -41,14 +46,12 @@ export default function Place() {
         method: "GET",
       });
       const temp = await response.json();
-      // setColors(temp[0]);
       const colors = [];
-      for (let i = 0; i < 100; i++) {
-        for (let j = 0; j < 100; j++) {
-          colors.push(temp[i][j]);
+      for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+          colors.push(temp.grid[i][j]);
         }
       }
-      console.log(colors);
       setColors(colors);
     } catch (err) {
       console.log(err);
@@ -57,7 +60,9 @@ export default function Place() {
   async function postPixel() {
     try {
       const response = await fetch(
-        `http://localhost:8000/pixel/${x}/${y}/${colorPalette.indexOf(chosen)}`,
+        `http://localhost:8000/pixel/${row}/${col}/${colorPalette.indexOf(
+          chosen
+        )}`,
         {
           method: "POST",
           headers: {
@@ -67,29 +72,22 @@ export default function Place() {
         }
       );
       const temp = await response.json();
-      // TODO: check for the response do the timer thing
       console.log(temp);
-
-      setNew();
+      if (response.status === 429) {
+        setCooldown(temp.cooldown);
+      } else {
+        setNew();
+      }
     } catch (err) {
       console.log(err);
     }
   }
   useEffect(() => {
-    // const colors = [];
-    // for (let i = 0; i < 100; i++) {
-    //   for (let j = 0; j < 100; j++) {
-    //     colors.push(Math.floor(Math.random() * colorPalette.length));
-    //   }
-    // }
-    // console.log(colors);
-    // setColors(colors);
     loadCanvas();
   }, []);
-
   function setNew() {
     const newColors = [...colors];
-    newColors[y * 100 + x] = colorPalette.indexOf(chosen);
+    newColors[row * gridSize + col] = colorPalette.indexOf(chosen);
     setColors(newColors);
     setCurrent(chosen);
   }
@@ -112,17 +110,32 @@ export default function Place() {
             <Sidebar
               opened={opened}
               chosen={chosen}
-              x={x}
-              y={y}
+              col={col}
+              row={row}
               current={current}
               setNew={postPixel}
             />
           }
           header={<Nav setOpened={setOpened} setChosen={setChosen} />}
         >
+          {cooldown ? (
+            <Notification
+              icon={<IconX size={"1.1rem"} />}
+              withCloseButton={true}
+              onClose={(e) => {
+                setCooldown(false);
+              }}
+              color="red"
+              sx={{ marginBottom: "10px" }}
+            >
+              Pixel update failed. Please try again after {cooldown} seconds.
+            </Notification>
+          ) : (
+            <></>
+          )}
           <Canvas
-            setX={setX}
-            setY={setY}
+            setCol={setCol}
+            setRow={setRow}
             setCurrent={setCurrent}
             colors={colors}
             cellSize={cellSize}
@@ -189,9 +202,24 @@ export default function Place() {
               // left: "50%",
             }}
           >
+            {cooldown ? (
+              <Notification
+                icon={<IconX size={"1.1rem"} />}
+                withCloseButton={true}
+                onClose={(e) => {
+                  setCooldown(false);
+                }}
+                color="red"
+                sx={{ marginBottom: "10px" }}
+              >
+                Pixel update failed. Please try again after {cooldown} seconds.
+              </Notification>
+            ) : (
+              <></>
+            )}
             <Canvas
-              setX={setX}
-              setY={setY}
+              setCol={setCol}
+              setRow={setRow}
               setCurrent={setCurrent}
               colors={colors}
               cellSize={cellSize}
@@ -249,8 +277,8 @@ export default function Place() {
               <Sidebar
                 opened={opened}
                 chosen={chosen}
-                x={x}
-                y={y}
+                x={col}
+                y={row}
                 current={current}
                 setNew={setNew}
               />

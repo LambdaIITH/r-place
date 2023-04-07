@@ -60,7 +60,7 @@ export default function Sidebar(props) {
                   Coordinates
                 </Text>
                 <Badge color="pink" variant="light">
-                  ({props.x}, {props.y})
+                  ({props.row}, {props.col})
                 </Badge>
               </Group>
 
@@ -146,7 +146,7 @@ export default function Sidebar(props) {
                   Coordinates
                 </Text>
                 <Badge color="pink" variant="light">
-                  ({props.x}, {props.y})
+                  ({props.row}, {props.col})
                 </Badge>
               </Group>
 

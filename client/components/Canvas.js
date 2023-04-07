@@ -21,8 +21,8 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export default function Canvas({
-  setX,
-  setY,
+  setCol,
+  setRow,
   setCurrent,
   colors,
   cellSize,
@@ -46,10 +46,10 @@ export default function Canvas({
     const context = canvas.getContext("2d");
 
     // Draw the grid
-    for (let x = 0; x < 100; x++) {
-      for (let y = 0; y < 100; y++) {
-        context.fillStyle = colorPalette[colors[x * 100 + y]];
-        context.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+    for (let row = 0; row < 80; row++) {
+      for (let col = 0; col < 80; col++) {
+        context.fillStyle = colorPalette[colors[row * 80 + col]];
+        context.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
       }
     }
   }, [colors, cellSize]);
@@ -73,18 +73,20 @@ export default function Canvas({
       </Button> */}
       <canvas
         ref={canvasRef}
-        width={cellSize * 100}
-        height={cellSize * 100}
+        width={cellSize * 80}
+        height={cellSize * 80}
         onClick={(e) => {
           const canvas = canvasRef.current;
           const rect = canvas.getBoundingClientRect();
           const temp_y = e.clientX - rect.left;
           const temp_x = e.clientY - rect.top;
-          const x = (temp_x - (temp_x % cellSize)) / cellSize;
-          const y = (temp_y - (temp_y % cellSize)) / cellSize;
-          setX(x);
-          setY(y);
-          setCurrent(colorPalette[colors[y * 100 + x]]);
+
+          const row = (temp_x - (temp_x % cellSize)) / cellSize;
+          const col = (temp_y - (temp_y % cellSize)) / cellSize;
+          console.log(row, col);
+          setCol(col);
+          setRow(row);
+          setCurrent(colorPalette[colors[row * 80 + col]]);
           if (paletteOpen) {
             paletteOpen();
           }
