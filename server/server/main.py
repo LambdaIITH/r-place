@@ -5,6 +5,7 @@ from typing import Union
 import psycopg2
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from psycopg2.extras import Json, RealDictCursor
 from pydantic import BaseModel
 from threading import Lock
@@ -15,8 +16,8 @@ from auth import get_user_email
 
 load_dotenv()
 
-COLS = 100
-ROWS = 100
+ROWS = 80
+COLUMNS = 80
 COLORS = 32
 COOLDOWN_TIME = 600  # in seconds
 
@@ -28,6 +29,18 @@ POSTGRES_PORT = os.getenv("POSTGRES_PORT")
 
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:3000"
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 queries = aiosql.from_path("./queries.sql", "psycopg2")
 
 conn = psycopg2.connect(
@@ -40,10 +53,6 @@ conn = psycopg2.connect(
 print("Opened database successfully!")
 
 queries = aiosql.from_path("queries.sql", "psycopg2")
-
-ROWS = 80
-COLUMNS = 80
-COLORS = 32
 
 INITIAL_COLOR = 0
 
@@ -67,7 +76,7 @@ def verify_auth_token(Authorization: str = Header()):
 
 
 def are_bounds_valid(row: int, col: int) -> bool:
-    return 0 <= row < ROWS and 0 <= col < COLS
+    return 0 <= row < ROWS and 0 <= col < COLUMNS
 
 
 def is_color_valid(color: int) -> bool:
@@ -95,7 +104,7 @@ async def auth(email: str = Depends(verify_auth_token)):
     return {"email": email}
 
 
-@app.post("/pixel/{row}/{col}/{color}}")
+@app.post("/pixel/{row}/{col}/{color}")
 async def pixel(row: int, col: int, color: int, email: str = Depends(verify_auth_token)):
     global insertion_lock, current_grid, latest_insertion
 
