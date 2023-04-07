@@ -57,7 +57,7 @@ print("Opened database successfully!")
 INITIAL_COLOR = 0
 
 current_grid = [[INITIAL_COLOR for _ in range(COLUMNS)] for _ in range(ROWS)]
-latest_insertion = int(queries.get_latest_id(conn)[0])
+latest_insertion = int(queries.get_latest_id(conn)[0] or 0)
 
 insertion_lock = Lock()
 
