@@ -1,43 +1,45 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   AppShell,
   Box,
   Button,
   Drawer,
-  Group,
   MediaQuery,
   Menu,
   Notification,
-  Text,
   Title,
   useMantineTheme,
 } from "@mantine/core";
 import { Nav } from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import Canvas from "../components/Canvas";
-import { colorPalette } from "../components/Palette";
 import { useDisclosure } from "@mantine/hooks";
-import { Burger } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
+import AppContext from "../AppContext";
 export default function Place() {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
-  const [chosen, setChosen] = useState(""); // from 14 color palette
 
+  const value = useContext(AppContext);
+  let globalData = value.state.globalData;
+  let { colorPalette, gridSize, pollingInterval } = globalData;
+
+  // props for sidebar
   const [col, setCol] = useState(0);
   const [row, setRow] = useState(0);
+  const [last_updated_by, setLastUpdatedBy] = useState("");
 
+  // props for canvas
+  const [chosen, setChosen] = useState(""); // from 14 color palette
   const [current, setCurrent] = useState(""); // current color of chosen pixel from canvas
-  const cellSize = 8; // Size of each grid cell
   const [colors, setColors] = useState([]);
   const [cooldown, setCooldown] = useState(0);
-  const gridSize = 80;
-  // mobile devices - hamburger menu bar
-  const [opened_m, { toggle: toggle_m }] = useDisclosure(false);
-  const label = opened_m ? "Close navigation" : "Open navigation";
 
   // mobile devices - bottom drawer
   const [opened_d, { open: open_d, close: close_d }] = useDisclosure(false);
+
+  // might break here, check what happens if pixel_logs table empty
+  const [last_update, setLastUpdate] = useState(0);
 
   async function loadCanvas() {
     try {
@@ -53,6 +55,7 @@ export default function Place() {
         }
       }
       setColors(colors);
+      setLastUpdate(temp["last update"]);
     } catch (err) {
       console.log(err);
     }
@@ -82,15 +85,68 @@ export default function Place() {
       console.log(err);
     }
   }
-  useEffect(() => {
-    loadCanvas();
-  }, []);
+
+  async function getUpdates(colors) {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/updates/${last_update}`,
+        {
+          method: "GET",
+        }
+      );
+      const temp = await response.json();
+      const updates = temp.updates;
+      for (let i = 0; i < updates.length; i++) {
+        const newColors = [...colors];
+        newColors[updates[i].row * gridSize + updates[i].col] =
+          updates[i].color;
+        setColors(newColors);
+      }
+      console.log(updates);
+      setLastUpdate(temp["last update"]);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function getPixelHistory() {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/pixel/${row}/${col}/history`,
+        {
+          method: "GET",
+        }
+      );
+      const temp = await response.json();
+      setLastUpdatedBy(temp[0].email);
+    } catch (err) {
+      console.log(err);
+      setLastUpdatedBy("None ㋡");
+    }
+  }
+
   function setNew() {
     const newColors = [...colors];
     newColors[row * gridSize + col] = colorPalette.indexOf(chosen);
     setColors(newColors);
     setCurrent(chosen);
   }
+
+  useEffect(() => {
+    loadCanvas();
+  }, []);
+
+  useEffect(() => {
+    getPixelHistory();
+  }, [row, col]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getUpdates(colors);
+      console.log("getting updates");
+    }, pollingInterval);
+    return () => clearInterval(interval);
+  }, [colors]);
 
   return (
     <>
@@ -114,6 +170,7 @@ export default function Place() {
               row={row}
               current={current}
               setNew={postPixel}
+              last_updated_by={last_updated_by}
             />
           }
           header={<Nav setOpened={setOpened} setChosen={setChosen} />}
@@ -138,7 +195,6 @@ export default function Place() {
             setRow={setRow}
             setCurrent={setCurrent}
             colors={colors}
-            cellSize={cellSize}
           />
         </AppShell>
       </MediaQuery>
@@ -156,11 +212,6 @@ export default function Place() {
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
-              // padding: "10px 20px",
-              // position: "absolute",
-              // top: "0",
-              // left: "50%",
-              // transform: "translate(-50%, 0%)",
               width: "100%",
               backgroundColor: "rgba(255, 255, 255)",
               padding: "10px",
@@ -189,17 +240,11 @@ export default function Place() {
           <Box
             sx={{
               paddign: "0 100px",
-              // marginTop: "5rem",
               height: "82%",
               width: "50%",
               margin: "0 auto",
               paddingLeft: "300px",
-              // width: "100%",
-              // position: "absolute",
-              // top: "0",
-              // transform: "translate(-50%, 0%)",
               overflow: "auto",
-              // left: "50%",
             }}
           >
             {cooldown ? (
@@ -222,23 +267,13 @@ export default function Place() {
               setRow={setRow}
               setCurrent={setCurrent}
               colors={colors}
-              cellSize={cellSize}
               paletteOpen={open_d}
             />
-            {/* <Box
-              sx={{
-                height: "85vh",
-              }}
-            ></Box> */}
           </Box>
 
           <Box
             sx={{
               width: "100%",
-              // position: "absolute",
-              // bottom: "0",
-              // left: "50%",
-              // transform: "translate(-50%, 0%)",
               backgroundColor: "rgba(255, 255, 255)",
               padding: "10px",
             }}
@@ -277,10 +312,11 @@ export default function Place() {
               <Sidebar
                 opened={opened}
                 chosen={chosen}
-                x={col}
-                y={row}
+                col={col}
+                row={row}
                 current={current}
                 setNew={setNew}
+                last_updated_by={last_updated_by}
               />
             </Box>
           </Drawer>

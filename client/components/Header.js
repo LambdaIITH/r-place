@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   createStyles,
   Header,
@@ -10,11 +10,11 @@ import {
   useMantineTheme,
   ColorSwatch,
   Title,
-  Button,
   Box,
 } from "@mantine/core";
 import { CheckIcon } from "@mantine/core";
-import { colorPalette } from "./Palette";
+import AppContext from "../AppContext";
+
 const useStyles = createStyles((theme) => ({
   inner: {
     display: "flex",
@@ -103,6 +103,11 @@ export function Nav(props) {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   const [chosen, setChosen] = useState("");
+
+  const value = useContext(AppContext);
+  let globalData = value.state.globalData;
+  let { colorPalette } = globalData;
+
   const { classes, cx } = useStyles();
   const links = [
     { link: "/place", label: "Basic" },
@@ -145,13 +150,7 @@ export function Nav(props) {
   return (
     <>
       <MediaQuery smallerThan="lg" styles={{ display: "none" }}>
-        <Header
-          height={{ base: 100, md: 100 }}
-          p="md"
-          // sx={{
-          //   backgroundColor: "#1C2128",
-          // }}
-        >
+        <Header height={{ base: 100, md: 100 }} p="md">
           <Container className={classes.inner} size={"xl"}>
             <MediaQuery largerThan="sm" styles={{ display: "none" }}>
               <Burger
@@ -168,11 +167,6 @@ export function Nav(props) {
             <Group className={classes.links} spacing={5}>
               {items}
             </Group>
-            {/* <Group className={classes.links}>
-          <Button className={classes.button}>
-          Download <IconFileDownload />{" "}
-          </Button>
-        </Group> */}
             <Title
               order={1}
               variant="gradient"

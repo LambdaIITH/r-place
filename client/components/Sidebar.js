@@ -26,9 +26,6 @@ export default function Sidebar(props) {
           hiddenBreakpoint="sm"
           width={{ sm: 300 }}
           hidden={!props.opened}
-          // sx={{
-          //   backgroundColor: "#1C2128",
-          // }}
         >
           <Stack spacing="md">
             <Card
@@ -36,7 +33,6 @@ export default function Sidebar(props) {
               radius="md"
               sx={{
                 margin: "1rem auto",
-                // backgroundColor: "#373A40",
                 width: "100%",
               }}
             >
@@ -65,7 +61,7 @@ export default function Sidebar(props) {
               </Group>
 
               <Text size="xs" color="dimmed">
-                Last Modified by: MistyRavager
+                Last Modified by: {props?.last_updated_by}
                 <Text weight={500} color="dark">
                   {props.lastModified}
                 </Text>
@@ -77,7 +73,6 @@ export default function Sidebar(props) {
               radius="md"
               sx={{
                 margin: "0 auto",
-                // backgroundColor: "#373A40",
                 width: "100%",
               }}
             >
@@ -122,7 +117,6 @@ export default function Sidebar(props) {
               radius="md"
               sx={{
                 margin: "1rem auto",
-                // backgroundColor: "#373A40",
                 width: "100%",
               }}
             >
@@ -151,7 +145,7 @@ export default function Sidebar(props) {
               </Group>
 
               <Text size="xs" color="dimmed">
-                Last Modified by: MistyRavager
+                Last Modified by: {props?.last_updated_by}
                 <Text weight={500} color="dark">
                   {props.lastModified}
                 </Text>
@@ -163,7 +157,6 @@ export default function Sidebar(props) {
               radius="md"
               sx={{
                 margin: "0 auto",
-                // backgroundColor: "#373A40",
                 width: "100%",
               }}
             >

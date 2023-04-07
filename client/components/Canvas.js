@@ -1,8 +1,7 @@
-import { useRef, useEffect } from "react";
-import { colorPalette } from "./Palette";
+import { useRef, useEffect, useContext } from "react";
 import { Box, Button, createStyles, rem, Stack } from "@mantine/core";
 import { IconFileDownload } from "@tabler/icons-react";
-
+import AppContext from "../AppContext";
 const useStyles = createStyles((theme) => ({
   button: {
     display: "block",
@@ -25,11 +24,15 @@ export default function Canvas({
   setRow,
   setCurrent,
   colors,
-  cellSize,
   paletteOpen,
 }) {
   const canvasRef = useRef(null);
   const { classes, cx } = useStyles();
+
+  const value = useContext(AppContext);
+  let globalData = value.state.globalData;
+  let { colorPalette, cellSize } = globalData;
+
   function handleDownload() {
     const canvas = canvasRef.current;
     const image = canvas

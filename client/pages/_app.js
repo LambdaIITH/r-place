@@ -1,4 +1,6 @@
 import { MantineProvider } from "@mantine/core";
+import AppContext from "../AppContext";
+import globalData from "../globaldata";
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -12,7 +14,15 @@ function MyApp({ Component, pageProps }) {
         headings: { fontFamily: "monospace, sans-serif" },
       }}
     >
-      <Component {...pageProps} />
+      <AppContext.Provider
+        value={{
+          state: {
+            globalData: globalData,
+          },
+        }}
+      >
+        <Component {...pageProps} />
+      </AppContext.Provider>
     </MantineProvider>
   );
 }
