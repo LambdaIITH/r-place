@@ -14,12 +14,13 @@ SELECT DISTINCT ON (x, y)
   WHERE id > :last_updated
   ORDER BY x, y, id DESC;
 
--- name: log_update
+-- name: log_update<!
 -- Log a pixel update
 INSERT INTO pixel_logs (x, y, color, email) VALUES (:x, :y, :color, :email) RETURNING id;
 
--- name: get_time_of_last_update^
-SELECT EXTRACT(epoch from (time_stamp)) as last_time
+-- name: get_time_since_last_update^
+-- returns the time since the last update in seconds
+SELECT EXTRACT(epoch from now() - MAX(time_stamp)) as last_time
  FROM pixel_logs 
  WHERE email = :email;
 

@@ -4,7 +4,7 @@ from typing import Union
 
 import psycopg2
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from psycopg2.extras import Json, RealDictCursor
 from pydantic import BaseModel
@@ -51,9 +51,8 @@ conn = psycopg2.connect(
     host=POSTGRES_HOST,
     port=POSTGRES_PORT,
 )
+conn.autocommit = True
 print("Opened database successfully!")
-
-queries = aiosql.from_path("queries.sql", "psycopg2")
 
 INITIAL_COLOR = 0
 
@@ -65,6 +64,7 @@ insertion_lock = Lock()
 # initialize the in-mem grid
 for x, y, color in queries.get_full_grid(conn):
     current_grid[x][y] = color
+print("Initialized grid.")
 
 
 def verify_auth_token(Authorization: str = Header()):
@@ -85,10 +85,8 @@ def is_color_valid(color: int) -> bool:
 
 
 def get_user_cooldown(email: str):
-    time_of_last_update = queries.get_time_of_last_update(conn, email)[0]
-    if time_of_last_update is None:
-        return 0
-    time_since_last_req = float(time.time()) - float(time_of_last_update)
+    time_since_last_req = float(queries.get_time_since_last_update(conn, email=email)[0])
+    print(time_since_last_req)
     return max(COOLDOWN_TIME-time_since_last_req, 0)
 
 
@@ -106,27 +104,25 @@ async def auth(email: str = Depends(verify_auth_token)):
 
 
 @app.post("/pixel/{row}/{col}/{color}")
-async def pixel(row: int, col: int, color: int, email: str = Depends(verify_auth_token)):
+async def pixel(row: int, col: int, color: int, response: Response, email: str = Depends(verify_auth_token)):
     global insertion_lock, current_grid, latest_insertion
 
     if not are_bounds_valid(row, col) or not is_color_valid(color):
-        raise HTTPException(
-            status_code=400, detail="Invalid pixel coordinates or color."
-        )
+        response.status_code = 400
+        return {"message": "Invalid pixel coordinates or color."}
 
-    if (get_user_cooldown(email) > 0):
-        raise HTTPException(
-            status_code=429, detail="You are on cooldown."
-        )
+    cooldown = get_user_cooldown(email)
+    if (cooldown > 0):
+        response.status_code = 429
+        return {"message": "You are on cooldown.", "cooldown": cooldown}
 
     insertion_lock.acquire()
     current_grid[row][col] = color
-    latest_insertion = int(queries.log_update(conn, row, col, color, email)[0])
+    latest_insertion = int(queries.log_update(conn, x=row, y=col, color=color, email=email))
+    print(latest_insertion)
     insertion_lock.release()
 
-    raise HTTPException(
-        status_code=200, detail="Pixel updated."
-    )
+    return {"message": "Pixel updated successfully."}
 
 
 @app.get("/full_grid")
@@ -147,7 +143,7 @@ def updates(last_updated: int):
     global current_grid, latest_insertion
 
     updates = []
-    for x, y, color in queries.get_updates(conn, last_updated):
+    for x, y, color in queries.get_updates(conn, last_updated=last_updated):
         updates.append({"row": x, "col": y, "color": color})
 
     return {"updates": updates, "last update": latest_insertion}
@@ -162,7 +158,7 @@ async def cooldown(email: str = Depends(verify_auth_token)):
 
 
 @app.get("/pixel/{row}/{col}/history")
-async def pixel_history(row: int, col: int, email: str = Depends(verify_auth_token)):
+async def pixel_history(row: int, col: int):
     """
     Return the history of a pixel (last 5 updates).
     """
@@ -170,7 +166,7 @@ async def pixel_history(row: int, col: int, email: str = Depends(verify_auth_tok
         raise HTTPException(
             status_code=400, detail="Invalid pixel coordinates."
         )
-    result = queries.get_pixel_history(conn, row, col)
+    result = queries.get_pixel_history(conn, x=row, y=col)
 
     # parse this list of tuples into a list of dicts
     res_final = []
