@@ -185,7 +185,8 @@ export default function Place() {
               color="red"
               sx={{ marginBottom: "10px" }}
             >
-              Pixel update failed. Please try again after {cooldown} seconds.
+              Pixel update failed. Please try again after{" "}
+              {Math.floor(cooldown * 100) / 100} seconds.
             </Notification>
           ) : (
             <></>
@@ -251,12 +252,13 @@ export default function Place() {
                   setCooldown(false);
                 }}
                 color="red"
-                sx={{ marginBottom: "10px" }}
+                sx={{ marginBottom: "10px", zIndex: "100" }}
               >
-                Pixel update failed. Please try again after {cooldown} seconds.
+                Pixel update failed. Please try again after{" "}
+                {Math.floor(cooldown * 100) / 100} seconds.
               </Notification>
             ) : (
-              ""
+              <></>
             )}
             <Canvas
               setCol={setCol}
@@ -311,7 +313,7 @@ export default function Place() {
                 col={col}
                 row={row}
                 current={current}
-                setNew={setNew}
+                setNew={postPixel}
                 last_updated_by={last_updated_by}
               />
             </Box>
