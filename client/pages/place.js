@@ -204,6 +204,7 @@ export default function Place() {
             height: "100vh",
             // overflow: "auto",
             width: "100%",
+            // backgroundColor: "rgba(0,0,0,0.2)",
           }}
         >
           <Box
@@ -239,12 +240,7 @@ export default function Place() {
           </Box>
           <Box
             sx={{
-              paddign: "0 100px",
-              height: "82%",
-              width: "50%",
-              margin: "0 auto",
-              paddingLeft: "300px",
-              overflow: "auto",
+              height: "20%",
             }}
           >
             {cooldown ? (
@@ -260,7 +256,7 @@ export default function Place() {
                 Pixel update failed. Please try again after {cooldown} seconds.
               </Notification>
             ) : (
-              <></>
+              ""
             )}
             <Canvas
               setCol={setCol}
@@ -278,7 +274,7 @@ export default function Place() {
               padding: "10px",
             }}
           >
-            <Button
+            {/* <Button
               onClick={open_d}
               sx={{
                 margin: "0 auto",
@@ -288,7 +284,7 @@ export default function Place() {
               }}
             >
               Open Drawer
-            </Button>
+            </Button> */}
           </Box>
           <Drawer opened={opened_d} onClose={close_d}>
             <Box

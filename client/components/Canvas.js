@@ -63,38 +63,67 @@ export default function Canvas({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        padding: "0 100px",
+        // padding: "0 100px",
       }}
     >
-      {/* <Button
+      <Box
+        sx={{
+          // padding: "50px 100px",
+          // marginTop: "5rem",
+          overflow: "auto",
+          height: "10%",
+          width: "80%",
+          margin: "0 auto",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: "10px",
+          // paddingLeft: "300px",
+          // width: "100%",
+          // position: "absolute",
+          // top: "0",
+          // transform: "translate(-50%, 0%)",
+          overflow: "auto",
+          // left: "50%",
+        }}
+      >
+        <canvas
+          ref={canvasRef}
+          width={cellSize * 80}
+          height={cellSize * 80}
+          onClick={(e) => {
+            const canvas = canvasRef.current;
+            const rect = canvas.getBoundingClientRect();
+            const temp_y = e.clientX - rect.left;
+            const temp_x = e.clientY - rect.top;
+
+            const row = (temp_x - (temp_x % cellSize)) / cellSize;
+            const col = (temp_y - (temp_y % cellSize)) / cellSize;
+            console.log(row, col);
+            setCol(col);
+            setRow(row);
+            setCurrent(colorPalette[colors[row * 80 + col]]);
+            if (paletteOpen) {
+              paletteOpen();
+            }
+          }}
+        />
+      </Box>
+      <Button
         className={classes.button}
         onClick={() => {
           handleDownload();
         }}
+        sx={{
+          margin: "0 auto",
+          display: "flex",
+          width: "80%",
+          justifyContent: "center",
+          marginBottom: "10px",
+        }}
       >
         Download <IconFileDownload />{" "}
-      </Button> */}
-      <canvas
-        ref={canvasRef}
-        width={cellSize * 80}
-        height={cellSize * 80}
-        onClick={(e) => {
-          const canvas = canvasRef.current;
-          const rect = canvas.getBoundingClientRect();
-          const temp_y = e.clientX - rect.left;
-          const temp_x = e.clientY - rect.top;
-
-          const row = (temp_x - (temp_x % cellSize)) / cellSize;
-          const col = (temp_y - (temp_y % cellSize)) / cellSize;
-          console.log(row, col);
-          setCol(col);
-          setRow(row);
-          setCurrent(colorPalette[colors[row * 80 + col]]);
-          if (paletteOpen) {
-            paletteOpen();
-          }
-        }}
-      />
+      </Button>
     </Stack>
   );
 }
