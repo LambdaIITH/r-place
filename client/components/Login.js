@@ -3,8 +3,16 @@ import React from "react";
 import Discription from "./Discription";
 import { Button } from "@mantine/core";
 import { IconBrandGoogle } from "@tabler/icons-react";
-
+import { useSession, signIn, signOut } from "next-auth/react";
+import { useRouter } from "next/router";
 const Login = () => {
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  console.log(session);
+  if (status === "authenticated") {
+    console.log("authenticated");
+    router.push("/place");
+  }
   return (
     <>
       <MediaQuery smallerThan="lg" styles={{ display: "none" }}>
@@ -65,6 +73,10 @@ const Login = () => {
                   height: "50px",
                   backgroundColor: "#AE3EC9",
                   "&:hover": { backgroundColor: "#AE3ED2" },
+                }}
+                onClick={() => {
+                  signIn();
+                  console.log("clicked");
                 }}
               >
                 Continue with Google

@@ -31,7 +31,7 @@ export default function Canvas({
 
   const value = useContext(AppContext);
   let globalData = value.state.globalData;
-  let { colorPalette, cellSize } = globalData;
+  let { colorPalette, cellSize, gridSize } = globalData;
 
   function handleDownload() {
     const canvas = canvasRef.current;
@@ -49,9 +49,9 @@ export default function Canvas({
     const context = canvas.getContext("2d");
 
     // Draw the grid
-    for (let row = 0; row < 80; row++) {
-      for (let col = 0; col < 80; col++) {
-        context.fillStyle = colorPalette[colors[row * 80 + col]];
+    for (let row = 0; row < gridSize; row++) {
+      for (let col = 0; col < gridSize; col++) {
+        context.fillStyle = colorPalette[colors[row * gridSize + col]];
         context.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
       }
     }
@@ -89,8 +89,8 @@ export default function Canvas({
       >
         <canvas
           ref={canvasRef}
-          width={cellSize * 80}
-          height={cellSize * 80}
+          width={cellSize * gridSize}
+          height={cellSize * gridSize}
           onClick={(e) => {
             const canvas = canvasRef.current;
             const rect = canvas.getBoundingClientRect();
@@ -102,7 +102,7 @@ export default function Canvas({
             console.log(row, col);
             setCol(col);
             setRow(row);
-            setCurrent(colorPalette[colors[row * 80 + col]]);
+            setCurrent(colorPalette[colors[row * gridSize + col]]);
             if (paletteOpen) {
               paletteOpen();
             }
