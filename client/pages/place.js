@@ -169,7 +169,7 @@ export default function Place() {
               col={col}
               row={row}
               current={current}
-              setNew={postPixel}
+              postPixel={postPixel}
               last_updated_by={last_updated_by}
             />
           }
@@ -288,7 +288,12 @@ export default function Place() {
               Open Drawer
             </Button> */}
           </Box>
-          <Drawer opened={opened_d} onClose={close_d}>
+          <Drawer
+            opened={opened_d}
+            onClose={close_d}
+            size="550px"
+            position="bottom"
+          >
             <Box
               sx={{
                 display: "flex",
@@ -313,7 +318,7 @@ export default function Place() {
                 col={col}
                 row={row}
                 current={current}
-                setNew={postPixel}
+                postPixel={postPixel}
                 last_updated_by={last_updated_by}
               />
             </Box>

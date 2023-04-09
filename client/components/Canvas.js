@@ -14,7 +14,7 @@ const useStyles = createStyles((theme) => ({
     fontWeight: 500,
     backgroundColor: theme.colors.green[0],
     "&:hover": {
-      backgroundColor: theme.colors.green[5],
+      backgroundColor: theme.colors.green[2],
     },
   },
 }));
@@ -117,7 +117,7 @@ export default function Canvas({
         sx={{
           margin: "0 auto",
           display: "flex",
-          width: "80%",
+          width: "50%",
           justifyContent: "center",
           marginBottom: "10px",
         }}

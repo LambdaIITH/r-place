@@ -16,7 +16,7 @@ import { IconCircleCheck } from "@tabler/icons-react";
 export default function Sidebar(props) {
   const theme = useMantineTheme();
   function handleClick() {
-    props.setNew();
+    props.postPixel();
   }
   return (
     <>
@@ -106,10 +106,10 @@ export default function Sidebar(props) {
       <MediaQuery largerThan="lg" styles={{ display: "none" }}>
         <Box>
           <Box
-            spacing="md"
+            spacing="lg"
             sx={{
               display: "flex",
-              flexDirection: "column",
+              flexDirection: "row",
             }}
           >
             <Card
@@ -124,8 +124,53 @@ export default function Sidebar(props) {
                 <div
                   style={{
                     backgroundColor: `${props?.current}`,
-                    height: "120px",
-                    width: "120px",
+                    height: "80px",
+                    width: "80px",
+                    margin: "0 auto",
+                  }}
+                ></div>
+              </Card.Section>
+              <Group mt="md" mb="xs">
+                <Text
+                  // variant="light"
+                  // gradient={{ from: "#D6336C", to: "#AE3EC9", deg: 45 }}
+                  weight={500}
+                  size={10}
+                >
+                  Coordinates
+                  <Badge
+                    color="pink"
+                    variant="light"
+                    sx={{ fontSize: "7px", marginTop: "-10px" }}
+                    size={5}
+                  >
+                    ({props.row}, {props.col})
+                  </Badge>
+                </Text>
+              </Group>
+
+              <Text size="8px" color="dimmed">
+                Last Modified by: {props?.last_updated_by}
+                <Text weight={500} color="dark">
+                  {props.lastModified}
+                </Text>
+              </Text>
+            </Card>
+            <Card
+              shadow="md"
+              padding="lg"
+              radius="md"
+              sx={{
+                margin: "1rem auto",
+                width: "100%",
+              }}
+            >
+              <Card.Section>
+                <div
+                  style={{
+                    backgroundColor: `${props.chosen}`,
+                    height: "80px",
+                    width: "80px",
                     margin: "0 auto",
                   }}
                 ></div>
@@ -135,56 +180,27 @@ export default function Sidebar(props) {
                   variant="gradient"
                   gradient={{ from: "#D6336C", to: "#AE3EC9", deg: 45 }}
                   weight={500}
-                  size={15}
+                  size={10}
+                  align="center"
                 >
-                  Coordinates
+                  Current selected color
                 </Text>
-                <Badge color="pink" variant="light">
-                  ({props.row}, {props.col})
-                </Badge>
               </Group>
-
-              <Text size="xs" color="dimmed">
-                Last Modified by: {props?.last_updated_by}
-                <Text weight={500} color="dark">
-                  {props.lastModified}
-                </Text>
-              </Text>
-            </Card>
-            <Card
-              shadow="sm"
-              padding="lg"
-              radius="md"
-              sx={{
-                margin: "0 auto",
-                width: "100%",
-              }}
-            >
-              <Card.Section>
-                <div
-                  style={{
-                    backgroundColor: `${props.chosen}`,
-                    height: "120px",
-                    width: "120px",
-                    margin: "0 auto",
-                  }}
-                ></div>
-              </Card.Section>
-              <Button
-                variant="light"
-                color="green"
-                mt="md"
-                radius="md"
-                fullWidth
-                onClick={handleClick}
-              >
-                <Group>
-                  <Text>Save</Text>
-                  <IconCircleCheck size={20} />
-                </Group>
-              </Button>
             </Card>
           </Box>
+          <Button
+            variant="light"
+            color="green"
+            mt="md"
+            radius="md"
+            fullWidth
+            onClick={handleClick}
+          >
+            <Group>
+              <Text>Save</Text>
+              <IconCircleCheck size={20} />
+            </Group>
+          </Button>
         </Box>
       </MediaQuery>
     </>
