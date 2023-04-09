@@ -172,7 +172,6 @@ async def pixel_history(row: int, col: int):
     # parse this list of tuples into a list of dicts
     res_final = []
     for row in result:
-        name = queries.get_name(conn, email=row[0])[0]
-        res_final.append({"email": row[0], "timestamp": row[1], "color": row[2], "name": name})
+        res_final.append({"email": row[0], "timestamp": row[1], "color": row[2], "name": row[3]})
 
     return res_final
