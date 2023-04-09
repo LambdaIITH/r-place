@@ -30,3 +30,7 @@ SELECT email, extract(epoch from time_stamp) as time_stamp, color
  FROM pixel_logs  
  WHERE x = :x AND y = :y
  ORDER BY time_stamp DESC LIMIT 5;
+
+ -- name: get_name^
+  -- Returns the name of a user given their email
+  SELECT name FROM users WHERE email = :email;
