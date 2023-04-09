@@ -16,6 +16,7 @@ import Canvas from "../components/Canvas";
 import { useDisclosure } from "@mantine/hooks";
 import { IconX } from "@tabler/icons-react";
 import AppContext from "../AppContext";
+import Head from "next/head";
 export default function Place() {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
@@ -150,6 +151,9 @@ export default function Place() {
 
   return (
     <>
+      <Head>
+        <title>r/IITH</title>
+      </Head>
       <MediaQuery smallerThan="lg" styles={{ display: "none" }}>
         <AppShell
           styles={{
