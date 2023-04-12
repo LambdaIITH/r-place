@@ -1,29 +1,31 @@
 import { MantineProvider } from "@mantine/core";
 import AppContext from "../AppContext";
 import globalData from "../globaldata";
-
-function MyApp({ Component, pageProps }) {
+import { SessionProvider } from "next-auth/react";
+function MyApp({ Component, pageProps, session }) {
   return (
-    <MantineProvider
-      withGlobalStyles
-      withNormalizeCSS
-      theme={{
-        /** Put your mantine theme override here */
-        colorScheme: "light",
-        fontFamily: "monospace , sans-serif",
-        headings: { fontFamily: "monospace, sans-serif" },
-      }}
-    >
-      <AppContext.Provider
-        value={{
-          state: {
-            globalData: globalData,
-          },
+    <SessionProvider session={session}>
+      <MantineProvider
+        withGlobalStyles
+        withNormalizeCSS
+        theme={{
+          /** Put your mantine theme override here */
+          colorScheme: "light",
+          fontFamily: "monospace , sans-serif",
+          headings: { fontFamily: "monospace, sans-serif" },
         }}
       >
-        <Component {...pageProps} />
-      </AppContext.Provider>
-    </MantineProvider>
+        <AppContext.Provider
+          value={{
+            state: {
+              globalData: globalData,
+            },
+          }}
+        >
+          <Component {...pageProps} />
+        </AppContext.Provider>
+      </MantineProvider>
+    </SessionProvider>
   );
 }
 

@@ -17,10 +17,13 @@ import { useDisclosure } from "@mantine/hooks";
 import { IconX } from "@tabler/icons-react";
 import AppContext from "../AppContext";
 import Head from "next/head";
+import { useSession } from "next-auth/react";
+
 export default function Place() {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
 
+  const { data: session } = useSession();
   const value = useContext(AppContext);
   let globalData = value.state.globalData;
   let { colorPalette, gridSize, pollingInterval } = globalData;
@@ -45,9 +48,12 @@ export default function Place() {
   async function loadCanvas() {
     try {
       console.log("loading canvas");
-      const response = await fetch(`http://localhost:8000/full_grid`, {
-        method: "GET",
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/full_grid`,
+        {
+          method: "GET",
+        }
+      );
       const temp = await response.json();
       const colors = [];
       for (let i = 0; i < gridSize; i++) {
@@ -64,14 +70,15 @@ export default function Place() {
   async function postPixel() {
     try {
       const response = await fetch(
-        `http://localhost:8000/pixel/${row}/${col}/${colorPalette.indexOf(
-          chosen
-        )}`,
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL
+        }/pixel/${row}/${col}/${colorPalette.indexOf(chosen)}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "http://127.0.0.1:3000",
+            Authorization: `${session?.id_token}`,
           },
         }
       );
@@ -86,11 +93,10 @@ export default function Place() {
       console.log(err);
     }
   }
-
   async function getUpdates(colors) {
     try {
       const response = await fetch(
-        `http://localhost:8000/updates/${last_update}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/updates/${last_update}`,
         {
           method: "GET",
         }
@@ -113,7 +119,7 @@ export default function Place() {
   async function getPixelHistory() {
     try {
       const response = await fetch(
-        `http://localhost:8000/pixel/${row}/${col}/history`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/pixel/${row}/${col}/history`,
         {
           method: "GET",
         }

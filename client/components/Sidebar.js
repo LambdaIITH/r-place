@@ -12,8 +12,10 @@ import {
   Box,
 } from "@mantine/core";
 import { IconCircleCheck } from "@tabler/icons-react";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function Sidebar(props) {
+  const { data: session, status } = useSession();
   const theme = useMantineTheme();
   function handleClick() {
     props.postPixel();
@@ -86,19 +88,52 @@ export default function Sidebar(props) {
                   }}
                 ></div>
               </Card.Section>
-              <Button
-                variant="light"
-                color="green"
-                mt="md"
-                radius="md"
-                fullWidth
-                onClick={handleClick}
-              >
-                <Group>
-                  <Text>Save Pixel</Text>
-                  <IconCircleCheck size={20} />
-                </Group>
-              </Button>
+              {session ? (
+                <>
+                  <Button
+                    variant="light"
+                    color="green"
+                    mt="md"
+                    radius="md"
+                    fullWidth
+                    onClick={handleClick}
+                  >
+                    <Group>
+                      <Text>Save Pixel</Text>
+                      <IconCircleCheck size={20} />
+                    </Group>
+                  </Button>
+                  <Button
+                    variant="light"
+                    color="red"
+                    mt="md"
+                    radius="md"
+                    fullWidth
+                    onClick={() => {
+                      signOut();
+                    }}
+                  >
+                    <Group>
+                      <Text>Logout</Text>
+                    </Group>
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  variant="light"
+                  color="green"
+                  mt="md"
+                  radius="md"
+                  fullWidth
+                  onClick={() => {
+                    signIn();
+                  }}
+                >
+                  <Group>
+                    <Text>Sign In</Text>
+                  </Group>
+                </Button>
+              )}
             </Card>
           </Stack>
         </Aside>

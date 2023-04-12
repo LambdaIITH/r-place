@@ -19,14 +19,13 @@ load_dotenv()
 ROWS = 80
 COLUMNS = 80
 COLORS = 32
-COOLDOWN_TIME = 600  # in seconds
+COOLDOWN_TIME = 30  # in seconds
 
 DATABASE = os.getenv("DATABASE")
 POSTGRES_USER = os.getenv("POSTGRES_USER")
 POSTGRES_PASS = os.getenv("POSTGRES_PASS")
 POSTGRES_HOST = os.getenv("POSTGRES_HOST")
 POSTGRES_PORT = os.getenv("POSTGRES_PORT")
-
 
 app = FastAPI()
 
@@ -107,7 +106,6 @@ async def auth(email: str = Depends(verify_auth_token)):
 @app.post("/pixel/{row}/{col}/{color}")
 async def pixel(row: int, col: int, color: int, response: Response, email: str = Depends(verify_auth_token)):
     global insertion_lock, current_grid, latest_insertion
-
     if not are_bounds_valid(row, col) or not is_color_valid(color):
         response.status_code = 400
         return {"message": "Invalid pixel coordinates or color."}
@@ -175,3 +173,4 @@ async def pixel_history(row: int, col: int):
         res_final.append({"email": row[0], "timestamp": row[1], "color": row[2]})
 
     return res_final
+ 
