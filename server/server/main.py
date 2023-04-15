@@ -116,8 +116,8 @@ async def pixel(row: int, col: int, color: int, response: Response, email: str =
         return {"message": "You are on cooldown.", "cooldown": cooldown}
 
     insertion_lock.acquire()
-    current_grid[row][col] = color
     latest_insertion = int(queries.log_update(conn, x=row, y=col, color=color, email=email))
+    current_grid[row][col] = color
     print(latest_insertion)
     insertion_lock.release()
 
@@ -170,7 +170,7 @@ async def pixel_history(row: int, col: int):
     # parse this list of tuples into a list of dicts
     res_final = []
     for row in result:
-        res_final.append({"email": row[0], "timestamp": row[1], "color": row[2]})
+        res_final.append({"email": row[0], "timestamp": row[1], "color": row[2], "name": row[3]})
 
     return res_final
  

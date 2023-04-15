@@ -26,7 +26,11 @@ SELECT EXTRACT(epoch from now() - MAX(time_stamp)) as last_time
 
 -- name: get_pixel_history
 -- Returns user/timestamp/color of latest 5 updates to a pixel
-SELECT email, extract(epoch from time_stamp) as time_stamp, color 
- FROM pixel_logs  
+SELECT users.email, extract(epoch from time_stamp) as time_stamp, color, name
+ FROM pixel_logs JOIN users ON pixel_logs.email = users.email 
  WHERE x = :x AND y = :y
  ORDER BY time_stamp DESC LIMIT 5;
+
+ -- name: get_name^
+  -- Returns the name of a user given their email
+  SELECT name FROM users WHERE email = :email;
