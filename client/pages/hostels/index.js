@@ -81,7 +81,7 @@ export default function Home() {
                           }}
                           className={classes.button}
                           component="a"
-                          href="/hostels/1"
+                          href={`/hostels/${index+1}`}
                         >
                           Hostel {index + 1}
                         </Button>
@@ -114,7 +114,7 @@ export default function Home() {
                       }}
                       className={classes.button}
                       component="a"
-                      href="/hostels/1"
+                      href={`/hostels/${index+9}`}
                     >
                       Hostel {index + 9}
                     </Button>

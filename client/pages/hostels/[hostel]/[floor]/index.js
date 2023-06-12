@@ -11,66 +11,66 @@ export default function Home() {
         <Grid.Col span={2} offset={2}>
           <Button
             component="a"
-            href={`/hostels/${hostel}/${floor}/${floor * 100 + i * 8 + 4}`}
+            href={`/hostels/${hostel}/${floor}/${floor * 100 + i * 8 + (i%2==0?5: 1)}`}
           >
-            {`${i * 8 + 4}`}
+            {`${i * 8 + (i%2==0?5: 1)}`}
           </Button>
         </Grid.Col>
         <Grid.Col span={2}>
           <Button
             component="a"
-            href={`/hostels/${hostel}/${floor}/${floor * 100 + i * 8 + 3}`}
+            href={`/hostels/${hostel}/${floor}/${floor * 100 + i * 8 + (i%2==0?6: 2)}`}
           >
-            {`${i * 8 + 3}`}
+            {`${i * 8 + (i%2==0?6: 2)}`}
           </Button>
         </Grid.Col>
         <Grid.Col span={2}></Grid.Col>
         <Grid.Col span={2}>
           <Button
             component="a"
-            href={`/hostels/${hostel}/${floor}/${floor * 100 + i * 8 + 5}`}
+            href={`/hostels/${hostel}/${floor}/${floor * 100 + i * 8 + (i%2==0?4: 8)}`}
           >
-            {`${i * 8 + 5}`}
+            {`${i * 8 + (i%2==0?4: 8)}`}
           </Button>
         </Grid.Col>
         <Grid.Col span={2} offset={4}>
           <Button
             component="a"
-            href={`/hostels/${hostel}/${floor}/${floor * 100 + i * 8 + 2}`}
+            href={`/hostels/${hostel}/${floor}/${floor * 100 + i * 8 + (i%2==0?7: 3)}`}
           >
-            {`${i * 8 + 2}`}
+            {`${i * 8 + (i%2==0?7: 3)}`}
           </Button>
         </Grid.Col>
         <Grid.Col span={2}>
           <Button
             component="a"
-            href={`/hostels/${hostel}/${floor}/${floor * 100 + i * 8 + 6}`}
+            href={`/hostels/${hostel}/${floor}/${floor * 100 + i * 8 + (i%2==0?3:7)}`}
           >
-            {`${i * 8 + 6}`}
+            {`${i * 8 + (i%2==0?3:7)}`}
           </Button>
         </Grid.Col>
         <Grid.Col span={2} offset={4}>
           <Button
             component="a"
-            href={`/hostels/${hostel}/${floor}/${floor * 100 + i * 8 + 1}`}
+            href={`/hostels/${hostel}/${floor}/${floor * 100 + i * 8 + (i%2==0?8:4)}`}
           >
-            {`${i * 8 + 1}`}
+            {`${i * 8 + (i%2==0?8:4)}`}
           </Button>
         </Grid.Col>
         <Grid.Col span={2} offset={2}>
           <Button
             component="a"
-            href={`/hostels/${hostel}/${floor}/${floor * 100 + i * 8 + 7}`}
+            href={`/hostels/${hostel}/${floor}/${floor * 100 + i * 8 + (i%2==0?2:6)}`}
           >
-            {`${i * 8 + 7}`}
+            {`${i * 8 + (i%2==0?2:6)}`}
           </Button>
         </Grid.Col>
         <Grid.Col span={2}>
           <Button
             component="a"
-            href={`/hostels/${hostel}/${floor}/${floor * 100 + i * 8 + 8}`}
+            href={`/hostels/${hostel}/${floor}/${floor * 100 + i * 8 + (i%2==0?1:5)}`}
           >
-            {`${i * 8 + 8}`}
+            {`${i * 8 + (i%2==0?1:5)}`}
           </Button>
         </Grid.Col>
         <Grid.Col span={2}></Grid.Col>
@@ -103,7 +103,6 @@ export default function Home() {
                 ) : (
                   <>
                     <Grid.Col span={1}></Grid.Col>
-
                     <Grid.Col key={index} span={1}>
                       {pod}
                     </Grid.Col>
@@ -125,7 +124,6 @@ export default function Home() {
                 ) : (
                   <>
                     <Grid.Col span={1}></Grid.Col>
-
                     <Grid.Col key={index} span={1}>
                       {pod}
                     </Grid.Col>
