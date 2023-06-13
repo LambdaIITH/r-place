@@ -1,9 +1,12 @@
-import { Stack, Box, Button } from '@mantine/core'
+import { Stack, Box, Button, AppShell, useMantineTheme } from '@mantine/core'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import { Nav } from '../../../components/Header'
 export default function Home() {
   const router = useRouter()
   const { hostel } = router.query
+  const theme = useMantineTheme()
+
   return (
     <>
       <Head>
@@ -12,37 +15,50 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <h1>Welcome to hostel {hostel}</h1>
-      <Box
-        sx={{
-          alignItems: 'center',
-          width: '200px',
-          margin: 'auto',
-          padding: '30px 10px 30px 10px',
-          border: '1px solid #ccc',
+      <AppShell
+        styles={{
+          main: {
+            background:
+              theme.colorScheme === 'dark'
+                ? theme.colors.dark[8]
+                : theme.colors.gray[0],
+          },
         }}
+        navbarOffsetBreakpoint="sm"
+        header={<Nav />}
       >
-        <Stack spacing="xs">
-          <Button component="a" href={`/hostels/${hostel}/1`}>
-            Floor 1
-          </Button>
-          <Button component="a" href={`/hostels/${hostel}/2`}>
-            Floor 2
-          </Button>
-          <Button component="a" href={`/hostels/${hostel}/3`}>
-            Floor 3
-          </Button>
-          <Button component="a" href={`/hostels/${hostel}/4`}>
-            Floor 4
-          </Button>
-          <Button component="a" href={`/hostels/${hostel}/5`}>
-            Floor 5
-          </Button>
-          <Button component="a" href={`/hostels/${hostel}/6`}>
-            Floor 6
-          </Button>
-        </Stack>
-      </Box>
+        <h1>Welcome to IITH hostel {hostel}</h1>
+        <Box
+          sx={{
+            alignItems: 'center',
+            width: '200px',
+            margin: 'auto',
+            padding: '30px 10px 30px 10px',
+            border: '1px solid #ccc',
+          }}
+        >
+          <Stack spacing="xs">
+            <Button component="a" href={`/hostels/${hostel}/1`}>
+              Floor 1
+            </Button>
+            <Button component="a" href={`/hostels/${hostel}/2`}>
+              Floor 2
+            </Button>
+            <Button component="a" href={`/hostels/${hostel}/3`}>
+              Floor 3
+            </Button>
+            <Button component="a" href={`/hostels/${hostel}/4`}>
+              Floor 4
+            </Button>
+            <Button component="a" href={`/hostels/${hostel}/5`}>
+              Floor 5
+            </Button>
+            <Button component="a" href={`/hostels/${hostel}/6`}>
+              Floor 6
+            </Button>
+          </Stack>
+        </Box>
+      </AppShell>
     </>
   )
 }
