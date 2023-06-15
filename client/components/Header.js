@@ -13,6 +13,8 @@ import {
   Box,
   Autocomplete,
   Button,
+  Menu,
+  Stack
 } from '@mantine/core'
 import { CheckIcon } from '@mantine/core'
 import AppContext from '../AppContext'
@@ -103,9 +105,9 @@ const useStyles = createStyles((theme) => ({
   },
   search: {
     width: rem(300),
-    [theme.fn.smallerThan('xs')]: {
-      display: 'none',
-    },
+  },
+  search_small: {
+    width: rem(200),
   },
 }))
 
@@ -220,7 +222,7 @@ export function Nav(props) {
       <MediaQuery smallerThan="lg" styles={{ display: 'none' }}>
         <Header height={{ base: 100, md: 100 }} p="md">
           <Container className={classes.inner} size={'xl'}>
-            <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
+            {/* <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
               <Burger
                 opened={opened}
                 onClick={() => {
@@ -231,7 +233,7 @@ export function Nav(props) {
                 color={theme.colors.gray[6]}
                 mr="xl"
               />
-            </MediaQuery>
+            </MediaQuery> */}
             <Group className={classes.links} spacing={5}>
               {items}
             </Group>
@@ -264,7 +266,6 @@ export function Nav(props) {
                     <Autocomplete
                       className={classes.search}
                       placeholder="Search by room no. or name"
-                      // icon={<IconSearch size="1rem" stroke={1.5} />}
                       data={gradStudentsInfo}
                       value={searchValue}
                       onChange={setSearchValue}
@@ -288,7 +289,7 @@ export function Nav(props) {
         </Header>
       </MediaQuery>
       <MediaQuery largerThan="lg" styles={{ display: 'none' }}>
-        <Box>
+        
           {router.pathname.includes('place') ? (
             <Group
               className={classes.pallete}
@@ -303,11 +304,45 @@ export function Nav(props) {
               {swatches}
             </Group>
           ) : (
-            <>
-              {gradStudentsInfo ? (
-                <>
+            <Box
+          sx={{
+            width: "100%",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+              backgroundColor: "rgba(255, 255, 255)",
+              padding: "10px",
+            }}
+          >
+            <Menu shadow="md" width={200}>
+              <Menu.Target>
+                <Button>menu</Button>
+              </Menu.Target>
+
+              <Menu.Dropdown>
+                <Menu.Item>Basic</Menu.Item>
+                <Menu.Item>Hostels</Menu.Item>
+                <Menu.Item>Acads</Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+            <Title
+              variant="gradient"
+              gradient={{ from: "#D6336C", to: "#AE3EC9", deg: 45 }}
+              sx={{ fontSize: "1.1rem" }}
+            >
+              r/IITH-2023
+            </Title>
+            
+            {gradStudentsInfo ? (
+                <Stack>
                   <Autocomplete
-                    className={classes.search}
+                    className={classes.search_small}
                     placeholder="Search by room no. or name"
                     data={gradStudentsInfo}
                     value={searchValue}
@@ -322,13 +357,14 @@ export function Nav(props) {
                     Search
                     <IconSearch size="1rem" stroke={1.5} />
                   </Button>
-                </>
+                </Stack>
               ) : (
                 <></>
               )}
-            </>
-          )}
+          </Box>
         </Box>
+              
+          )}
       </MediaQuery>
     </>
   )

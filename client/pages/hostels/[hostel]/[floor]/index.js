@@ -2,13 +2,18 @@ import { Box, Button, Grid, AppShell, useMantineTheme } from '@mantine/core'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Nav } from '../../../../components/Header'
+import AppContext from '../../../../AppContext'
+import { useContext } from 'react'
 export default function Home() {
   const router = useRouter()
+  const value = useContext(AppContext);
+  let globalData = value.state.globalData
+  const { hostel_names } = globalData
   const { hostel, floor } = router.query
   const pods = []
   for (let i = 0; i < 4; i++) {
     pods.push(
-      <Grid columns={8}>
+      <Grid columns={8} key={i}>
         <Grid.Col span={2} offset={2}>
           <Button
             component="a"
@@ -100,50 +105,48 @@ export default function Home() {
       >
 
         <h1>
-          Welcome to floor {floor} hostel {hostel}
+          Welcome to {hostel_names[hostel]} floor {floor}
         </h1>
         <Grid columns={2}>
           <Grid.Col span={1}>
-            <Grid columns={2}>
               {pods.slice(0, 2).map((pod, index) =>
                 index === 0 ? (
-                  <>
-                    <Grid.Col key={index} span={1}>
+                  <Grid columns={2} key={index}>
+                    <Grid.Col span={1}>
                       {pod}
                     </Grid.Col>
-                    <Grid.Col span={1}></Grid.Col>
-                  </>
+                    <Grid.Col span={1} ></Grid.Col>
+                  </Grid>
                 ) : (
-                  <>
-                    <Grid.Col span={1}></Grid.Col>
-                    <Grid.Col key={index} span={1}>
+            <Grid columns={2} key={index}>
+                  
+                    <Grid.Col span={1} ></Grid.Col>
+                    <Grid.Col span={1}>
                       {pod}
                     </Grid.Col>
-                  </>
+                  </Grid>
                 )
               )}
-            </Grid>
           </Grid.Col>
           <Grid.Col span={1}>
-            <Grid columns={2}>
               {pods.slice(2, 4).map((pod, index) =>
                 index === 0 ? (
-                  <>
-                    <Grid.Col key={index} span={1}>
+                  <Grid columns={2} key={index}>
+                    <Grid.Col  span={1} >
                       {pod}
                     </Grid.Col>
                     <Grid.Col span={1}></Grid.Col>
-                  </>
+                    </Grid>
                 ) : (
-                  <>
-                    <Grid.Col span={1}></Grid.Col>
-                    <Grid.Col key={index} span={1}>
+                  <Grid columns={2} key={index}>
+                    <Grid.Col span={1} ></Grid.Col>
+                    <Grid.Col  span={1} >
                       {pod}
                     </Grid.Col>
-                  </>
+                    </Grid>
+
                 )
               )}
-            </Grid>
           </Grid.Col>
         </Grid>
       </AppShell>

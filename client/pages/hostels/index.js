@@ -51,15 +51,8 @@ export default function Home() {
   const { classes, cx } = useStyles()
   const value = useContext(AppContext)
   let globalData = value.state.globalData
-  const { hostels } = globalData
-  const initVisibility = Array(hostels.length).fill(false)
-  const [visibility, setVisibility] = useState(initVisibility)
-
-  const handleHover = (index, value) => {
-    let temp = [...visibility]
-    temp[index] = value
-    setVisibility(temp)
-  }
+  const { hostel_names } = globalData
+  
   const [opened, { open, close }] = useDisclosure(false)
   const [hostel, setHostel] = useState(0)
   return (
@@ -92,6 +85,38 @@ export default function Home() {
         >
           Welcome to IIT Hyderbad
         </Text>
+        <Modal opened={opened} onClose={close} title={`Welcome to ${hostel_names[hostel]}`} centered>
+        <Box
+          sx={{
+            alignItems: 'center',
+            width: '200px',
+            margin: 'auto',
+            padding: '30px 10px 30px 10px',
+            border: '1px solid #ccc',
+          }}
+        >
+          <Stack spacing="xs">
+            <Button component="a" href={`/hostels/${hostel}/1`}>
+              Floor 1
+            </Button>
+            <Button component="a" href={`/hostels/${hostel}/2`}>
+              Floor 2
+            </Button>
+            <Button component="a" href={`/hostels/${hostel}/3`}>
+              Floor 3
+            </Button>
+            <Button component="a" href={`/hostels/${hostel}/4`}>
+              Floor 4
+            </Button>
+            <Button component="a" href={`/hostels/${hostel}/5`}>
+              Floor 5
+            </Button>
+            <Button component="a" href={`/hostels/${hostel}/6`}>
+              Floor 6
+            </Button>
+          </Stack>
+        </Box>
+      </Modal>
         <Box
           sx={{
             position: 'relative',
@@ -127,10 +152,11 @@ export default function Home() {
               className={classes.button}
               style={{ ...item }}
               onClick={() => {
-                setHostel(index)
+                setHostel(index);
+                open();
               }}
             >
-              {hostels[index]}
+              {hostel_names[index]}
             </button>
           ))}
         </Box>

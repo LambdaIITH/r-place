@@ -49,7 +49,7 @@ export default function Place() {
     try {
       console.log("loading canvas");
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/full_grid`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/grid/full_grid`,
         {
           method: "GET",
         }
@@ -72,7 +72,7 @@ export default function Place() {
       const response = await fetch(
         `${
           process.env.NEXT_PUBLIC_BACKEND_URL
-        }/pixel/${row}/${col}/${colorPalette.indexOf(chosen)}`,
+        }/grid/pixel/${row}/${col}/${colorPalette.indexOf(chosen)}`,
         {
           method: "POST",
           headers: {
@@ -96,7 +96,7 @@ export default function Place() {
   async function getUpdates(colors) {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/updates/${last_update}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/grid/updates/${last_update}`,
         {
           method: "GET",
         }
@@ -119,7 +119,7 @@ export default function Place() {
   async function getPixelHistory() {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/pixel/${row}/${col}/history`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/grid/pixel/${row}/${col}/history`,
         {
           method: "GET",
         }
