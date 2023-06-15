@@ -18,7 +18,7 @@ import { useDisclosure } from '@mantine/hooks'
 import { useState, useContext } from 'react'
 import { Nav } from '../../components/Header'
 import AppContext from '../../AppContext'
-
+import { useSession } from 'next-auth/react'
 const useStyles = createStyles((theme) => ({
   button: {
     display: 'block',
@@ -47,6 +47,10 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 export default function Home() {
+
+  const { data: session, status } = useSession()
+  console.log(session);
+
   const theme = useMantineTheme()
   const { classes, cx } = useStyles()
   const value = useContext(AppContext)
@@ -54,7 +58,7 @@ export default function Home() {
   const { hostel_names } = globalData
   
   const [opened, { open, close }] = useDisclosure(false)
-  const [hostel, setHostel] = useState(0)
+  const [hostel, setHostel] = useState(null);
   return (
     <>
       <Head>
@@ -152,7 +156,7 @@ export default function Home() {
               className={classes.button}
               style={{ ...item }}
               onClick={() => {
-                setHostel(index);
+                setHostel(String.fromCharCode('A'.charCodeAt(0)+index));
                 open();
               }}
             >

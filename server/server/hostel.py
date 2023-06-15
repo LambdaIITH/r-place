@@ -2,7 +2,7 @@ from utils import hostel_queries, conn
 from fastapi import FastAPI, HTTPException, Response
 
 hostel_app = FastAPI()
-
+print("Initialized hostel.")
 
 def verify_room(hostel, floor, room=None):
     if len(hostel) != 1 or ord(hostel) not in range(ord('A'), ord('J') + 1):

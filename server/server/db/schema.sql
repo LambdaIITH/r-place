@@ -87,8 +87,6 @@ CREATE TABLE public.users (
 );
 
 
-ALTER TABLE public.users OWNER TO -;
-
 --
 -- Name: pixel_logs id; Type: DEFAULT; Schema: public; Owner: -
 --

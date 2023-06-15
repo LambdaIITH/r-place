@@ -35,7 +35,7 @@ let globalData = {
   ],
   cellSize: 8,
   gridSize: 80,
-  pollingInterval: 10000,
+  pollingInterval: 1000000,
   hostel_names: [
     'ARYABHATTA',
     'BHASKARA',
