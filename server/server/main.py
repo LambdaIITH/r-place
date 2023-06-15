@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from utils import verify_auth_token
 from grid import grid_app
+from hostel import hostel_app
 
 app = FastAPI()
 
@@ -34,3 +35,4 @@ async def auth(email: str = Depends(verify_auth_token)):
 
 
 app.mount("/grid", grid_app)
+app.mount("/hostel", hostel_app)

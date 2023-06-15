@@ -13,7 +13,8 @@ POSTGRES_PASS = os.getenv("POSTGRES_PASS")
 POSTGRES_HOST = os.getenv("POSTGRES_HOST")
 POSTGRES_PORT = os.getenv("POSTGRES_PORT")
 
-queries = aiosql.from_path("./queries.sql", "psycopg2")
+grid_queries = aiosql.from_path("./queries/grid.sql", "psycopg2")
+hostel_queries = aiosql.from_path("./queries/hostel.sql", "psycopg2")
 
 conn = psycopg2.connect(
     database=DATABASE,
@@ -24,6 +25,7 @@ conn = psycopg2.connect(
 )
 conn.autocommit = True
 print("Opened database successfully!")
+
 
 def verify_auth_token(Authorization: str = Header()):
     email = get_user_email(Authorization)

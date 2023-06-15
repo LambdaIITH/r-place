@@ -1,5 +1,5 @@
 from threading import Lock
-from utils import queries, conn, verify_auth_token
+from utils import grid_queries, conn, verify_auth_token
 from fastapi import Depends, FastAPI, HTTPException, Response
 
 ROWS = 80
@@ -11,11 +11,11 @@ INITIAL_COLOR = 0
 grid_app = FastAPI()
 
 current_grid = [[INITIAL_COLOR for _ in range(COLUMNS)] for _ in range(ROWS)]
-latest_insertion = int(queries.get_latest_id(conn)[0] or 0)
+latest_insertion = int(grid_queries.get_latest_id(conn)[0] or 0)
 insertion_lock = Lock()
 
 # initialize the in-mem grid
-for x, y, color in queries.get_full_grid(conn):
+for x, y, color in grid_queries.get_full_grid(conn):
     current_grid[x][y] = color
 print("Initialized grid.")
 
@@ -29,7 +29,7 @@ def is_color_valid(color: int) -> bool:
 
 
 def get_user_cooldown(email: str):
-    time_since_last_req = queries.get_time_since_last_update(conn, email=email)[0]
+    time_since_last_req = grid_queries.get_time_since_last_update(conn, email=email)[0]
     if time_since_last_req is None:
         return 0
     return max(COOLDOWN_TIME-float(time_since_last_req), 0)
@@ -48,7 +48,7 @@ async def pixel(row: int, col: int, color: int, response: Response, email: str =
         return {"message": "You are on cooldown.", "cooldown": cooldown}
 
     insertion_lock.acquire()
-    latest_insertion = int(queries.log_update(conn, x=row, y=col, color=color, email=email))
+    latest_insertion = int(grid_queries.log_update(conn, x=row, y=col, color=color, email=email))
     current_grid[row][col] = color
     print(latest_insertion)
     insertion_lock.release()
@@ -74,7 +74,7 @@ def updates(last_updated: int):
     global current_grid, latest_insertion
 
     updates = []
-    for x, y, color in queries.get_updates(conn, last_updated=last_updated):
+    for x, y, color in grid_queries.get_updates(conn, last_updated=last_updated):
         updates.append({"row": x, "col": y, "color": color})
 
     return {"updates": updates, "last update": latest_insertion}
@@ -97,7 +97,7 @@ async def pixel_history(row: int, col: int):
         raise HTTPException(
             status_code=400, detail="Invalid pixel coordinates."
         )
-    result = queries.get_pixel_history(conn, x=row, y=col)
+    result = grid_queries.get_pixel_history(conn, x=row, y=col)
 
     # parse this list of tuples into a list of dicts
     res_final = []
@@ -105,4 +105,3 @@ async def pixel_history(row: int, col: int):
         res_final.append({"email": row[0], "timestamp": row[1], "color": row[2], "name": row[3]})
 
     return res_final
- 
