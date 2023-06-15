@@ -11,11 +11,14 @@ import {
   Modal,
   Group,
   Stack,
+  Text,
+  Image,
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { useState, useContext } from 'react'
 import { Nav } from '../../components/Header'
 import AppContext from '../../AppContext'
+
 const useStyles = createStyles((theme) => ({
   button: {
     display: 'block',
@@ -24,11 +27,21 @@ const useStyles = createStyles((theme) => ({
     borderRadius: theme.radius.sm,
     textDecoration: 'none',
     color: theme.colors.green[9],
-    fontSize: theme.fontSizes.sm,
+    fontSize: theme.fontSizes.md,
     fontWeight: 500,
     backgroundColor: theme.colors.green[0],
+    position: 'absolute',
+    zIndex: '100',
+    width: '12rem',
+    height: '6rem',
+    // visibility: 'hidden',
+
+    opacity: 0,
     '&:hover': {
-      display: 'block',
+      transition: 'all linear .3s',
+      // visibility: 'visible',
+      opacity: 1,
+      cursor: 'pointer',
       backgroundColor: theme.colors.green[2],
     },
   },
@@ -36,8 +49,8 @@ const useStyles = createStyles((theme) => ({
 export default function Home() {
   const theme = useMantineTheme()
   const { classes, cx } = useStyles()
-  const value = useContext(AppContext);
-  let globalData = value.state.globalData;
+  const value = useContext(AppContext)
+  let globalData = value.state.globalData
   const { hostels } = globalData
   const initVisibility = Array(hostels.length).fill(false)
   const [visibility, setVisibility] = useState(initVisibility)
@@ -68,108 +81,58 @@ export default function Home() {
         navbarOffsetBreakpoint="sm"
         header={<Nav />}
       >
-        <h1>Welcome to IITH</h1>
+        <Text
+          variant="gradient"
+          gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}
+          ta="center"
+          sx={{
+            fontSize: '3rem',
+          }}
+          fw={700}
+        >
+          Welcome to IIT Hyderbad
+        </Text>
         <Box
           sx={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: '100%',
-            padding: '10px',
+            position: 'relative',
+            margin: '3rem auto',
           }}
+          maw={800}
         >
-          <Grid columns={24}>
-            {visibility.map((item, index) => {
-              return (
-                <>
-                  {index < 8 ? (
-                    <>
-                      <Grid.Col
-                        key={index}
-                        span={3}
-                      >
-                        <Box
-                          onMouseEnter={() => handleHover(index, true)}
-                          onMouseLeave={() => handleHover(index, false)}
-                          sx={{alignContent: 'center', justifyContent: 'center'}}
-                        >
-                        <Button
-                          style={{
-                            visibility: visibility[index]
-                              ? 'visible'
-                              : 'hidden',
-                              margin:'0 auto',
-                              display: 'block',
-                          }}
-                          className={classes.button}
-                          onClick={() => {
-                            open()
-                            setHostel(index<4?hostels[index]:hostels[11-index])
-                          }}
-                        >
-                          Hostel {index<4?hostels[index]:hostels[11-index]}
-                        </Button>
-                        </Box>
-                      </Grid.Col>
-                      {(index + 1) % 4 == 0 ? (
-                        <Grid.Col span={24}></Grid.Col>
-                      ) : (
-                        <Grid.Col span={3}></Grid.Col>
-                      )}
-                    </>
-                  ) : null}
-                </>
-              )
-            })}
-          </Grid>
+          <Image
+            src={
+              'https://res.cloudinary.com/dcpgsijmr/image/upload/v1686818820/r-place/hostels_afidd9.png'
+            }
+            maw={800}
+            mx="auto"
+            radius="md"
+            alt={'hostels IITH'}
+          />
 
-          <Grid columns={10}>
-            {visibility.slice(8, 10).map((item, index) => {
-              return (
-                <Grid.Col
-                  key={index}
-                  span={3}
-                  offset={2}
-                  onMouseEnter={() => handleHover(index + 8, true)}
-                  onMouseLeave={() => handleHover(index + 8, false)}
-                >
-                  <Button
-                    style={{
-                      visibility: visibility[index + 8] ? 'visible' : 'visible',
-                    }}
-                    className={classes.button}
-                    onClick={() => {
-                      open()
-                      setHostel(hostels[index + 8])
-                    }}
-                  >
-                    Hostel {hostels[index + 8]}
-                  </Button>
-                </Grid.Col>
-              )
-            })}
-          </Grid>
-          <Modal opened={opened} onClose={close} title="Floor Number" centered>
-            <Box
-              sx={{
-                alignItems: 'center',
-                width: '200px',
-                margin: 'auto',
-                padding: '30px 10px 30px 10px',
-                border: '1px solid #ccc',
+          {[
+            { top: '5rem', left: -20, transform: 'rotate(90deg)' },
+            { top: '1.5rem', left: '11rem' },
+            { top: '5rem', right: '14rem', transform: 'rotate(90deg)' },
+            { top: '1.5rem', right: '2rem' },
+            // round 2
+            { top: '14rem', right: -20, transform: 'rotate(90deg)' },
+            { top: '17rem', right: '11rem' },
+            { top: '14rem', left: '14rem', transform: 'rotate(90deg)' },
+            { top: '17rem', left: '2rem' },
+            // round 3
+            { bottom: '11rem', left: '6rem' },
+            { bottom: '1.5rem', left: '6rem' },
+          ].map((item, index) => (
+            <button
+              className={classes.button}
+              style={{ ...item }}
+              onClick={() => {
+                setHostel(index)
               }}
             >
-              <Stack spacing="xs">
-              {Array.from(Array(6),(x,i)=>i).map((item, index) => {
-                return (
-                  <Button component="a" href={`/hostels/${hostel}/${index+1}`}>
-                    {index+1}
-                  </Button>
-                )
-              })}
-              </Stack>
-            </Box>
-          </Modal>
+              {hostels[index]}
+            </button>
+          ))}
         </Box>
       </AppShell>
     </>
