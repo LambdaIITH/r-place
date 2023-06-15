@@ -18,6 +18,7 @@ import { IconX } from "@tabler/icons-react";
 import AppContext from "../AppContext";
 import Head from "next/head";
 import { useSession } from "next-auth/react";
+import { notifications } from '@mantine/notifications';
 
 export default function Place() {
   const theme = useMantineTheme();
@@ -154,7 +155,23 @@ export default function Place() {
     }, pollingInterval);
     return () => clearInterval(interval);
   }, [colors]);
-
+  useEffect(()=>{
+    if (cooldown != 0){
+        notifications.show({
+        id: 'hello-there',
+        withCloseButton: true,
+        onClose: () => console.log('unmounted'),
+        onOpen: () => console.log('mounted'),
+        autoClose: 5000,
+        title: "Pixel update failed.",
+        message: `Please try again after ${Math.floor(cooldown * 100) / 100} seconds.`,
+        color: 'red',
+        icon: <IconX />,
+        className: 'my-notification-class',
+        loading: false,
+    });
+  }
+  },[cooldown])
   return (
     <>
       <Head>
@@ -185,7 +202,7 @@ export default function Place() {
           }
           header={<Nav setOpened={setOpened} setChosen={setChosen} />}
         >
-          {cooldown ? (
+          {/* {cooldown ? (
             <Notification
               icon={<IconX size={"1.1rem"} />}
               withCloseButton={true}
@@ -200,7 +217,7 @@ export default function Place() {
             </Notification>
           ) : (
             <></>
-          )}
+          )} */}
           <Canvas
             setCol={setCol}
             setRow={setRow}
@@ -254,7 +271,8 @@ export default function Place() {
               height: "20%",
             }}
           >
-            {cooldown ? (
+            {/* {cooldown ? (
+              
               <Notification
                 icon={<IconX size={"1.1rem"} />}
                 withCloseButton={true}
@@ -269,7 +287,7 @@ export default function Place() {
               </Notification>
             ) : (
               <></>
-            )}
+            )} */}
             <Canvas
               setCol={setCol}
               setRow={setRow}
