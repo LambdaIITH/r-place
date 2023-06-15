@@ -18,7 +18,6 @@ import { useDisclosure } from '@mantine/hooks'
 import { useState, useContext } from 'react'
 import { Nav } from '../../components/Header'
 import AppContext from '../../AppContext'
-import { useSession } from 'next-auth/react'
 const useStyles = createStyles((theme) => ({
   button: {
     display: 'block',
@@ -48,17 +47,14 @@ const useStyles = createStyles((theme) => ({
 }))
 export default function Home() {
 
-  const { data: session, status } = useSession()
-  console.log(session);
-
   const theme = useMantineTheme()
   const { classes, cx } = useStyles()
   const value = useContext(AppContext)
   let globalData = value.state.globalData
   const { hostel_names } = globalData
-  
+
   const [opened, { open, close }] = useDisclosure(false)
-  const [hostel, setHostel] = useState(null);
+  const [hostel, setHostel] = useState(null)
   return (
     <>
       <Head>
@@ -89,38 +85,36 @@ export default function Home() {
         >
           Welcome to IIT Hyderbad
         </Text>
-        <Modal opened={opened} onClose={close} title={`Welcome to ${hostel_names[hostel]}`} centered>
-        <Box
-          sx={{
-            alignItems: 'center',
-            width: '200px',
-            margin: 'auto',
-            padding: '30px 10px 30px 10px',
-            border: '1px solid #ccc',
-          }}
+        <Modal
+          opened={opened}
+          onClose={close}
+          title={`Welcome to ${
+            hostel_names[hostel?.charCodeAt(0) - 'A'.charCodeAt(0)]
+          }`}
+          centered
         >
-          <Stack spacing="xs">
-            <Button component="a" href={`/hostels/${hostel}/1`}>
-              Floor 1
-            </Button>
-            <Button component="a" href={`/hostels/${hostel}/2`}>
-              Floor 2
-            </Button>
-            <Button component="a" href={`/hostels/${hostel}/3`}>
-              Floor 3
-            </Button>
-            <Button component="a" href={`/hostels/${hostel}/4`}>
-              Floor 4
-            </Button>
-            <Button component="a" href={`/hostels/${hostel}/5`}>
-              Floor 5
-            </Button>
-            <Button component="a" href={`/hostels/${hostel}/6`}>
-              Floor 6
-            </Button>
-          </Stack>
-        </Box>
-      </Modal>
+          <Box
+            sx={{
+              alignItems: 'center',
+              width: '200px',
+              margin: 'auto',
+              padding: '30px 10px 30px 10px',
+              border: '1px solid #ccc',
+            }}
+          >
+            <Stack spacing="xs">
+              {Array.from(Array(6), (_, i) => (
+                <Button
+                  component="a"
+                  href={`/hostels/${hostel}/${i + 1}`}
+                  key={i}
+                >
+                  Floor {i + 1}
+                </Button>
+              ))}
+            </Stack>
+          </Box>
+        </Modal>
         <Box
           sx={{
             position: 'relative',
@@ -156,9 +150,10 @@ export default function Home() {
               className={classes.button}
               style={{ ...item }}
               onClick={() => {
-                setHostel(String.fromCharCode('A'.charCodeAt(0)+index));
-                open();
+                setHostel(String.fromCharCode('A'.charCodeAt(0) + index))
+                open()
               }}
+              key={index}
             >
               {hostel_names[index]}
             </button>

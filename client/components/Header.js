@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import {
   createStyles,
   Header,
@@ -154,8 +154,6 @@ export function Nav(props) {
       className={classes.swatches}
       // size={20}
       onClick={() => {
-        console.log(color)
-        console.log(theme.colors)
         props.setChosen(color)
         setChosen(color)
       }}
@@ -165,55 +163,71 @@ export function Nav(props) {
   ))
 
   const [searchValue, setSearchValue] = useState('')
-  const [gradStudentsInfo, setGradInfo] = React.useState([])
-  async function gradInfo() {
-    setGradInfo([
-      'A101:John',
-      'B202:Emma',
-      'C303:Liam',
-      'D404:Olivia',
-      'E505:Noah',
-      'F606:Ava',
-      'G107:William',
-      'H208:Sophia',
-      'I309:James',
-      'J410:Isabella',
-      'A102:Emily',
-      'B203:Jacob',
-      'C304:Charlotte',
-      'D405:Mason',
-      'E506:Amelia',
-      'F607:Benjamin',
-      'G108:Harper',
-      'H209:Michael',
-      'I310:Abigail',
-      'J411:Daniel',
-      'A103:Oliver',
-      'B204:Sophia',
-      'C305:Alexander',
-      'D406:Mia',
-      'E507:Elijah',
-      'F608:Elizabeth',
-      'G109:Matthew',
-      'H210:Charlotte',
-      'I311:Lucas',
-      'J412:Evelyn',
-    ])
+  const [gradStudentsInfo, setGradInfo] = useState([])
+
+  function processGradData(data) {
+    let gradData = []
+    for (let i = 0; i < data.length; i++) {
+      let gradDataString = `${data[i].hostel}${data[i].room_number}:${data[i].name}`
+      gradData.push(gradDataString)
+    }
+    setGradInfo(gradData);
   }
-  React.useEffect(() => {
-    gradInfo()
-  }, [])
+
+
+  async function gradInfo() {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/search/name?q=${searchValue}`, {
+      method: 'GET',
+    });
+    if (res.status == 200){
+      const data = await res.json();
+      processGradData(data);
+    }
+    else {
+      let splitText = "";
+      if (searchValue.indexOf(":")>-1){
+        splitText = searchValue.split(":")[0]
+      }
+      else {
+        splitText = searchValue;
+      }
+      let building = ""
+      let floor = 0
+      let room = ""
+      try {
+        building = splitText[0].substring(0, 1);
+        floor = Math.floor(
+          parseInt(splitText.substring(1, splitText.length)) / 100
+        );
+        room = splitText.substring(1, splitText.length);
+      }
+      catch (e){
+        return;
+      }
+      const res_single = await fetch (`${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/${building}/${floor}/${room}/owner`,{
+        method: 'GET',
+      })
+      const data1 = await res_single.json();
+      processGradData(data1);
+
+    }
+  }
+
+  useEffect(() => {
+    gradInfo();
+  }, [searchValue])
+
   function processRoute(route) {
     if (gradStudentsInfo.indexOf(route) < 0) {
       return
     } else {
+      
       let splitText = route.split(':')[0]
       let building = splitText[0].substring(0, 1)
       let floor = Math.floor(
         parseInt(splitText.substring(1, splitText.length)) / 100
       )
       let room = splitText.substring(1, splitText.length)
-      console.log(building, floor, room)
       router.push(`/hostels/${building}/${floor}/${room}`)
     }
   }
@@ -265,7 +279,7 @@ export function Nav(props) {
                   <>
                     <Autocomplete
                       className={classes.search}
-                      placeholder="Search by room no. or name"
+                      placeholder="Search"
                       data={gradStudentsInfo}
                       value={searchValue}
                       onChange={setSearchValue}
@@ -343,7 +357,7 @@ export function Nav(props) {
                 <Stack>
                   <Autocomplete
                     className={classes.search_small}
-                    placeholder="Search by room no. or name"
+                    placeholder="Search"
                     data={gradStudentsInfo}
                     value={searchValue}
                     onChange={setSearchValue}
