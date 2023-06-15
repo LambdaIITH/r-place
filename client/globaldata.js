@@ -36,6 +36,18 @@ let globalData = {
   cellSize: 8,
   gridSize: 80,
   pollingInterval: 10000,
+  hostels: [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+  ],
 };
 
 export default globalData;
