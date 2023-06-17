@@ -2,7 +2,7 @@ from utils import hostel_queries, conn
 from fastapi import FastAPI, HTTPException, Response
 
 hostel_app = FastAPI()
-
+print("Initialized hostel.")
 
 def verify_room(hostel, floor, room=None):
     if len(hostel) != 1 or ord(hostel) not in range(ord('A'), ord('J') + 1):
@@ -11,7 +11,7 @@ def verify_room(hostel, floor, room=None):
     if floor not in range(1, 10 + 1):
         print('b')
         return "Invalid floor"
-    if room is not None and room not in range(1, 32 + 1):
+    if room is not None and room not in range(floor * 100 + 1, floor*100 + 32 + 1):
         print('c')
         return "Invalid room"
     return None
@@ -30,6 +30,10 @@ def search_by_name(q: str):
             "name": name,
             "email": email
         })
+    if len(res) ==0:
+        raise HTTPException(
+            status_code=404
+        )
     return res
 
 
@@ -90,4 +94,10 @@ def get_owner(hostel_name: str, floor: int, room: int):
         )
 
     name, email = owner
-    return {"name": name, "email": email}
+    return [{
+        "name": name, 
+        "email": email,
+        "hostel": hostel_name,
+        "floor": floor,
+        "room_number": room
+    }]
