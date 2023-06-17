@@ -39,7 +39,7 @@ CREATE TABLE public.hostel_rooms (
     room integer NOT NULL,
     user_email character varying(255) NOT NULL,
     quote text,
-    form_response text
+    form_response json
 );
 
 
@@ -86,8 +86,6 @@ CREATE TABLE public.users (
     email character varying(255) NOT NULL
 );
 
-
-ALTER TABLE public.users OWNER TO -;
 
 --
 -- Name: pixel_logs id; Type: DEFAULT; Schema: public; Owner: -
