@@ -5,11 +5,9 @@ import {
   Box,
   createStyles,
   rem,
-  Grid,
   AppShell,
   useMantineTheme,
   Modal,
-  Group,
   Stack,
   Text,
   Image,
@@ -83,7 +81,7 @@ export default function Home() {
           }}
           fw={700}
         >
-          Welcome to IIT Hyderbad
+          Welcome to IIT Hyderabad
         </Text>
         <Modal
           opened={opened}
@@ -124,7 +122,7 @@ export default function Home() {
         >
           <Image
             src={
-              'https://res.cloudinary.com/dcpgsijmr/image/upload/v1686818820/r-place/hostels_afidd9.png'
+              './assets/map.png'
             }
             maw={800}
             mx="auto"
