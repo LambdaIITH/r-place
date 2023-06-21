@@ -99,7 +99,6 @@ export default function Canvas({
 
             const row = (temp_x - (temp_x % cellSize)) / cellSize;
             const col = (temp_y - (temp_y % cellSize)) / cellSize;
-            console.log(row, col);
             setCol(col);
             setRow(row);
             setCurrent(colorPalette[colors[row * gridSize + col]]);

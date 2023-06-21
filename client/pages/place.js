@@ -84,7 +84,6 @@ export default function Place() {
         }
       );
       const temp = await response.json();
-      console.log(temp);
       if (response.status === 429) {
         setCooldown(temp.cooldown);
       } else {
@@ -110,7 +109,6 @@ export default function Place() {
           updates[i].color;
         setColors(newColors);
       }
-      console.log(updates);
       setLastUpdate(temp["last update"]);
     } catch (err) {
       console.log(err);
@@ -126,7 +124,7 @@ export default function Place() {
         }
       );
       const temp = await response.json();
-      setLastUpdatedBy(temp[0].email);
+      setLastUpdatedBy(temp[0]?.email);
     } catch (err) {
       console.log(err);
       setLastUpdatedBy("None ㋡");

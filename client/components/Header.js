@@ -164,11 +164,10 @@ export function Nav(props) {
 
   const [searchValue, setSearchValue] = useState('')
   const [gradStudentsInfo, setGradInfo] = useState([])
-
   function processGradData(data) {
     let gradData = []
     for (let i = 0; i < data.length; i++) {
-      let gradDataString = `${data[i].hostel}${data[i].room_number}:${data[i].name}`
+      let gradDataString = `${data[i].hostel}${data[i].floor * 100 + data[i].room_number}:${data[i].name}`
       gradData.push(gradDataString)
     }
     setGradInfo(gradData);
@@ -176,11 +175,12 @@ export function Nav(props) {
 
 
   async function gradInfo() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/search/name?q=${searchValue}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/search/name?q=${(searchValue.indexOf(":")>-1)?searchValue.split(":")[1]:searchValue}`, {
       method: 'GET',
     });
-    if (res.status == 200){
-      const data = await res.json();
+    const data = await res.json();
+    if (data.length > 0){
+      console.log("here")
       processGradData(data);
     }
     else {
@@ -193,17 +193,20 @@ export function Nav(props) {
       }
       let building = ""
       let floor = 0
-      let room = ""
+      let room = 0
+      console.log(gradStudentsInfo)
       try {
         building = splitText[0].substring(0, 1);
         floor = Math.floor(
           parseInt(splitText.substring(1, splitText.length)) / 100
         );
-        room = splitText.substring(1, splitText.length);
+        room = parseInt(splitText.substring(1, splitText.length)) % 100;
       }
       catch (e){
+        console.log(e)
         return;
       }
+      console.log(building, floor, room)
       const res_single = await fetch (`${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/${building}/${floor}/${room}/owner`,{
         method: 'GET',
       })
@@ -227,7 +230,7 @@ export function Nav(props) {
       let floor = Math.floor(
         parseInt(splitText.substring(1, splitText.length)) / 100
       )
-      let room = splitText.substring(1, splitText.length)
+      let room = parseInt(splitText.substring(1, splitText.length)) % 100
       router.push(`/hostels/${building}/${floor}/${room}`)
     }
   }

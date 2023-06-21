@@ -8,7 +8,6 @@ import { useRouter } from "next/router";
 const Login = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
-  console.log(session);
   if (status === "authenticated") {
     console.log("authenticated");
     router.push("/place");
@@ -76,7 +75,6 @@ const Login = () => {
                 }}
                 onClick={() => {
                   signIn();
-                  console.log("clicked");
                 }}
               >
                 Continue with Google

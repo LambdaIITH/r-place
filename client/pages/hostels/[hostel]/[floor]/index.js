@@ -31,7 +31,6 @@ export default function Home() {
     )
     const data = await res.json()
     setFloorData(data)
-    console.log(data)
   }
 
   useEffect(() => {
@@ -40,8 +39,9 @@ export default function Home() {
   }, [router.isReady])
 
   function search_room(room) {
+    console.log(floorData)
     for (let i = 0; i < floorData.length; i++) {
-      if (floorData[i].room_number === room) {
+      if (floor * 100 + (floorData[i].room_number) === room) {
         return return_room_button(floorData[i])
       }
     }
@@ -60,7 +60,7 @@ export default function Home() {
               component="a"
               href={`/hostels/${hostel}/${floor}/${room_owner_data.room_number}`}
             >
-              {`${room_owner_data.room_number}`}
+              {`${floor * 100 +room_owner_data.room_number}`}
             </Button>
           </HoverCard.Target>
           <HoverCard.Dropdown>
