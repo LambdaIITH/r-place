@@ -172,9 +172,6 @@ export default function Place() {
   },[cooldown])
   return (
     <>
-      <Head>
-        <title>r/IITH</title>
-      </Head>
       <MediaQuery smallerThan="lg" styles={{ display: "none" }}>
         <AppShell
           styles={{
