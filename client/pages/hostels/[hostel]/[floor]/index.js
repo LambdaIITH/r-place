@@ -1,18 +1,10 @@
-import {
-  Box,
-  Button,
-  Grid,
-  AppShell,
-  useMantineTheme,
-  HoverCard,
-  Group,
-  Text,
-} from '@mantine/core'
-import Head from 'next/head'
+import { Button, Grid, HoverCard, Group, Text } from '@mantine/core'
 import { useRouter } from 'next/router'
-import { Nav } from '../../../../components/Header'
 import AppContext from '../../../../AppContext'
 import { useContext, useEffect, useState } from 'react'
+import Layout from '../../../../components/layouts/hostel_layout'
+import './index.module.css'
+
 export default function Home() {
   const router = useRouter()
   const value = useContext(AppContext)
@@ -24,10 +16,7 @@ export default function Home() {
 
   async function getFloorData() {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/${hostel}/${floor}`,
-      {
-        method: 'GET',
-      }
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/${hostel}/${floor}`
     )
     const data = await res.json()
     setFloorData(data)
@@ -41,7 +30,7 @@ export default function Home() {
   function search_room(room) {
     console.log(floorData)
     for (let i = 0; i < floorData.length; i++) {
-      if (floor * 100 + (floorData[i].room_number) === room) {
+      if (floor * 100 + floorData[i].room_number === room) {
         return return_room_button(floorData[i])
       }
     }
@@ -60,7 +49,7 @@ export default function Home() {
               component="a"
               href={`/hostels/${hostel}/${floor}/${room_owner_data.room_number}`}
             >
-              {`${floor * 100 +room_owner_data.room_number}`}
+              {`${floor * 100 + room_owner_data.room_number}`}
             </Button>
           </HoverCard.Target>
           <HoverCard.Dropdown>
@@ -110,27 +99,19 @@ export default function Home() {
     }
     setPods(pods)
   }, [floorData])
-  const theme = useMantineTheme()
+
   return (
     <>
-      <AppShell
-        styles={{
-          main: {
-            background:
-              theme.colorScheme === 'dark'
-                ? theme.colors.dark[8]
-                : theme.colors.gray[0],
-          },
-        }}
-        navbarOffsetBreakpoint="sm"
-        header={<Nav />}
-      >
-        <h1>
-          Welcome to {hostel_names[hostel?.charCodeAt(0) - 'A'.charCodeAt(0)]}{' '}
-          floor {floor}
-        </h1>
-
-        <Grid columns={2}>
+      <h1>
+        Welcome to {hostel_names[hostel?.charCodeAt(0) - 'A'.charCodeAt(0)]}{' '}
+        floor {floor}
+      </h1>
+      <div style={{ position: 'relative' }}>
+        <canvas id="floorCanvas"></canvas>
+        <Grid
+          columns={2}
+          sx={{ position: 'absolute', top: '0px', left: '0px' }}
+        >
           <Grid.Col span={1}>
             {pods?.slice(0, 2).map((pod, index) =>
               index === 0 ? (
@@ -162,7 +143,11 @@ export default function Home() {
             )}
           </Grid.Col>
         </Grid>
-      </AppShell>
+      </div>
     </>
   )
+}
+
+Home.getLayout = function getLayout(page) {
+  return <Layout>{page}</Layout>
 }

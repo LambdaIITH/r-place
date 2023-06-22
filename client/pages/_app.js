@@ -1,3 +1,4 @@
+import React from 'react'
 import { MantineProvider } from '@mantine/core'
 import AppContext from '../AppContext'
 import globalData from '../globaldata'
@@ -6,6 +7,7 @@ import { Notifications } from '@mantine/notifications'
 import Head from 'next/head'
 
 function MyApp({ Component, pageProps, session }) {
+  const getLayout = Component.getLayout ?? ((page)=>page)
   return (
     <SessionProvider session={session}>
       <Head>
@@ -31,7 +33,7 @@ function MyApp({ Component, pageProps, session }) {
             },
           }}
         >
-          <Component {...pageProps} />
+          {getLayout(<Component {...pageProps} />)}
         </AppContext.Provider>
       </MantineProvider>
     </SessionProvider>

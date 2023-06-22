@@ -1,12 +1,8 @@
-import Head from 'next/head'
-import { useRouter } from 'next/router'
 import {
   Button,
   Box,
   createStyles,
   rem,
-  AppShell,
-  useMantineTheme,
   Modal,
   Stack,
   Text,
@@ -14,8 +10,9 @@ import {
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { useState, useContext } from 'react'
-import { Nav } from '../../components/Header'
 import AppContext from '../../AppContext'
+import Layout from '../../components/layouts/hostel_layout'
+
 const useStyles = createStyles((theme) => ({
   button: {
     display: 'block',
@@ -43,9 +40,8 @@ const useStyles = createStyles((theme) => ({
     },
   },
 }))
-export default function Home() {
 
-  const theme = useMantineTheme()
+export default function Home() {
   const { classes, cx } = useStyles()
   const value = useContext(AppContext)
   let globalData = value.state.globalData
@@ -53,106 +49,96 @@ export default function Home() {
 
   const [opened, { open, close }] = useDisclosure(false)
   const [hostel, setHostel] = useState(null)
+
   return (
     <>
-      <AppShell
-        styles={{
-          main: {
-            background:
-              theme.colorScheme === 'dark'
-                ? theme.colors.dark[8]
-                : theme.colors.gray[0],
-          },
+      <Text
+        variant="gradient"
+        gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}
+        ta="center"
+        sx={{
+          fontSize: '3rem',
         }}
-        navbarOffsetBreakpoint="sm"
-        header={<Nav />}
+        fw={700}
       >
-        <Text
-          variant="gradient"
-          gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}
-          ta="center"
-          sx={{
-            fontSize: '3rem',
-          }}
-          fw={700}
-        >
-          Welcome to IIT Hyderabad
-        </Text>
-        <Modal
-          opened={opened}
-          onClose={close}
-          title={`Welcome to ${
-            hostel_names[hostel?.charCodeAt(0) - 'A'.charCodeAt(0)]
-          }`}
-          centered
-        >
-          <Box
-            sx={{
-              alignItems: 'center',
-              width: '200px',
-              margin: 'auto',
-              padding: '30px 10px 30px 10px',
-              border: '1px solid #ccc',
-            }}
-          >
-            <Stack spacing="xs">
-              {Array.from(Array(6), (_, i) => (
-                <Button
-                  component="a"
-                  href={`/hostels/${hostel}/${i + 1}`}
-                  key={i}
-                >
-                  Floor {i + 1}
-                </Button>
-              ))}
-            </Stack>
-          </Box>
-        </Modal>
+        Welcome to IIT Hyderabad
+      </Text>
+      <Modal
+        opened={opened}
+        onClose={close}
+        title={`Welcome to ${
+          hostel_names[hostel?.charCodeAt(0) - 'A'.charCodeAt(0)]
+        }`}
+        centered
+      >
         <Box
           sx={{
-            position: 'relative',
-            margin: '3rem auto',
+            alignItems: 'center',
+            width: '200px',
+            margin: 'auto',
+            padding: '30px 10px 30px 10px',
+            border: '1px solid #ccc',
           }}
-          maw={800}
         >
-          <Image
-            src={
-              './assets/map.png'
-            }
-            maw={800}
-            mx="auto"
-            radius="md"
-            alt={'hostels IITH'}
-          />
-
-          {[
-            { top: '5rem', left: -20, transform: 'rotate(90deg)' },
-            { top: '1.5rem', left: '11rem' },
-            { top: '5rem', right: '14rem', transform: 'rotate(90deg)' },
-            { top: '1.5rem', right: '2rem' },
-            // round 2
-            { top: '14rem', right: -20, transform: 'rotate(90deg)' },
-            { top: '17rem', right: '11rem' },
-            { top: '14rem', left: '14rem', transform: 'rotate(90deg)' },
-            { top: '17rem', left: '2rem' },
-            // round 3
-            { bottom: '11rem', left: '6rem' },
-            { bottom: '1.5rem', left: '6rem' },
-          ].map((item, index) => (
-            <button
-              className={classes.button}
-              style={{ ...item }}
-              onClick={() => {
-                setHostel(String.fromCharCode('A'.charCodeAt(0) + index))
-                open()
-              }}
-              key={index}
-            >
-              {hostel_names[index]}
-            </button>
-          ))}
+          <Stack spacing="xs">
+            {Array.from(Array(6), (_, i) => (
+              <Button
+                component="a"
+                href={`/hostels/${hostel}/${i + 1}`}
+                key={i}
+              >
+                Floor {i + 1}
+              </Button>
+            ))}
+          </Stack>
         </Box>
-      </AppShell>
+      </Modal>
+      <Box
+        sx={{
+          position: 'relative',
+          margin: '3rem auto',
+        }}
+        maw={800}
+      >
+        <Image
+          src={'./assets/map.png'}
+          maw={800}
+          mx="auto"
+          radius="md"
+          alt={'hostels IITH'}
+        />
+
+        {[
+          { top: '5rem', left: -20, transform: 'rotate(90deg)' },
+          { top: '1.5rem', left: '11rem' },
+          { top: '5rem', right: '14rem', transform: 'rotate(90deg)' },
+          { top: '1.5rem', right: '2rem' },
+          // round 2
+          { top: '14rem', right: -20, transform: 'rotate(90deg)' },
+          { top: '17rem', right: '11rem' },
+          { top: '14rem', left: '14rem', transform: 'rotate(90deg)' },
+          { top: '17rem', left: '2rem' },
+          // round 3
+          { bottom: '11rem', left: '6rem' },
+          { bottom: '1.5rem', left: '6rem' },
+        ].map((item, index) => (
+          <button
+            className={classes.button}
+            style={{ ...item }}
+            onClick={() => {
+              setHostel(String.fromCharCode('A'.charCodeAt(0) + index))
+              open()
+            }}
+            key={index}
+          >
+            {hostel_names[index]}
+          </button>
+        ))}
+      </Box>
     </>
   )
+}
+
+Home.getLayout = function getLayout(page) {
+  return <Layout>{page}</Layout>
 }
