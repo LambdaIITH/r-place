@@ -1,4 +1,4 @@
-import { Button, Grid, HoverCard, Group, Text } from '@mantine/core'
+import { Button, Grid, HoverCard, Group, Text, Title } from '@mantine/core'
 import { useRouter } from 'next/router'
 import AppContext from '../../../../AppContext'
 import { useContext, useEffect, useState } from 'react'
@@ -102,46 +102,17 @@ export default function Home() {
 
   return (
     <>
-      <h1>
+      <Title align="center" mt={12} mb={24}>
         Welcome to {hostel_names[hostel?.charCodeAt(0) - 'A'.charCodeAt(0)]}{' '}
         floor {floor}
-      </h1>
+      </Title>
       <div style={{ position: 'relative' }}>
-        <canvas id="floorCanvas"></canvas>
-        <Grid
-          columns={2}
-          sx={{ position: 'absolute', top: '0px', left: '0px' }}
-        >
-          <Grid.Col span={1}>
-            {pods?.slice(0, 2).map((pod, index) =>
-              index === 0 ? (
-                <Grid columns={2} key={index}>
-                  <Grid.Col span={1}>{pod}</Grid.Col>
-                  <Grid.Col span={1}></Grid.Col>
-                </Grid>
-              ) : (
-                <Grid columns={2} key={index}>
-                  <Grid.Col span={1}></Grid.Col>
-                  <Grid.Col span={1}>{pod}</Grid.Col>
-                </Grid>
-              )
-            )}
-          </Grid.Col>
-          <Grid.Col span={1}>
-            {pods?.slice(2, 4).map((pod, index) =>
-              index === 0 ? (
-                <Grid columns={2} key={index}>
-                  <Grid.Col span={1}>{pod}</Grid.Col>
-                  <Grid.Col span={1}></Grid.Col>
-                </Grid>
-              ) : (
-                <Grid columns={2} key={index}>
-                  <Grid.Col span={1}></Grid.Col>
-                  <Grid.Col span={1}>{pod}</Grid.Col>
-                </Grid>
-              )
-            )}
-          </Grid.Col>
+        <canvas id="floorCanvas">Hi</canvas>
+        <Grid columns={4} sx={{ position: 'absolute', top: '0px', left: '0px' }}>
+          <Grid.Col span={1}>{pods?.[0]}</Grid.Col>
+          <Grid.Col span={1} offset={1}>{pods?.[2]}</Grid.Col>
+          <Grid.Col span={1} offset={1}>{pods?.[1]}</Grid.Col>
+          <Grid.Col span={1} offset={1}>{pods?.[3]}</Grid.Col>
         </Grid>
       </div>
     </>
