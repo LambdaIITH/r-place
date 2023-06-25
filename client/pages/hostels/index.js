@@ -91,14 +91,14 @@ export default function Home() {
               {Array.from(Array(6), (_, i) => (
                 <Button
                   component="a"
-                  href={`/hostels/${hostel}/${i + 1}`}
-                  key={i}
+                  href={`/hostels/${hostel}/${6-i}`}
+                  key={6-i}
                   sx={{
                     opacity: 0.8,
                     // backgroundColor: '#71797E'
                   }}
                 >
-                  Floor {i + 1}
+                  Floor {6-i}
                 </Button>
               ))}
             </Stack>
