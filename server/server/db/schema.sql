@@ -39,7 +39,7 @@ CREATE TABLE public.hostel_rooms (
     room integer NOT NULL,
     user_email character varying(255) NOT NULL,
     quote text,
-    form_response text
+    form_response json
 );
 
 
