@@ -7,6 +7,7 @@ import {
   Stack,
   Text,
   Image,
+  BackgroundImage,
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { useState, useContext } from 'react'
@@ -68,30 +69,41 @@ export default function Home() {
         onClose={close}
         title={`Welcome to ${
           hostel_names[hostel?.charCodeAt(0) - 'A'.charCodeAt(0)]
-        }`}
+        }'s Lift`}
         centered
+        size={'40rem'}
       >
-        <Box
-          sx={{
-            alignItems: 'center',
-            width: '200px',
-            margin: 'auto',
-            padding: '30px 10px 30px 10px',
-            border: '1px solid #ccc',
-          }}
+        <BackgroundImage
+          src="https://media.istockphoto.com/id/1065306310/vector/cartoon-elevator-or-lift-with-open-doors-startup-concept.jpg?s=170667a&w=0&k=20&c=fFYdLY3a4_dHsA9Nmd_dnyKRcNsLdG-hWm1ipmnDWbA="
+          radius="sm"
         >
-          <Stack spacing="xs">
-            {Array.from(Array(6), (_, i) => (
-              <Button
-                component="a"
-                href={`/hostels/${hostel}/${i + 1}`}
-                key={i}
-              >
-                Floor {i + 1}
-              </Button>
-            ))}
-          </Stack>
-        </Box>
+          <Box
+            sx={{
+              alignItems: 'center',
+              width: '200px',
+              margin: 'auto',
+              padding: '180px 10px 160px 10px',
+              overflow: 'hidden',
+              // border: '1px solid #ccc',
+            }}
+          >
+            <Stack spacing="xs">
+              {Array.from(Array(6), (_, i) => (
+                <Button
+                  component="a"
+                  href={`/hostels/${hostel}/${i + 1}`}
+                  key={i}
+                  sx={{
+                    opacity: 0.8,
+                    // backgroundColor: '#71797E'
+                  }}
+                >
+                  Floor {i + 1}
+                </Button>
+              ))}
+            </Stack>
+          </Box>
+        </BackgroundImage>
       </Modal>
       <Box
         sx={{
