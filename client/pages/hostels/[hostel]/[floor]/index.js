@@ -1,31 +1,56 @@
-import { Button, Grid, HoverCard, Group, Text, Title } from '@mantine/core'
-import { useRouter } from 'next/router'
+import {
+  Button,
+  Grid,
+  HoverCard,
+  Group,
+  Text,
+  Title,
+  Blockquote,
+} from '@mantine/core'
 import AppContext from '../../../../AppContext'
 import { useContext, useEffect, useState } from 'react'
 import Layout from '../../../../components/layouts/hostel_layout'
 import './index.module.css'
 
-export default function Home() {
-  const router = useRouter()
+export async function getStaticProps({ params }) {
+  const hostel = params.hostel
+  const floor = params.floor
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/${hostel}/${floor}`
+  )
+  const floorData = await res.json()
+  return {
+    props: {
+      floorData,
+      hostel,
+      floor,
+    },
+  }
+}
+
+export async function getStaticPaths() {
+  //Possible values for hostel and floor
+  const hostels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
+  const floors = ['1', '2', '3', '4', '5', '6']
+
+  //All possible combinations of hostel and floor
+  const paths = []
+  hostels.forEach((hostel) => {
+    floors.forEach((floor) => {
+      paths.push({ params: { hostel: hostel, floor: floor } })
+    })
+  })
+
+  return {
+    paths,
+    fallback: false,
+  }
+}
+export default function Home({ floorData, hostel, floor }) {
   const value = useContext(AppContext)
   let globalData = value.state.globalData
   const { hostel_names } = globalData
-  const { hostel, floor } = router.query
   const [pods, setPods] = useState([])
-  const [floorData, setFloorData] = useState(null)
-
-  async function getFloorData() {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/${hostel}/${floor}`
-    )
-    const data = await res.json()
-    setFloorData(data)
-  }
-
-  useEffect(() => {
-    if (!router.isReady) return
-    getFloorData()
-  }, [router.isReady])
 
   function search_room(room) {
     console.log(floorData)
@@ -43,7 +68,7 @@ export default function Home() {
   function return_room_button(room_owner_data) {
     return (
       <Group position="center">
-        <HoverCard width={280} shadow="md">
+        <HoverCard width={250} shadow="md">
           <HoverCard.Target>
             <Button
               component="a"
@@ -53,9 +78,11 @@ export default function Home() {
             </Button>
           </HoverCard.Target>
           <HoverCard.Dropdown>
-            <Text size="sm">
-              {`${room_owner_data.name} : "${room_owner_data.quote}"`}
-            </Text>
+            <Blockquote
+              cite={<Text fx="sm">{`- ${room_owner_data.name}`}</Text>}
+            >
+              <Text size={15}>{`${room_owner_data.quote}`}</Text>
+            </Blockquote>
           </HoverCard.Dropdown>
         </HoverCard>
       </Group>
@@ -108,11 +135,20 @@ export default function Home() {
       </Title>
       <div style={{ position: 'relative' }}>
         <canvas id="floorCanvas">Hi</canvas>
-        <Grid columns={4} sx={{ position: 'absolute', top: '0px', left: '0px' }}>
+        <Grid
+          columns={4}
+          sx={{ position: 'absolute', top: '0px', left: '0px' }}
+        >
           <Grid.Col span={1}>{pods?.[0]}</Grid.Col>
-          <Grid.Col span={1} offset={1}>{pods?.[2]}</Grid.Col>
-          <Grid.Col span={1} offset={1}>{pods?.[1]}</Grid.Col>
-          <Grid.Col span={1} offset={1}>{pods?.[3]}</Grid.Col>
+          <Grid.Col span={1} offset={1}>
+            {pods?.[2]}
+          </Grid.Col>
+          <Grid.Col span={1} offset={1}>
+            {pods?.[1]}
+          </Grid.Col>
+          <Grid.Col span={1} offset={1}>
+            {pods?.[3]}
+          </Grid.Col>
         </Grid>
       </div>
     </>

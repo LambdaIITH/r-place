@@ -1,8 +1,24 @@
 import { useRouter } from 'next/router'
 import { Carousel } from '@mantine/carousel'
-import { useMantineTheme, Title } from '@mantine/core'
+import { useMantineTheme, Title, createStyles, Text } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import Layout from '../../../../components/layouts/hostel_layout'
+const useStyles = createStyles((theme) => ({
+  carousel:{
+
+  },
+  slide:{
+    padding: '1rem',
+    backgroundColor: theme.colors.blue[0],
+  },
+  question:{
+
+  },
+  answer:{
+    
+  }
+}));
+
 
 export default function Room() {
   const router = useRouter()
@@ -10,8 +26,7 @@ export default function Room() {
   const theme = useMantineTheme()
   const [questions, setQuestions] = useState([])
   const [answers, setAnswers] = useState([])
-  // const questions = []
-  // const answers = []
+  const { classes, cx } = useStyles();
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   async function getRoomData() {
@@ -30,7 +45,7 @@ export default function Room() {
           questions.push(key)
           answers.push(data.form_response[key])
         }
-     }
+      }
     }
   }
   useEffect(() => {
@@ -39,24 +54,31 @@ export default function Room() {
   }, [router.isReady])
   return (
     <>
-        <Title align="center" mt={12} mb={24}>
+      <Title align="center" mt={12} mb={24}>
         Welcome to {name}'s room!
-        </Title>
-        <Carousel
-          maw={320}
-          mx="auto"
-          withIndicators
-          height={200}
-          slideGap="md"
-          align="start"
-          loop
-        >
-          {questions.map((question, index) => (
-                  <Carousel.Slide sx={{ backgroundColor: 'red' }} key={index}>
-                  {question} : {answers[index]}
-                  </Carousel.Slide>
-          ))}
-        </Carousel>
+      </Title>
+      <Carousel
+        maw={320}
+        mx="auto"
+        withIndicators
+        height={200}
+        slideGap="md"
+        align="start"
+        loop
+        className={classes.carousel}
+      >
+        {questions.map((question, index) => (
+          <Carousel.Slide key={index} className={classes.slide}>
+            <Text className={classes.question}>
+            {question} :
+            </Text>
+            <Text className={classes.answer}>
+            {answers[index]}
+            </Text>
+             
+          </Carousel.Slide>
+        ))}
+      </Carousel>
     </>
   )
 }
