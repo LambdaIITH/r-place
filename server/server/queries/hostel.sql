@@ -21,3 +21,19 @@ SELECT hostel, floor, room, name, email
 SELECT name, email
   FROM hostel_rooms JOIN users ON hostel_rooms.user_email = users.email
   WHERE hostel = :hostel AND floor = :floor AND room = :room;
+
+-- name: insert_comment!
+-- Insert a comment to a particular owner from the given to_user
+INSERT INTO user_comments(from_user, to_user, comment) VALUES(:from_user, :to_user, :comment);
+
+-- name: update_comment!
+-- Update a particular comment
+UPDATE user_comments SET comment = :comment WHERE from_user = :from_user AND to_user = :to_user;
+
+-- name: get_comments
+-- given user, get all comments posted on user's room
+SELECT * FROM user_comments WHERE to_user = :to_user;
+
+-- name: delete_comment!
+-- Delete a particular comment
+DELETE FROM user_comments WHERE from_user = :from_user AND to_user = :to_user;
