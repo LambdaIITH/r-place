@@ -114,7 +114,7 @@ const useStyles = createStyles((theme) => ({
 export function Nav(props) {
   const theme = useMantineTheme()
   const [opened, setOpened] = useState(false)
-  const [chosen, setChosen] = useState('')
+  const [chosen, setChosen] = useState('#ffffff')
   const router = useRouter()
   const value = useContext(AppContext)
   const links = [
@@ -180,7 +180,6 @@ export function Nav(props) {
     });
     const data = await res.json();
     if (data.length > 0){
-      console.log("here")
       processGradData(data);
     }
     else {
@@ -194,7 +193,6 @@ export function Nav(props) {
       let building = ""
       let floor = 0
       let room = 0
-      console.log(gradStudentsInfo)
       try {
         building = splitText[0].substring(0, 1);
         floor = Math.floor(
@@ -206,7 +204,6 @@ export function Nav(props) {
         console.log(e)
         return;
       }
-      console.log(building, floor, room)
       const res_single = await fetch (`${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/${building}/${floor}/${room}/owner`,{
         method: 'GET',
       })

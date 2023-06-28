@@ -6,54 +6,44 @@ import {
   Text,
   Title,
   Blockquote,
+  Box,
 } from '@mantine/core'
 import AppContext from '../../../../AppContext'
 import { useContext, useEffect, useState } from 'react'
 import Layout from '../../../../components/layouts/hostel_layout'
 import './index.module.css'
+import { useRouter } from 'next/router'
 
-export async function getStaticProps({ params }) {
-  const hostel = params.hostel
-  const floor = params.floor
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/${hostel}/${floor}`
-  )
-  const floorData = await res.json()
-  return {
-    props: {
-      floorData,
-      hostel,
-      floor,
-    },
-  }
-}
-
-export async function getStaticPaths() {
-  //Possible values for hostel and floor
-  const hostels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
-  const floors = ['1', '2', '3', '4', '5', '6']
-
-  //All possible combinations of hostel and floor
-  const paths = []
-  hostels.forEach((hostel) => {
-    floors.forEach((floor) => {
-      paths.push({ params: { hostel: hostel, floor: floor } })
-    })
-  })
-
-  return {
-    paths,
-    fallback: false,
-  }
-}
-export default function Home({ floorData, hostel, floor }) {
+export default function Home() {
   const value = useContext(AppContext)
+  const router = useRouter()
+  const {hostel, floor} = router.query
   let globalData = value.state.globalData
   const { hostel_names } = globalData
   const [pods, setPods] = useState([])
+  const [floorData, setFloorData] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  async function getFloorData() {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/${hostel}/${floor}`
+    )
+    if (res.status == 400){
+      // router.push('/404')
+      router.push('/hostels')
+      return
+    }
+    const data = await res.json()
+    setFloorData(data)
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    if (!router.isReady) return
+    getFloorData()
+  }, [router.isReady])
 
   function search_room(room) {
-    console.log(floorData)
     for (let i = 0; i < floorData.length; i++) {
       if (floor * 100 + floorData[i].room_number === room) {
         return return_room_button(floorData[i])
@@ -129,11 +119,12 @@ export default function Home({ floorData, hostel, floor }) {
 
   return (
     <>
+    {loading ?<></> :<>
       <Title align="center" mt={12} mb={24}>
         Welcome to {hostel_names[hostel?.charCodeAt(0) - 'A'.charCodeAt(0)]}{' '}
         floor {floor}
       </Title>
-      <div style={{ position: 'relative' }}>
+      <Box sx={{ position: 'relative' }}>
         <canvas id="floorCanvas">Hi</canvas>
         <Grid
           columns={4}
@@ -150,7 +141,8 @@ export default function Home({ floorData, hostel, floor }) {
             {pods?.[3]}
           </Grid.Col>
         </Grid>
-      </div>
+      </Box>
+    </>}
     </>
   )
 }

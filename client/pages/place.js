@@ -35,8 +35,8 @@ export default function Place() {
   const [last_updated_by, setLastUpdatedBy] = useState("");
 
   // props for canvas
-  const [chosen, setChosen] = useState(""); // from 14 color palette
-  const [current, setCurrent] = useState(""); // current color of chosen pixel from canvas
+  const [chosen, setChosen] = useState("#ffffff"); // from 14 color palette
+  const [current, setCurrent] = useState("#ffffff"); // current color of chosen pixel from canvas
   const [colors, setColors] = useState([]);
   const [cooldown, setCooldown] = useState(0);
 
@@ -70,6 +70,7 @@ export default function Place() {
   }
   async function postPixel() {
     try {
+      console.log(chosen);
       const response = await fetch(
         `${
           process.env.NEXT_PUBLIC_BACKEND_URL
@@ -83,6 +84,7 @@ export default function Place() {
           },
         }
       );
+      console.log(chosen);
       const temp = await response.json();
       if (response.status === 429) {
         setCooldown(temp.cooldown);

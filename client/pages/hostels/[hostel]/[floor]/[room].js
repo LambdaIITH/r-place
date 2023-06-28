@@ -29,6 +29,8 @@ export default function Room() {
   const { classes, cx } = useStyles();
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(true)
+
   async function getRoomData() {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/${hostel}/${floor}/${room}`,
@@ -36,6 +38,11 @@ export default function Room() {
         method: 'GET',
       }
     )
+    if (res.status == 400 || res.status == 404) {
+      // router.push('/404')
+      router.push('/hostels')
+      return
+    }
     const data = await res.json()
     setName(data.name)
     setEmail(data.email)
@@ -47,6 +54,7 @@ export default function Room() {
         }
       }
     }
+    setLoading(false)
   }
   useEffect(() => {
     if (!router.isReady) return
@@ -54,6 +62,8 @@ export default function Room() {
   }, [router.isReady])
   return (
     <>
+    {loading ? <></>:
+      <>
       <Title align="center" mt={12} mb={24}>
         Welcome to {name}'s room!
       </Title>
@@ -79,6 +89,8 @@ export default function Room() {
           </Carousel.Slide>
         ))}
       </Carousel>
+      </>
+    }
     </>
   )
 }

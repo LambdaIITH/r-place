@@ -21,7 +21,6 @@ def get_user_email(token):
         # if idinfo['aud'] not in [CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]:
         #     raise ValueError('Could not verify audience.')
 
-        print(idinfo)
         email = idinfo["email"]
 
         # If auth request is from a G Suite domain:
