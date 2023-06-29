@@ -93,7 +93,7 @@ def get_owner(hostel_name: str, floor: int, room: int):
 
 @hostel_app.get("/{hostel_name}/{floor}/{room}/comments")
 def get_comments(hostel_name: str, floor: int, room: int):
-    email = "cs19btech11034@iith.ac.in"  # email of the authn user
+    email = "ep19btech11002@iith.ac.in"  # email of the authn user
     err = verify_room(hostel_name, floor, room)
     if err is not None:
         raise HTTPException(status_code=400, detail=err)
@@ -104,9 +104,9 @@ def get_comments(hostel_name: str, floor: int, room: int):
 
     owner_name, owner_email = owner
     if owner_email != email:
-        raise HTTPException(status_code=403, detail="Only available to hostel owner")
-
-    comments = hostel_queries.get_comments(conn, to_user=owner_email)
+        comments = hostel_queries.get_comment(conn, from_user=email, to_user=owner_email)
+    else:
+        comments = hostel_queries.get_owner_comments(conn, to_user=owner_email)
     res = []
     for from_user, to_user, comment in comments:
         res.append({"from_user": from_user, "to_user": to_user, "comment": comment})

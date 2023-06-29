@@ -30,7 +30,11 @@ INSERT INTO user_comments(from_user, to_user, comment) VALUES(:from_user, :to_us
 -- Update a particular comment
 UPDATE user_comments SET comment = :comment WHERE from_user = :from_user AND to_user = :to_user;
 
--- name: get_comments
+-- name: get_comment
+-- Get comment posted by from_user to to_user
+SELECT * FROM user_comments WHERE from_user = :from_user AND to_user = :to_user;
+
+-- name: get_owner_comments
 -- given user, get all comments posted on user's room
 SELECT * FROM user_comments WHERE to_user = :to_user;
 
