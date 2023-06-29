@@ -1,4 +1,5 @@
 from utils import hostel_queries, conn
+from typing import Annotated
 from fastapi import FastAPI, HTTPException, Response, Body
 
 hostel_app = FastAPI()
@@ -6,15 +7,16 @@ print("Initialized hostel.")
 
 
 def verify_room(hostel, floor, room=None):
+    err = None
     if len(hostel) != 1 or ord(hostel) not in range(ord("A"), ord("J") + 1):
-        print("a")
-        return "Invalid hostel"
+        err = "Invalid hostel"
     if floor not in range(1, 10 + 1):
-        print("b")
-        return "Invalid floor"
+        err = "Invalid floor"
     if room is not None and room not in range(1, 32 + 1):
-        print("c")
-        return "Invalid room"
+        err = "Invalid room"
+    if err is not None:
+        print(err)
+        raise HTTPException(status_code=400, detail=err)
     return None
 
 
@@ -42,9 +44,7 @@ def search_by_name(q: str):
 
 @hostel_app.get("/{hostel_name}/{floor}")
 def get_floor(hostel_name: str, floor: int, response: Response):
-    err = verify_room(hostel_name, floor)
-    if err is not None:
-        raise HTTPException(status_code=400, detail=err)
+    verify_room(hostel_name, floor)
 
     floor_data = hostel_queries.get_floor(conn, hostel=hostel_name, floor=floor)
     res = []
@@ -55,9 +55,7 @@ def get_floor(hostel_name: str, floor: int, response: Response):
 
 @hostel_app.get("/{hostel_name}/{floor}/{room}")
 def get_room(hostel_name: str, floor: int, room: int):
-    err = verify_room(hostel_name, floor, room)
-    if err is not None:
-        raise HTTPException(status_code=400, detail=err)
+    verify_room(hostel_name, floor, room)
 
     room_data = hostel_queries.get_room(
         conn, hostel=hostel_name, floor=floor, room=room
@@ -71,9 +69,7 @@ def get_room(hostel_name: str, floor: int, room: int):
 
 @hostel_app.get("/{hostel_name}/{floor}/{room}/owner")
 def get_owner(hostel_name: str, floor: int, room: int):
-    err = verify_room(hostel_name, floor, room)
-    if err is not None:
-        raise HTTPException(status_code=400, detail=err)
+    verify_room(hostel_name, floor, room)
 
     owner = hostel_queries.get_owner(conn, hostel=hostel_name, floor=floor, room=room)
     if owner is None:
@@ -94,9 +90,7 @@ def get_owner(hostel_name: str, floor: int, room: int):
 @hostel_app.get("/{hostel_name}/{floor}/{room}/comments")
 def get_comments(hostel_name: str, floor: int, room: int):
     email = "ep19btech11002@iith.ac.in"  # email of the authn user
-    err = verify_room(hostel_name, floor, room)
-    if err is not None:
-        raise HTTPException(status_code=400, detail=err)
+    verify_room(hostel_name, floor, room)
 
     owner = hostel_queries.get_owner(conn, hostel=hostel_name, floor=floor, room=room)
     if owner is None:
@@ -104,7 +98,9 @@ def get_comments(hostel_name: str, floor: int, room: int):
 
     owner_name, owner_email = owner
     if owner_email != email:
-        comments = hostel_queries.get_comment(conn, from_user=email, to_user=owner_email)
+        comments = hostel_queries.get_comment(
+            conn, from_user=email, to_user=owner_email
+        )
     else:
         comments = hostel_queries.get_owner_comments(conn, to_user=owner_email)
     res = []
@@ -116,12 +112,13 @@ def get_comments(hostel_name: str, floor: int, room: int):
 
 @hostel_app.post("/{hostel_name}/{floor}/{room}/comments")
 def add_comment(
-    hostel_name: str, floor: int, room: int, comment: str = Body(embed=True)
+    hostel_name: str,
+    floor: int,
+    room: int,
+    comment: Annotated[str, Body(max_length=1024, embed=True)],
 ):
     email = "cs19btech11034@iith.ac.in"  # email of authn user
-    err = verify_room(hostel_name, floor, room)
-    if err is not None:
-        raise HTTPException(status_code=400, detail=err)
+    verify_room(hostel_name, floor, room)
 
     owner = hostel_queries.get_owner(conn, hostel=hostel_name, floor=floor, room=room)
     if owner is None:
@@ -129,7 +126,7 @@ def add_comment(
     owner_name, owner_email = owner
 
     if owner_email == email:
-        raise HTTPException(status_code=400, detail=err)
+        raise HTTPException(status_code=400, detail="Cannot add comments on own room")
     try:
         hostel_queries.insert_comment(
             conn, from_user=email, to_user=owner_email, comment=comment
@@ -143,12 +140,13 @@ def add_comment(
 
 @hostel_app.patch("/{hostel_name}/{floor}/{room}/comments")
 def update_comment(
-    hostel_name: str, floor: int, room: int, comment: str = Body(embed=True)
+    hostel_name: str,
+    floor: int,
+    room: int,
+    comment: Annotated[str, Body(max_length=1024, embed=True)],
 ):
     email = "cs19btech11034@iith.ac.in"  # email of authn user
-    err = verify_room(hostel_name, floor, room)
-    if err is not None:
-        raise HTTPException(status_code=400, detail=err)
+    verify_room(hostel_name, floor, room)
 
     owner = hostel_queries.get_owner(conn, hostel=hostel_name, floor=floor, room=room)
     if owner is None:
@@ -156,23 +154,24 @@ def update_comment(
 
     owner_name, owner_email = owner
     if owner_email == email:
-        raise HTTPException(status_code=400, detail=err)
+        raise HTTPException(
+            status_code=400, detail="Cannot update comments on own room"
+        )
     try:
         hostel_queries.update_comment(
             conn, from_user=email, to_user=owner_email, comment=comment
         )
         conn.commit()
-    except:
+    except Exception as err:
         conn.rollback()
+        raise HTTPException(status_code=400, detail=str(err))
     return {"status": "ok"}
 
 
 @hostel_app.delete("/{hostel_name}/{floor}/{room}/comments")
 def delete_comment(hostel_name: str, floor: int, room: int):
     email = "cs19btech11034@iith.ac.in"  # email of authn user
-    err = verify_room(hostel_name, floor, room)
-    if err is not None:
-        raise HTTPException(status_code=400, detail=err)
+    verify_room(hostel_name, floor, room)
 
     owner = hostel_queries.get_owner(conn, hostel=hostel_name, floor=floor, room=room)
     if owner is None:
@@ -180,13 +179,15 @@ def delete_comment(hostel_name: str, floor: int, room: int):
 
     owner_name, owner_email = owner
     if owner_email == email:
-        raise HTTPException(status_code=400, detail=err)
+        raise HTTPException(
+            status_code=400, detail="Cannot delete comments on own room"
+        )
 
     try:
         hostel_queries.delete_comment(conn, from_user=email, to_user=owner_email)
         conn.commit()
-    except Exception as e:
-        print(e)
+    except Exception as err:
         conn.rollback()
+        raise HTTPException(status_code=400, detail=str(err))
 
     return {"status": "ok"}
