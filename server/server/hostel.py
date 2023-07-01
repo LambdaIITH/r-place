@@ -1,6 +1,6 @@
-from utils import hostel_queries, conn
+from utils import hostel_queries, conn, verify_auth_token
 from typing import Annotated
-from fastapi import FastAPI, HTTPException, Response, Body
+from fastapi import FastAPI, HTTPException, Response, Body, Depends
 
 hostel_app = FastAPI()
 print("Initialized hostel.")
@@ -35,10 +35,7 @@ def search_by_name(q: str):
                 "email": email,
             }
         )
-    # if len(res) ==0:
-    #     raise HTTPException(
-    #         status_code=404
-    #     )
+
     return res
 
 
@@ -88,10 +85,8 @@ def get_owner(hostel_name: str, floor: int, room: int):
 
 
 @hostel_app.get("/{hostel_name}/{floor}/{room}/comments")
-def get_comments(hostel_name: str, floor: int, room: int):
-    email = "ep19btech11002@iith.ac.in"  # email of the authn user
+def get_comments(hostel_name: str, floor: int, room: int,email: str = Depends(verify_auth_token)):
     verify_room(hostel_name, floor, room)
-
     owner = hostel_queries.get_owner(conn, hostel=hostel_name, floor=floor, room=room)
     if owner is None:
         raise HTTPException(status_code=404, detail="Room not found")
@@ -104,6 +99,8 @@ def get_comments(hostel_name: str, floor: int, room: int):
     else:
         comments = hostel_queries.get_owner_comments(conn, to_user=owner_email)
     res = []
+    print(comments)
+    print(owner_email)
     for from_user, to_user, comment in comments:
         res.append({"from_user": from_user, "to_user": to_user, "comment": comment})
 
@@ -116,8 +113,8 @@ def add_comment(
     floor: int,
     room: int,
     comment: Annotated[str, Body(max_length=1024, embed=True)],
+    email: str = Depends(verify_auth_token)
 ):
-    email = "cs19btech11034@iith.ac.in"  # email of authn user
     verify_room(hostel_name, floor, room)
 
     owner = hostel_queries.get_owner(conn, hostel=hostel_name, floor=floor, room=room)
@@ -144,8 +141,8 @@ def update_comment(
     floor: int,
     room: int,
     comment: Annotated[str, Body(max_length=1024, embed=True)],
+    email: str = Depends(verify_auth_token)
 ):
-    email = "cs19btech11034@iith.ac.in"  # email of authn user
     verify_room(hostel_name, floor, room)
 
     owner = hostel_queries.get_owner(conn, hostel=hostel_name, floor=floor, room=room)
@@ -169,8 +166,7 @@ def update_comment(
 
 
 @hostel_app.delete("/{hostel_name}/{floor}/{room}/comments")
-def delete_comment(hostel_name: str, floor: int, room: int):
-    email = "cs19btech11034@iith.ac.in"  # email of authn user
+def delete_comment(hostel_name: str, floor: int, room: int, email: str = Depends(verify_auth_token)):
     verify_room(hostel_name, floor, room)
 
     owner = hostel_queries.get_owner(conn, hostel=hostel_name, floor=floor, room=room)
