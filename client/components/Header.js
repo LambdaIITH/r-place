@@ -4,7 +4,6 @@ import {
   Header,
   Group,
   Container,
-  Burger,
   rem,
   MediaQuery,
   useMantineTheme,
@@ -49,13 +48,6 @@ const useStyles = createStyles((theme) => ({
     border: '0.5px solid #FFF',
     '&:hover': {
       cursor: 'pointer',
-    },
-  },
-  burger: {
-    marginRight: theme.spacing.md,
-
-    [theme.fn.largerThan('sm')]: {
-      display: 'none',
     },
   },
 
@@ -112,22 +104,18 @@ const useStyles = createStyles((theme) => ({
 }))
 
 export function Nav(props) {
-  const theme = useMantineTheme()
   const [opened, setOpened] = useState(false)
   const [chosen, setChosen] = useState('#ffffff')
   const router = useRouter()
   const value = useContext(AppContext)
   const links = [
-    { link: '/place', label: 'Basic' },
-    { link: '/hostels', label: 'Hostels' },
-    { link: '#', label: 'Acads' },
+    { link: '/place', label: 'Grid' },
+    { link: '/hostels', label: 'Yearbook' },
   ]
   const [active, setActive] = useState(
     router.pathname.includes('place')
       ? '/place'
-      : router.pathname.includes('hostels')
-      ? '/hostels'
-      : '/acads'
+      : '/hostels'
   )
   let globalData = value.state.globalData
   const { classes, cx } = useStyles()
@@ -172,7 +160,6 @@ export function Nav(props) {
     }
     setGradInfo(gradData);
   }
-
 
   async function gradInfo() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/search/name?q=${(searchValue.indexOf(":")>-1)?searchValue.split(":")[1]:searchValue}`, {
@@ -340,9 +327,8 @@ export function Nav(props) {
               </Menu.Target>
 
               <Menu.Dropdown>
-                <Menu.Item>Basic</Menu.Item>
-                <Menu.Item>Hostels</Menu.Item>
-                <Menu.Item>Acads</Menu.Item>
+                <Menu.Item>Grid</Menu.Item>
+                <Menu.Item>Yearbook</Menu.Item>
               </Menu.Dropdown>
             </Menu>
             <Title
