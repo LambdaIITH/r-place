@@ -36,9 +36,10 @@ export default function Room() {
   const [email, setEmail] = useState('')
   const [page_loading, setPageLoading] = useState(true)
   const [commentValue, setCommentValue] = useState('')
-  const { data: session } = useSession({ required: true });
+  const { data: session } = useSession({ required: true })
   const [owner, setOwner] = useState(false)
   const [comments, setComments] = useState([])
+  const [edit_comment, setEditComment] = useState(false)
 
   const postComment = async () => {
     const res = await fetch(
@@ -47,12 +48,12 @@ export default function Room() {
         method: 'POST',
         body: JSON.stringify({ comment: commentValue }),
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `${session?.id_token}`,
         },
       }
     )
-    if (res.status === 498){
+    if (res.status === 498) {
       signIn()
       return
     }
@@ -61,6 +62,8 @@ export default function Room() {
     } else {
       console.log('Some errors occured')
     }
+    getComments()
+    setCommentValue('')
   }
 
   async function getComments() {
@@ -69,12 +72,12 @@ export default function Room() {
       {
         method: 'GET',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `${session?.id_token}`,
-        }
+        },
       }
     )
-    if (res.status === 498){
+    if (res.status === 498) {
       signIn()
       return
     }
@@ -91,10 +94,9 @@ export default function Room() {
     //     return
     //   }
     // }
-    console.log('comments',data)
+    console.log('comments', data)
     setComments(data)
     setPageLoading(false)
-
   }
   async function deleteComment() {
     const res = await fetch(
@@ -102,33 +104,35 @@ export default function Room() {
       {
         method: 'DELETE',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `${session?.id_token}`,
-        }
+        },
       }
     )
-    if (res.status === 498){
+    if (res.status === 498) {
       signIn()
       return
     }
-    // TODO
+    getComments()
   }
   async function editComment() {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/${hostel}/${floor}/${room}/comments`,
       {
         method: 'PATCH',
+        body: JSON.stringify({ comment: commentValue }),
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `${session?.id_token}`,
-        }
+        },
       }
     )
-    if (res.status === 498){
+    if (res.status === 498) {
       signIn()
       return
     }
-    // TODO
+    getComments()
+    setCommentValue('')
   }
   async function getRoomData() {
     const res = await fetch(
@@ -156,8 +160,7 @@ export default function Room() {
     if (session?.user?.email === data.email) {
       console.log('You are the owner')
       setOwner(true)
-    }
-    else {
+    } else {
       setOwner(false)
     }
     getComments()
@@ -165,7 +168,7 @@ export default function Room() {
   useEffect(() => {
     if (!router.isReady || !session) return
     getRoomData()
-  }, [session,router.isReady, router.query])
+  }, [session, router.isReady, router.query])
   return (
     <>
       {page_loading ? (
@@ -193,83 +196,100 @@ export default function Room() {
             ))}
           </Carousel>
 
-          <Textarea
-            placeholder="Type your mind"
-            label="Leave a comment"
-            description="Comments are only visible to the room owner"
-            radius="md"
-            mx={16}
-            value={commentValue}
-            onChange={(event) => {
-              setCommentValue(event.target.value)
-            }}
-          />
-          <Button my={12} mx={16} onClick={postComment}>
-            Post Comment
-          </Button>
-          <Box
-            sx={{height: '200px', overflowY: 'scroll', mx: 16, mb: 16}}
-          >
-          {owner ? 
-          <>
-          <Text>
-            Comments for you
-          </Text>
-            <Table highlightOnHover>
-              <thead>
-              <tr>
-                <th>From</th>
-                <th>Comment</th>
-              </tr>
-              </thead>
-              <tbody>
-            {comments?.map((comment, index) => (
-              <tr key={index}>
-                <td>{comment.from_user}</td>
-                <td>{comment.comment}</td>
-              </tr>
-            ))}
-              </tbody>
-            </Table>
-          </>
-          :
-          <>
-          <Text>
-            Your Comments to {name}
-          </Text>
-          <Table highlightOnHover>
-          <thead>
-          <tr>
-            <th>From</th>
-            <th>Comment</th>
-            <th>Delete</th>
-            <th>Edit</th>
-          </tr>
-          </thead>
-          <tbody>
-        {comments?.map((comment, index) => (
-          <tr key={index}>
-            <td>{comment.from_user}</td>
-            <td>{comment.comment}</td>
-            <td>
-              <ActionIcon variant='transparent' color='red' onClick={deleteComment}>
-            <IconTrash/>
-              </ActionIcon>
-              </td>
-            <td>
-              <ActionIcon variant='transparent' color='blue' onClick={(e)=>{
-                e.preventDefault()
-                setCommentValue(comment.comment)
-              }}>
-            <IconEdit/>
-              </ActionIcon>
-              </td>
-          </tr>
-        ))}
-          </tbody>
-        </Table>
-          </>
-          }
+          <Box sx={{ height: '250px', overflowY: 'scroll', mx: 16, mb: 16 }}>
+            {owner ? (
+              <>
+                <Text>Comments for you</Text>
+                <Table highlightOnHover>
+                  <thead>
+                    <tr>
+                      <th>From</th>
+                      <th>Comment</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {comments?.map((comment, index) => (
+                      <tr key={index}>
+                        <td>{comment.from_user}</td>
+                        <td>{comment.comment}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </>
+            ) : (
+              <>
+                <Textarea
+                  placeholder="Type your mind"
+                  label="Leave a comment"
+                  description="Comments are only visible to the room owner"
+                  radius="md"
+                  mx={16}
+                  value={commentValue}
+                  onChange={(event) => {
+                    setCommentValue(event.target.value)
+                  }}
+                  disabled={comments.length > 0 && !edit_comment}
+                />
+                <Button
+                  my={12}
+                  mx={16}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    if (edit_comment) {
+                      editComment()
+                      setEditComment(false)
+                    } else {
+                      postComment()
+                    }
+                  }}
+                  disabled={comments.length > 0 && !edit_comment}
+                >
+                  Post Comment
+                </Button>
+                <Text>Your Comment to {name}</Text>
+                <Table highlightOnHover>
+                  <thead>
+                    <tr>
+                      <th>From</th>
+                      <th>Comment</th>
+                      <th>Delete</th>
+                      <th>Edit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {comments?.map((comment, index) => (
+                      <tr key={index}>
+                        <td>{comment.from_user}</td>
+                        <td>{comment.comment}</td>
+                        <td>
+                          <ActionIcon
+                            variant="transparent"
+                            color="red"
+                            onClick={deleteComment}
+                          >
+                            <IconTrash />
+                          </ActionIcon>
+                        </td>
+                        <td>
+                          <ActionIcon
+                            variant="transparent"
+                            color="blue"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              setCommentValue(comment.comment)
+                              setEditComment(true)
+                            }}
+                          >
+                            <IconEdit />
+                          </ActionIcon>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </>
+            )}
           </Box>
         </Container>
       )}
