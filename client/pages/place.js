@@ -180,10 +180,7 @@ export default function Place() {
         <AppShell
           styles={{
             main: {
-              background:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[8]
-                  : theme.colors.gray[0],
+              background: '#f0f0f0'
             },
           }}
           navbarOffsetBreakpoint="sm"

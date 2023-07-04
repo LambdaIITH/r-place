@@ -47,15 +47,28 @@ export default function Canvas({
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
-
+  
+    // Clear the canvas
+    context.clearRect(0, 0, canvas.width, canvas.height);
+  
     // Draw the grid
     for (let row = 0; row < gridSize; row++) {
       for (let col = 0; col < gridSize; col++) {
+        const x = col * cellSize;
+        const y = row * cellSize;
+  
+        // Draw the border
+        context.strokeStyle = "#f0f0f0";
+        context.lineWidth = 1;
+        context.strokeRect(x, y, cellSize, cellSize);
+  
+        // Draw the pixel
         context.fillStyle = colorPalette[colors[row * gridSize + col]];
-        context.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+        context.fillRect(x + 1, y + 1, cellSize - 2, cellSize - 2);
       }
     }
   }, [colors, cellSize]);
+  
 
   return (
     <Stack
@@ -87,7 +100,9 @@ export default function Canvas({
           // left: "50%",
         }}
       >
+        {/* box-shadow: ; */}
         <canvas
+        style={{border: '1px solid #e7e7e7'}}
           ref={canvasRef}
           width={cellSize * gridSize}
           height={cellSize * gridSize}

@@ -7,6 +7,7 @@ import {
   Title,
   Blockquote,
   Box,
+  Image,
 } from '@mantine/core'
 import AppContext from '../../../../AppContext'
 import { useContext, useEffect, useState } from 'react'
@@ -83,7 +84,7 @@ export default function Home() {
     if (floorData) {
       for (let i = 0; i < 4; i++) {
         pods.push(
-          <Grid columns={8} key={i}>
+          <Grid  columns={8} key={i}>
             <Grid.Col span={2} offset={2}>
               {search_room(floor * 100 + i * 8 + (i % 2 == 0 ? 5 : 1))}
             </Grid.Col>
@@ -120,17 +121,46 @@ export default function Home() {
   return (
     <>
     {loading ?<></> :<>
-      <Title align="center" mt={12} mb={24}>
+    <Text
+        variant="gradient"
+        gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}
+        ta="center"
+        sx={{
+          fontSize: '3rem',
+        }}
+        fw={700}
+      >
+      
         Welcome to {hostel_names[hostel?.charCodeAt(0) - 'A'.charCodeAt(0)]}{' '}
         floor {floor}
-      </Title>
-      <Box sx={{ position: 'relative' }}>
-        <canvas id="floorCanvas">Hi</canvas>
-        <Grid
+       
+      </Text>
+      <Box
+        sx={{
+          position: 'relative',
+          margin: '3rem auto',
+          width: 800,
+          
+        '@media (max-width: 48em)': {
+          transform:'rotate(90deg)'
+        },
+        }}
+        // maw={800}
+      >
+        {/* <canvas id="floorCanvas">Hi</canvas> */}
+        <Image
+          src={'https://res.cloudinary.com/dcpgsijmr/image/upload/v1687086660/r-place/hostel_without_bg_djzhu5.png'}
+          maw={800}
+          mx="auto"
+          radius="md"
+          alt={'hostels IITH'}
+          sx={{ position: 'absolute', top: '0px', left: '50%', transform: 'translateX(-50%)',  width: 800, overflowX: 'scroll' }}
+        />
+        {/* <Grid
           columns={4}
-          sx={{ position: 'absolute', top: '0px', left: '0px' }}
+          sx={{rowGap: '30px', width: '1000px', position: 'absolute', top: '3rem', left: '50%', transform: 'translateX(-50%)' }}
         >
-          <Grid.Col span={1}>{pods?.[0]}</Grid.Col>
+          <Grid.Col sx={{marginLeft: '10px'}} span={1} >{pods?.[0]}</Grid.Col>
           <Grid.Col span={1} offset={1}>
             {pods?.[2]}
           </Grid.Col>
@@ -140,7 +170,52 @@ export default function Home() {
           <Grid.Col span={1} offset={1}>
             {pods?.[3]}
           </Grid.Col>
-        </Grid>
+        </Grid> */}
+        {[
+          // 1st pod
+          { top: '11rem', left: '7.3rem', transform: 'rotate(90deg)' },
+          { top: '11rem', left: '4.5rem', transform: 'rotate(90deg)' },
+          { top: '7.5rem', left: '.8rem', },
+          { top: '4.5rem', left: '.8rem', },
+          { top: '1rem', left: '4.5rem', transform: 'rotate(90deg)' },
+          { top: '1rem', left: '7.3rem', transform: 'rotate(90deg)' },
+          { top: '4.5rem', left: '11rem', },
+          { top: '7.5rem', left: '11rem', },
+
+          // second pod
+          { top: 'calc(1rem + 12rem)', left: 'calc(12rem + 4.5rem)', transform: 'rotate(90deg)' },
+          { top: 'calc(1rem + 12rem)', left: 'calc(12rem + 7.3rem)', transform: 'rotate(90deg)' },
+          { top: 'calc(4.5rem + 12rem)', left: 'calc(12rem + 11rem)', },
+          { top: 'calc(7.5rem + 12rem)', left: 'calc(12rem + 11rem)', },
+          { top: 'calc(11rem + 12rem)', left: 'calc(12rem + 7.3rem)', transform: 'rotate(90deg)' },
+          { top: 'calc(11rem + 12rem)', left: 'calc(12rem + 4.5rem)', transform: 'rotate(90deg)' },
+          { top: 'calc(7.5rem + 12rem)', left: 'calc(12rem + .8rem)', },
+          { top: 'calc(4.5rem + 12rem)', left: 'calc(12rem + .8rem)', },
+          // third pod
+          { top: '11rem', left: 'calc(24rem + 7.3rem)', transform: 'rotate(90deg)' },
+          { top: '11rem', left: 'calc(24rem + 4.5rem)', transform: 'rotate(90deg)' },
+          { top: '7.5rem', left: 'calc(24rem + .8rem)', },
+          { top: '4.5rem', left: 'calc(24rem + .8rem)', },
+          { top: '1rem' , left: 'calc(24rem + 4.5rem)', transform: 'rotate(90deg)' },
+          { top: '1rem', left: 'calc(24rem + 7.3rem)', transform: 'rotate(90deg)' },
+          { top: '4.5rem', left: 'calc(24rem + 11rem)', },
+          { top: '7.5rem', left: 'calc(24rem + 11rem)', },
+          // fourth pod
+          { top: 'calc(1rem + 12rem)', left: 'calc(35.6rem + 4.5rem)', transform: 'rotate(90deg)' },
+          { top: 'calc(1rem + 12rem)', left: 'calc(35.6rem + 7.3rem)', transform: 'rotate(90deg)' },
+          { top: 'calc(4.5rem + 12rem)', left: 'calc(35.6rem + 11rem)', },
+          { top: 'calc(7.5rem + 12rem)', left: 'calc(35.6rem + 11rem)', },
+          { top: 'calc(11rem + 12rem)', left: 'calc(35.6rem + 7.3rem)', transform: 'rotate(90deg)' },
+          { top: 'calc(11rem + 12rem)', left: 'calc(35.6rem + 4.5rem)', transform: 'rotate(90deg)' },
+          { top: 'calc(7.5rem + 12rem)', left: 'calc(35.6rem + .8rem)', },
+          { top: 'calc(4.5rem + 12rem)', left: 'calc(35.6rem + .8rem)', },
+
+        ].map((item, index) => {
+          const podNumber = index % 4 + 1;
+          return(
+          <Button style={{...item, width: '40px', fontSize: '15px', padding: 0, position: 'absolute',
+          zIndex: '100'}}>{floor * 100 + index + 1}</Button>
+        )})}
       </Box>
     </>}
     </>
