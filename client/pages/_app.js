@@ -9,7 +9,7 @@ import Head from 'next/head'
 function MyApp({ Component, pageProps, session }) {
   const getLayout = Component.getLayout ?? ((page)=>page)
   return (
-    <SessionProvider session={session}>
+    <SessionProvider session={session} refetchInterval={5 * 60}>
       <Head>
         <title>r/IITH </title>
         <meta name="description" content="IITH r/place" />

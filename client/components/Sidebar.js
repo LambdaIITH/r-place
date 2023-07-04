@@ -158,7 +158,7 @@ export default function Sidebar(props) {
               <Card.Section>
                 <div
                   style={{
-                    backgroundColor: `${props?.current}`,
+                    backgroundColor: `${props?`${props?.current}`:`white`}`,
                     height: "80px",
                     width: "80px",
                     margin: "0 auto",
@@ -203,7 +203,7 @@ export default function Sidebar(props) {
               <Card.Section>
                 <div
                   style={{
-                    backgroundColor: `${props.chosen}`,
+                    backgroundColor:  `${props?`${props?.chosen}`:`white`}`,
                     height: "80px",
                     width: "80px",
                     margin: "0 auto",

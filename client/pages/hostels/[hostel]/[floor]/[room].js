@@ -13,7 +13,7 @@ import {
 } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import Layout from '../../../../components/layouts/hostel_layout'
-import { useSession } from 'next-auth/react'
+import { useSession, signIn } from 'next-auth/react'
 import { IconTrash, IconEdit } from '@tabler/icons-react'
 
 const useStyles = createStyles((theme) => ({
@@ -34,7 +34,7 @@ export default function Room() {
   const { classes, cx } = useStyles()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [loading, setLoading] = useState(true)
+  const [page_loading, setPageLoading] = useState(true)
   const [commentValue, setCommentValue] = useState('')
   const { data: session } = useSession({ required: true });
   const [owner, setOwner] = useState(false)
@@ -52,6 +52,10 @@ export default function Room() {
         },
       }
     )
+    if (res.status === 498){
+      signIn()
+      return
+    }
     if (res.status == 200) {
       console.log('Comment Posted Successfuly')
     } else {
@@ -70,6 +74,10 @@ export default function Room() {
         }
       }
     )
+    if (res.status === 498){
+      signIn()
+      return
+    }
     if (res.status == 404) {
       // router.push('/404')
       router.push('/hostels')
@@ -85,7 +93,7 @@ export default function Room() {
     // }
     console.log('comments',data)
     setComments(data)
-    setLoading(false)
+    setPageLoading(false)
 
   }
   async function deleteComment() {
@@ -99,6 +107,10 @@ export default function Room() {
         }
       }
     )
+    if (res.status === 498){
+      signIn()
+      return
+    }
     // TODO
   }
   async function editComment() {
@@ -112,6 +124,10 @@ export default function Room() {
         }
       }
     )
+    if (res.status === 498){
+      signIn()
+      return
+    }
     // TODO
   }
   async function getRoomData() {
@@ -147,12 +163,12 @@ export default function Room() {
     getComments()
   }
   useEffect(() => {
-    if (!router.isReady) return
+    if (!router.isReady || !session) return
     getRoomData()
-  }, [router.isReady, router.query])
+  }, [session,router.isReady, router.query])
   return (
     <>
-      {loading ? (
+      {page_loading ? (
         <></>
       ) : (
         <Container>

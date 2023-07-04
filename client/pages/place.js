@@ -17,7 +17,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { IconX } from "@tabler/icons-react";
 import AppContext from "../AppContext";
 import Head from "next/head";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { notifications } from '@mantine/notifications';
 
 export default function Place() {
@@ -84,8 +84,10 @@ export default function Place() {
           },
         }
       );
-      console.log(chosen);
       const temp = await response.json();
+      if (response.status === 498){
+        signIn();
+      }
       if (response.status === 429) {
         setCooldown(temp.cooldown);
       } else {
