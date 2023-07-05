@@ -6,7 +6,6 @@ import {
   Drawer,
   MediaQuery,
   Menu,
-  Notification,
   Title,
   useMantineTheme,
 } from "@mantine/core";
@@ -19,6 +18,7 @@ import AppContext from "../AppContext";
 import Head from "next/head";
 import { signIn, useSession } from "next-auth/react";
 import { notifications } from '@mantine/notifications';
+import PlaceCanvas from "../components/skeletons/PlaceCanvas";
 
 export default function Place() {
   const theme = useMantineTheme();
@@ -46,6 +46,7 @@ export default function Place() {
   // might break here, check what happens if pixel_logs table empty
   const [last_update, setLastUpdate] = useState(0);
 
+  const [loading, setLoading] = useState(true);
   async function loadCanvas() {
     try {
       console.log("loading canvas");
@@ -64,6 +65,7 @@ export default function Place() {
       }
       setColors(colors);
       setLastUpdate(temp["last update"]);
+      setLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -198,28 +200,15 @@ export default function Place() {
           }
           header={<Nav setOpened={setOpened} setChosen={setChosen} />}
         >
-          {/* {cooldown ? (
-            <Notification
-              icon={<IconX size={"1.1rem"} />}
-              withCloseButton={true}
-              onClose={(e) => {
-                setCooldown(false);
-              }}
-              color="red"
-              sx={{ marginBottom: "10px" }}
-            >
-              Pixel update failed. Please try again after{" "}
-              {Math.floor(cooldown * 100) / 100} seconds.
-            </Notification>
-          ) : (
-            <></>
-          )} */}
-          <Canvas
+          {loading?
+          <PlaceCanvas loading={loading}/>
+          :<Canvas
             setCol={setCol}
             setRow={setRow}
             setCurrent={setCurrent}
             colors={colors}
-          />
+          />}
+          
         </AppShell>
       </MediaQuery>
       <MediaQuery largerThan="lg" styles={{ display: "none" }}>
@@ -267,23 +256,6 @@ export default function Place() {
               height: "20%",
             }}
           >
-            {/* {cooldown ? (
-              
-              <Notification
-                icon={<IconX size={"1.1rem"} />}
-                withCloseButton={true}
-                onClose={(e) => {
-                  setCooldown(false);
-                }}
-                color="red"
-                sx={{ marginBottom: "10px", zIndex: "100" }}
-              >
-                Pixel update failed. Please try again after{" "}
-                {Math.floor(cooldown * 100) / 100} seconds.
-              </Notification>
-            ) : (
-              <></>
-            )} */}
             <Canvas
               setCol={setCol}
               setRow={setRow}
