@@ -175,6 +175,7 @@ export function Nav(props) {
 
 
   async function gradInfo() {
+    if (searchValue.length === 0) return;
     const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/search/name?q=${(searchValue.indexOf(":")>-1)?searchValue.split(":")[1]:searchValue}`, {
       method: 'GET',
     });

@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react'
 import Layout from '../../../../components/layouts/hostel_layout'
 import { useSession, signIn } from 'next-auth/react'
 import { IconTrash, IconEdit } from '@tabler/icons-react'
+import RoomSkeleton from '../../../../components/skeletons/Room'
 
 const useStyles = createStyles((theme) => ({
   carousel: {},
@@ -36,7 +37,7 @@ export default function Room() {
   const [email, setEmail] = useState('')
   const [page_loading, setPageLoading] = useState(true)
   const [commentValue, setCommentValue] = useState('')
-  const { data: session } = useSession({ required: true })
+  const { data: session, loading } = useSession({ required: true })
   const [owner, setOwner] = useState(false)
   const [comments, setComments] = useState([])
   const [edit_comment, setEditComment] = useState(false)
@@ -87,13 +88,18 @@ export default function Room() {
       return
     }
     const data = await res.json()
-    // if (data.length === 0) {
-    //   if (session?.user?.email === email){
-    //     console.log('You are the owner')
-    //     setComments([{from_user: 'No one@iith.ac.in', comment: 'You are a great person!, No more comments yet!'}])
-    //     return
-    //   }
-    // }
+    if (data.length === 0) {
+      if (session?.user?.email === email) {
+        console.log('You are the owner')
+        setComments([
+          {
+            from_user: 'No one@iith.ac.in',
+            comment: 'You are a great person!, No more comments yet!',
+          },
+        ])
+        return
+      }
+    }
     console.log('comments', data)
     setComments(data)
     setPageLoading(false)
@@ -166,13 +172,16 @@ export default function Room() {
     getComments()
   }
   useEffect(() => {
+    if (loading) return
     if (!router.isReady || !session) return
     getRoomData()
-  }, [session, router.isReady, router.query])
+  }, [session, loading, router.isReady, router.query])
   return (
     <>
       {page_loading ? (
-        <></>
+        <>
+          <RoomSkeleton loading={page_loading} />
+        </>
       ) : (
         <Container>
           <Title align="center" mt={12} mb={24}>
