@@ -10,6 +10,9 @@ import {
   Button,
   Box,
   ActionIcon,
+  Card,
+  Blockquote,
+  Image,
 } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import Layout from '../../../../components/layouts/hostel_layout'
@@ -35,6 +38,7 @@ export default function Room() {
   const { classes, cx } = useStyles()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [quote, setQuote] = useState('')
   const [page_loading, setPageLoading] = useState(true)
   const [commentValue, setCommentValue] = useState('')
   const { data: session, loading } = useSession({ required: true })
@@ -152,6 +156,8 @@ export default function Room() {
     const data = await res.json()
     setName(data.name)
     setEmail(data.email)
+    console.log(data)
+    setQuote(data.quote)
     const questions = []
     const answers = []
     for (var key in data.form_response) {
@@ -179,32 +185,43 @@ export default function Room() {
   return (
     <>
       {page_loading ? (
-        <>
-          <RoomSkeleton loading={page_loading} />
-        </>
+        <RoomSkeleton loading={page_loading} />
       ) : (
         <Container>
           <Title align="center" mt={12} mb={24}>
             Welcome to {name}'s room!
           </Title>
-          <Carousel
-            maw={320}
-            mx="auto"
-            withIndicators
-            height={200}
-            slideGap="md"
-            align="start"
-            loop
-            className={classes.carousel}
-          >
-            {questions.map((question, index) => (
-              <Carousel.Slide key={index} className={classes.slide}>
-                <Text className={classes.question}>{question} :</Text>
-                <Text className={classes.answer}>{answers[index]}</Text>
-              </Carousel.Slide>
-            ))}
-          </Carousel>
-
+          <Container display="flex" sx={{ flexDirection: 'row' }} mb={16}>
+            <Card>
+              <Card.Section>
+                <Image
+                  src="https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
+                  height={160}
+                  alt="Norway"
+                />
+              </Card.Section>
+              <Blockquote cite={name}>
+                {quote}
+              </Blockquote>
+            </Card>
+            <Carousel
+              maw={320}
+              mx="auto"
+              withIndicators
+              height={200}
+              slideGap="md"
+              align="start"
+              loop
+              className={classes.carousel}
+            >
+              {questions.map((question, index) => (
+                <Carousel.Slide key={index} className={classes.slide}>
+                  <Text className={classes.question}>{question} :</Text>
+                  <Text className={classes.answer}>{answers[index]}</Text>
+                </Carousel.Slide>
+              ))}
+            </Carousel>
+          </Container>
           <Box sx={{ height: '250px', overflowY: 'scroll', mx: 16, mb: 16 }}>
             {owner ? (
               <>

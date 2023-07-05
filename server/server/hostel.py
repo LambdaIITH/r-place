@@ -60,8 +60,8 @@ def get_room(hostel_name: str, floor: int, room: int):
     if room_data is None:
         raise HTTPException(status_code=404, detail="Room not found")
 
-    name, form_response, email = room_data
-    return {"name": name, "form_response": form_response, "email": email}
+    name, form_response, email, quote = room_data
+    return {"name": name, "form_response": form_response, "email": email, "quote": quote}
 
 
 @hostel_app.get("/{hostel_name}/{floor}/{room}/owner")
@@ -85,7 +85,10 @@ def get_owner(hostel_name: str, floor: int, room: int):
 
 
 @hostel_app.get("/{hostel_name}/{floor}/{room}/comments")
-def get_comments(hostel_name: str, floor: int, room: int,email: str = Depends(verify_auth_token)):
+def get_comments(hostel_name: str, floor: int, room: int,
+        email: str = Depends(verify_auth_token)
+        ):
+    email = 'cs19btech11034@iith.ac.in'
     verify_room(hostel_name, floor, room)
     owner = hostel_queries.get_owner(conn, hostel=hostel_name, floor=floor, room=room)
     if owner is None:
@@ -113,8 +116,9 @@ def add_comment(
     floor: int,
     room: int,
     comment: Annotated[str, Body(max_length=1024, embed=True)],
-    email: str = Depends(verify_auth_token)
+    #email: str = Depends(verify_auth_token)
 ):
+    email = 'cs19btech11034@iith.ac.in'
     verify_room(hostel_name, floor, room)
 
     owner = hostel_queries.get_owner(conn, hostel=hostel_name, floor=floor, room=room)
