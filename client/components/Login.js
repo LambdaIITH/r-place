@@ -51,7 +51,7 @@ const Login = () => {
                 height: "100vh",
                 padding: "0 5rem",
                 textAlign: "left",
-                backgroundColor: "#373A40",
+                backgroundColor: "#27272a",
                 color: "rgba(255, 255, 255, .9)",
               }}
             >
@@ -103,7 +103,7 @@ const Login = () => {
               height: "100vh",
               padding: "0 2rem",
               textAlign: "left",
-              backgroundColor: "#373A40",
+              backgroundColor: "#171717",
               color: "rgba(255, 255, 255, .9)",
             }}
           >

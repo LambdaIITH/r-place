@@ -16,7 +16,7 @@ const Discription = () => {
         height: "100vh",
         padding: "0 5rem",
         textAlign: "left",
-        backgroundColor: "#1C2128",
+        backgroundColor: "#171717",
         color: "rgba(255, 255, 255, .9)",
       }}
     >
@@ -30,7 +30,7 @@ const Discription = () => {
           letterSpacing: "2px",
         }}
       >
-        r/Place
+        r/IITH-2023
       </Title>
       <Image
         alt="r-place logo"
@@ -53,8 +53,8 @@ const Discription = () => {
           },
         }}
       >
-        Welcome to our IITH Alumni r/place app. Graduating Students of IITH can
-        connect and leave their mark on our digital canvas. In this
+        Welcome to our IITH Alumni r/place app where Graduating Students can
+        leave their mark on our digital canvas. In this
         collaborative art project, each alumnus can contribute a pixel to create
         a unique and beautiful image that represents our community. Let&apos;s
         come together and create something special that will last a lifetime.
