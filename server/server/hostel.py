@@ -88,7 +88,6 @@ def get_owner(hostel_name: str, floor: int, room: int):
 def get_comments(hostel_name: str, floor: int, room: int,
         email: str = Depends(verify_auth_token)
         ):
-    email = 'cs19btech11034@iith.ac.in'
     verify_room(hostel_name, floor, room)
     owner = hostel_queries.get_owner(conn, hostel=hostel_name, floor=floor, room=room)
     if owner is None:
@@ -116,9 +115,8 @@ def add_comment(
     floor: int,
     room: int,
     comment: Annotated[str, Body(max_length=1024, embed=True)],
-    #email: str = Depends(verify_auth_token)
+    email: str = Depends(verify_auth_token)
 ):
-    email = 'cs19btech11034@iith.ac.in'
     verify_room(hostel_name, floor, room)
 
     owner = hostel_queries.get_owner(conn, hostel=hostel_name, floor=floor, room=room)

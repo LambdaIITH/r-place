@@ -21,13 +21,20 @@ import { IconTrash, IconEdit } from '@tabler/icons-react'
 import RoomSkeleton from '../../../../components/skeletons/Room'
 
 const useStyles = createStyles((theme) => ({
-  carousel: {},
-  slide: {
-    padding: '1rem',
+  carousel: {
     backgroundColor: theme.colors.blue[0],
   },
-  question: {},
-  answer: {},
+  slide: {
+    padding: '2rem',
+    backgroundColor: theme.colors.blue[0],
+  },
+  question: {
+    fontSize: '16px',
+    fontWeight: 600,
+  },
+  answer: {
+    fontSize: '15px',
+  },
 }))
 
 export default function Room() {
@@ -67,11 +74,11 @@ export default function Room() {
     } else {
       console.log('Some errors occured')
     }
-    getComments()
+    getComments(owner)
     setCommentValue('')
   }
 
-  async function getComments() {
+  async function getComments(owner) {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/${hostel}/${floor}/${room}/comments`,
       {
@@ -82,6 +89,7 @@ export default function Room() {
         },
       }
     )
+
     if (res.status === 498) {
       signIn()
       return
@@ -92,19 +100,21 @@ export default function Room() {
       return
     }
     const data = await res.json()
-    if (data.length === 0) {
-      if (session?.user?.email === email) {
-        console.log('You are the owner')
-        setComments([
-          {
-            from_user: 'No one@iith.ac.in',
-            comment: 'You are a great person!, No more comments yet!',
-          },
-        ])
-        return
-      }
-    }
-    console.log('comments', data)
+
+    // if (data.length === 0) {
+      // if (session?.user?.email === email) {
+        // console.log('You are the owner')
+        // setComments([
+        //   {
+        //     from_user: 'No one@iith.ac.in',
+        //     comment: 'You are a great person!, No more comments yet!',
+        //   },
+        // ])
+        // return
+      // }
+    // }
+
+    setOwner(owner)
     setComments(data)
     setPageLoading(false)
   }
@@ -123,7 +133,7 @@ export default function Room() {
       signIn()
       return
     }
-    getComments()
+    getComments(owner)
   }
   async function editComment() {
     const res = await fetch(
@@ -141,7 +151,7 @@ export default function Room() {
       signIn()
       return
     }
-    getComments()
+    getComments(owner)
     setCommentValue('')
   }
   async function getRoomData() {
@@ -156,32 +166,34 @@ export default function Room() {
     const data = await res.json()
     setName(data.name)
     setEmail(data.email)
-    console.log(data)
     setQuote(data.quote)
     const questions = []
     const answers = []
-    for (var key in data.form_response) {
-      if (data.form_response.hasOwnProperty(key)) {
+    for (var key in data.form_response.texts) {
+      if (data.form_response.texts.hasOwnProperty(key)) {
         questions.push(key)
-        answers.push(data.form_response[key])
+        answers.push(data.form_response.texts[key])
       }
     }
     setQuestions(questions)
     setAnswers(answers)
-    console.log(questions, answers)
-    if (session?.user?.email === data.email) {
+    if (session.user.email === data.email) {
       console.log('You are the owner')
-      setOwner(true)
+      getComments(true)
     } else {
-      setOwner(false)
+      console.log('Not the owner')
+      getComments(false)
     }
-    getComments()
   }
   useEffect(() => {
     if (loading) return
     if (!router.isReady || !session) return
     getRoomData()
+    console.log('here')
   }, [session, loading, router.isReady, router.query])
+  useEffect(()=>{
+    console.log('1')
+  },[session])
   return (
     <>
       {page_loading ? (
@@ -189,26 +201,37 @@ export default function Room() {
       ) : (
         <Container>
           <Title align="center" mt={12} mb={24}>
-            Welcome to {name}'s room!
+            <Text
+              variant="gradient"
+              gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}
+              ta="center"
+              sx={{
+                fontSize: '2rem',
+              }}
+              fw={700}
+            >
+              Welcome to {name}'s room!
+            </Text>
           </Title>
           <Container display="flex" sx={{ flexDirection: 'row' }} mb={16}>
-            <Card>
-              <Card.Section>
-                <Image
-                  src="https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
-                  height={160}
-                  alt="Norway"
-                />
-              </Card.Section>
-              <Blockquote cite={name}>
-                {quote}
-              </Blockquote>
+            <Card mr={40} sx={{ width: '800px' }}>
+                <Card.Section >
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_PICTURE_URL}/imgs/photo_${email.replace("@iith.ac.in","")}.webp`}
+                      alt="Your Image"
+                      width={300}
+                      height={300}
+                      m={'auto'}
+                    />
+                </Card.Section>
+                  <Blockquote cite={<Text size={12}>{name}</Text>}>
+                    <Text size={13} >{quote}</Text>
+                  </Blockquote>
             </Card>
             <Carousel
-              maw={320}
+              maw={400}
               mx="auto"
               withIndicators
-              height={200}
               slideGap="md"
               align="start"
               loop
@@ -216,10 +239,33 @@ export default function Room() {
             >
               {questions.map((question, index) => (
                 <Carousel.Slide key={index} className={classes.slide}>
-                  <Text className={classes.question}>{question} :</Text>
+                  <Text className={classes.question}>{question} </Text>
                   <Text className={classes.answer}>{answers[index]}</Text>
                 </Carousel.Slide>
               ))}
+              <Carousel.Slide className={classes.slide}>
+                <Text className={classes.question} align='center'>{'<'}Meme{'>'}</Text>
+                <Image
+                  src={`${process.env.NEXT_PUBLIC_PICTURE_URL}/imgs/meme_${email.replace("@iith.ac.in","")}.webp`}
+                  alt="Meme"
+                  width={300}
+                  height={300}
+                  m={'auto'}
+                />
+                <Text className={classes.question} align='center'>{'</'}Meme{'>'}</Text>
+              </Carousel.Slide>
+              <Carousel.Slide className={classes.slide}>
+                <Text className={classes.question} align='center'>{'<'}Gang{'>'}</Text>
+                <Image
+                  src={`${process.env.NEXT_PUBLIC_PICTURE_URL}/imgs/gang_${email.replace("@iith.ac.in","")}.webp`}
+                  alt="Meme"
+                  width={300}
+                  // height={300}
+                  m={'auto'}
+                />
+                <Text className={classes.question} align='center'>{'</'}Gang{'>'}</Text>
+
+              </Carousel.Slide>
             </Carousel>
           </Container>
           <Box sx={{ height: '250px', overflowY: 'scroll', mx: 16, mb: 16 }}>

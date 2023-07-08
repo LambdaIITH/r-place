@@ -109,12 +109,11 @@ export default function Place() {
       );
       const temp = await response.json();
       const updates = temp.updates;
+      const newColors = [...colors];
       for (let i = 0; i < updates.length; i++) {
-        const newColors = [...colors];
-        newColors[updates[i].row * gridSize + updates[i].col] =
-          updates[i].color;
-        setColors(newColors);
+        newColors[updates[i].row * gridSize + updates[i].col] = updates[i].color;
       }
+      setColors(newColors);
       setLastUpdate(temp["last update"]);
     } catch (err) {
       console.log(err);
