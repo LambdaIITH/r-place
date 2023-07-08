@@ -30,12 +30,10 @@ const useStyles = createStyles((theme) => ({
     zIndex: '100',
     width: '12rem',
     height: '6rem',
-    // visibility: 'hidden',
 
     opacity: 0,
     '&:hover': {
       transition: 'all linear .3s',
-      // visibility: 'visible',
       opacity: 1,
       cursor: 'pointer',
       backgroundColor: theme.colors.green[2],
@@ -49,16 +47,19 @@ export default function Home() {
   let globalData = value.state.globalData
   const { hostel_names } = globalData
   const [page_loading, setPageLoading] = useState(true)
-  const [opened, { open, close }] = useDisclosure(false)
-  const [hostel, setHostel] = useState(null)
+  const [opened, { open, close }] = useDisclosure(false) // for lift modal
+  const [hostel, setHostel] = useState(null) 
+  
   useEffect(() => {
     setPageLoading(true)
   }, [])
+  
   useEffect(() => {
     if (hostel_names.length > 0) {
       setPageLoading(false)
     }
   }, [hostel_names])
+
   return (
     <>
       {page_loading ? (

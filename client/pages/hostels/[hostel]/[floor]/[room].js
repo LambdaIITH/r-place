@@ -40,18 +40,20 @@ const useStyles = createStyles((theme) => ({
 export default function Room() {
   const router = useRouter()
   const { hostel, floor, room } = router.query
+  const { classes, cx } = useStyles()
+  const [page_loading, setPageLoading] = useState(true)
+  const { data: session, loading } = useSession({ required: true }) // Need to be logged in to view this page
+
+  // User Data
   const [questions, setQuestions] = useState([])
   const [answers, setAnswers] = useState([])
-  const { classes, cx } = useStyles()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [quote, setQuote] = useState('')
-  const [page_loading, setPageLoading] = useState(true)
   const [commentValue, setCommentValue] = useState('')
-  const { data: session, loading } = useSession({ required: true })
   const [owner, setOwner] = useState(false)
   const [comments, setComments] = useState([])
-  const [edit_comment, setEditComment] = useState(false)
+  const [edit_comment, setEditComment] = useState(false) // To check if the user is editing a comment, hence change the API call
 
   const postComment = async () => {
     const res = await fetch(
@@ -66,6 +68,7 @@ export default function Room() {
       }
     )
     if (res.status === 498) {
+      // Token expired
       signIn()
       return
     }
@@ -91,6 +94,7 @@ export default function Room() {
     )
 
     if (res.status === 498) {
+      // Token expired
       signIn()
       return
     }
@@ -102,22 +106,24 @@ export default function Room() {
     const data = await res.json()
 
     // if (data.length === 0) {
-      // if (session?.user?.email === email) {
-        // console.log('You are the owner')
-        // setComments([
-        //   {
-        //     from_user: 'No one@iith.ac.in',
-        //     comment: 'You are a great person!, No more comments yet!',
-        //   },
-        // ])
-        // return
-      // }
+    //   if (session?.user?.email === email) {
+    //     console.log('You are the owner')
+    //     setComments([
+    //       {
+    //         from_user: 'No one@iith.ac.in',
+    //         comment: 'You are a great person!, No more comments yet!',
+    //       },
+    //     ])
+    //     return
+    //   }
     // }
 
     setOwner(owner)
     setComments(data)
-    setPageLoading(false)
+    setPageLoading(false) // Page is loaded since we have everything we need
   }
+
+
   async function deleteComment() {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/${hostel}/${floor}/${room}/comments`,
@@ -135,6 +141,9 @@ export default function Room() {
     }
     getComments(owner)
   }
+
+
+
   async function editComment() {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/${hostel}/${floor}/${room}/comments`,
@@ -154,6 +163,9 @@ export default function Room() {
     getComments(owner)
     setCommentValue('')
   }
+
+
+  // Get the room data, runs when there is a room change
   async function getRoomData() {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/${hostel}/${floor}/${room}`
@@ -164,9 +176,12 @@ export default function Room() {
       return
     }
     const data = await res.json()
+
     setName(data.name)
     setEmail(data.email)
     setQuote(data.quote)
+
+
     const questions = []
     const answers = []
     for (var key in data.form_response.texts) {
@@ -177,6 +192,8 @@ export default function Room() {
     }
     setQuestions(questions)
     setAnswers(answers)
+
+
     if (session.user.email === data.email) {
       console.log('You are the owner')
       getComments(true)
@@ -185,15 +202,15 @@ export default function Room() {
       getComments(false)
     }
   }
+
+
   useEffect(() => {
-    if (loading) return
-    if (!router.isReady || !session) return
+    if (loading) return // Don't do anything if the session is loading
+    if (!router.isReady || !session) return // Don't do anything if the router is not ready or session is not present
     getRoomData()
-    console.log('here')
   }, [session, loading, router.isReady, router.query])
-  useEffect(()=>{
-    console.log('1')
-  },[session])
+
+
   return (
     <>
       {page_loading ? (
@@ -215,18 +232,23 @@ export default function Room() {
           </Title>
           <Container display="flex" sx={{ flexDirection: 'row' }} mb={16}>
             <Card mr={40} sx={{ width: '800px' }}>
-                <Card.Section >
-                    <Image
-                      src={`${process.env.NEXT_PUBLIC_PICTURE_URL}/imgs/photo_${email.replace("@iith.ac.in","")}.webp`}
-                      alt="Your Image"
-                      width={300}
-                      height={300}
-                      m={'auto'}
-                    />
-                </Card.Section>
-                  <Blockquote cite={<Text size={12}>{name}</Text>}>
-                    <Text size={13} >{quote}</Text>
-                  </Blockquote>
+              <Card.Section>
+                <Image
+                  src={`${process.env.NEXT_PUBLIC_PICTURE_URL}/imgs/photo_${email.replace('@iith.ac.in', '')}.webp`}
+                  alt="Your Image"
+                  width={300}
+                  height={300}
+                  m={'auto'}
+                  onError={(e) => {
+                    console.log(e)
+                    e.target.onError = null
+                    e.target.src = `https://www.pngitem.com/pimgs/m/30-307416_profile-icon-png-image-free-download-searchpng-employee.png`
+                  }}
+                />
+              </Card.Section>
+              <Blockquote cite={<Text size={12}>{name}</Text>}>
+                <Text size={13}>{quote}</Text>
+              </Blockquote>
             </Card>
             <Carousel
               maw={400}
@@ -244,27 +266,44 @@ export default function Room() {
                 </Carousel.Slide>
               ))}
               <Carousel.Slide className={classes.slide}>
-                <Text className={classes.question} align='center'>{'<'}Meme{'>'}</Text>
+                <Text className={classes.question} align="center">
+                  {'<'}Meme{'>'}
+                </Text>
                 <Image
-                  src={`${process.env.NEXT_PUBLIC_PICTURE_URL}/imgs/meme_${email.replace("@iith.ac.in","")}.webp`}
+                  src={`${process.env.NEXT_PUBLIC_PICTURE_URL}/imgs/meme_${email.replace('@iith.ac.in', '')}.webp`}
                   alt="Meme"
                   width={300}
                   height={300}
                   m={'auto'}
+                  onError={(e) => {
+                    console.log(e)
+                    e.target.onError = null
+                    e.target.src = `https://www.pngitem.com/pimgs/m/30-307416_profile-icon-png-image-free-download-searchpng-employee.png`
+                  }}
                 />
-                <Text className={classes.question} align='center'>{'</'}Meme{'>'}</Text>
+                <Text className={classes.question} align="center">
+                  {'</'}Meme{'>'}
+                </Text>
               </Carousel.Slide>
               <Carousel.Slide className={classes.slide}>
-                <Text className={classes.question} align='center'>{'<'}Gang{'>'}</Text>
+                <Text className={classes.question} align="center">
+                  {'<'}Gang{'>'}
+                </Text>
                 <Image
-                  src={`${process.env.NEXT_PUBLIC_PICTURE_URL}/imgs/gang_${email.replace("@iith.ac.in","")}.webp`}
+                  src={`${process.env.NEXT_PUBLIC_PICTURE_URL}/imgs/gang_${email.replace('@iith.ac.in', '')}.webp`}
                   alt="Meme"
                   width={300}
                   // height={300}
                   m={'auto'}
+                  onError={(e) => {
+                    console.log(e)
+                    e.target.onError = null
+                    e.target.src = `https://www.pngitem.com/pimgs/m/30-307416_profile-icon-png-image-free-download-searchpng-employee.png`
+                  }}
                 />
-                <Text className={classes.question} align='center'>{'</'}Gang{'>'}</Text>
-
+                <Text className={classes.question} align="center">
+                  {'</'}Gang{'>'}
+                </Text>
               </Carousel.Slide>
             </Carousel>
           </Container>

@@ -2,12 +2,14 @@ import { Button, Group, HoverCard, Blockquote, Text } from "@mantine/core"
 
 export default function Pods({floorData, floor, hostel}) {
 
+  // search rooms in the floorData array and return a button if its a graduate room
   function search_room(room, item, key) {
     for (let i = 0; i < floorData.length; i++) {
       if (floor * 100 + floorData[i].room_number === room) {
         return return_room_button(floorData[i], item, key)
       }
     }
+    // if room is not found in the floorData array, return a disabled button
     return (
       <Group position="center" key={key}>
         <Button
@@ -24,6 +26,8 @@ export default function Pods({floorData, floor, hostel}) {
       </Group>
     )
   }
+
+  // return a button with the room number, owner name and quote as a hovercard
   function return_room_button(room_owner_data, item, key) {
     return (
       <Group position="center" key={key}>
@@ -54,6 +58,8 @@ export default function Pods({floorData, floor, hostel}) {
       </Group>
     )
   }
+
+  // ehm, this is a long list of objects containing the position of the pods, hardcoded, could be improved
   const pods = [
     // first pod
     { top: '11rem', left: '7.3rem', transform: 'rotate(90deg)' },
