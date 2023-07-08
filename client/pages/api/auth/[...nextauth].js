@@ -16,7 +16,6 @@ export default NextAuth({
   ],
   callbacks: {
     async signIn({ account, profile }) {
-      console.log(account);
       if (!profile.email.endsWith("@iith.ac.in")) {
         console.log("Not an IITH email");
         return false;

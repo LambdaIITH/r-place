@@ -1,5 +1,6 @@
 from google.auth.transport import requests
 from google.oauth2 import id_token
+from google.auth import exceptions
 import os
 
 from dotenv import load_dotenv
@@ -13,15 +14,14 @@ def get_user_email(token):
     try:
         # Specify the CLIENT_ID of the app that accesses the backend:
         # TODO: Source client ID from config and verfiy here
-        
+        print(token)
+        # try:
         idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
-        
         # Or, if multiple clients access the backend server:
         # idinfo = id_token.verify_oauth2_token(token, requests.Request())
         # if idinfo['aud'] not in [CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]:
         #     raise ValueError('Could not verify audience.')
 
-        print(idinfo)
         email = idinfo["email"]
 
         # If auth request is from a G Suite domain:
@@ -32,6 +32,8 @@ def get_user_email(token):
         userid = idinfo["sub"]  # noqa: F841
 
         return email
+    except exceptions.InvalidValue :
+        raise exceptions.InvalidValue("Token is invalid")
     except ValueError:
-        # Invalid token
+        # Invalid but not expired token
         return None

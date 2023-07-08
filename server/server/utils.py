@@ -4,7 +4,7 @@ import aiosql
 from dotenv import load_dotenv
 from auth import get_user_email
 from fastapi import Header, HTTPException
-
+from google.auth import exceptions
 load_dotenv()
 
 DATABASE = os.getenv("DATABASE")
@@ -28,9 +28,14 @@ print("Opened database successfully!")
 
 
 def verify_auth_token(Authorization: str = Header()):
-    email = get_user_email(Authorization)
-    if email is None:
-        raise HTTPException(
-            status_code=401, detail="We are not able to authenticate you."
+    try: 
+        email = get_user_email(Authorization)
+        if email is None:
+            raise HTTPException(
+                status_code=401, detail="We are not able to authenticate you."
         )
+    except exceptions.InvalidValue:
+        raise HTTPException(
+            status_code=498, detail="Invalid Token, please login again."
+    )
     return email

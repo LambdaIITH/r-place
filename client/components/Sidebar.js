@@ -26,10 +26,10 @@ export default function Sidebar(props) {
         <Aside
           p="md"
           hiddenBreakpoint="sm"
-          width={{ sm: 300 }}
+          width={{ sm: 250 }}
           hidden={!props.opened}
         >
-          <Stack spacing="md">
+          <Stack spacing="sm">
             <Card
               shadow="md"
               radius="md"
@@ -41,9 +41,9 @@ export default function Sidebar(props) {
               <Card.Section>
                 <div
                   style={{
-                    backgroundColor: `${props?.current}`,
-                    height: "200px",
-                    width: "200px",
+                    backgroundColor: `${props?`${props?.current}`:`white`}`,
+                    height: "150px",
+                    width: "150px",
                     margin: "0 auto",
                   }}
                 ></div>
@@ -81,14 +81,14 @@ export default function Sidebar(props) {
               <Card.Section>
                 <div
                   style={{
-                    backgroundColor: `${props.chosen}`,
-                    height: "200px",
-                    width: "200px",
+                    backgroundColor: `${props?`${props?.chosen}`:`white`}`,
+                    height: "150px",
+                    width: "150px",
                     margin: "0 auto",
                   }}
                 ></div>
               </Card.Section>
-              {session ? (
+              {status === "authenticated" ? (
                 <>
                   <Button
                     variant="light"
@@ -158,7 +158,7 @@ export default function Sidebar(props) {
               <Card.Section>
                 <div
                   style={{
-                    backgroundColor: `${props?.current}`,
+                    backgroundColor: `${props?`${props?.current}`:`white`}`,
                     height: "80px",
                     width: "80px",
                     margin: "0 auto",
@@ -203,7 +203,7 @@ export default function Sidebar(props) {
               <Card.Section>
                 <div
                   style={{
-                    backgroundColor: `${props.chosen}`,
+                    backgroundColor:  `${props?`${props?.chosen}`:`white`}`,
                     height: "80px",
                     width: "80px",
                     margin: "0 auto",
@@ -223,19 +223,52 @@ export default function Sidebar(props) {
               </Group>
             </Card>
           </Box>
-          <Button
-            variant="light"
-            color="green"
-            mt="md"
-            radius="md"
-            fullWidth
-            onClick={handleClick}
-          >
-            <Group>
-              <Text>Save</Text>
-              <IconCircleCheck size={20} />
-            </Group>
-          </Button>
+          {status === "authenticated" ? (
+                <>
+                  <Button
+                    variant="light"
+                    color="green"
+                    mt="md"
+                    radius="md"
+                    fullWidth
+                    onClick={handleClick}
+                  >
+                    <Group>
+                      <Text>Save Pixel</Text>
+                      <IconCircleCheck size={20} />
+                    </Group>
+                  </Button>
+                  <Button
+                    variant="light"
+                    color="red"
+                    mt="md"
+                    radius="md"
+                    fullWidth
+                    onClick={() => {
+                      signOut();
+                    }}
+                  >
+                    <Group>
+                      <Text>Logout</Text>
+                    </Group>
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  variant="light"
+                  color="green"
+                  mt="md"
+                  radius="md"
+                  fullWidth
+                  onClick={() => {
+                    signIn();
+                  }}
+                >
+                  <Group>
+                    <Text>Sign In</Text>
+                  </Group>
+                </Button>
+              )}
         </Box>
       </MediaQuery>
     </>

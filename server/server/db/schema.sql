@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 15.1
--- Dumped by pg_dump version 15.1
+-- Dumped from database version 14.8 (Ubuntu 14.8-0ubuntu0.22.10.1)
+-- Dumped by pg_dump version 14.8 (Ubuntu 14.8-0ubuntu0.22.10.1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -16,21 +16,12 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
---
-
--- *not* creating schema, since initdb creates it
-
-
-ALTER SCHEMA public OWNER TO postgres;
-
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- Name: hostel_rooms; Type: TABLE; Schema: public; Owner: -
+-- Name: hostel_rooms; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.hostel_rooms (
@@ -43,8 +34,10 @@ CREATE TABLE public.hostel_rooms (
 );
 
 
+ALTER TABLE public.hostel_rooms OWNER TO postgres;
+
 --
--- Name: pixel_logs; Type: TABLE; Schema: public; Owner: -
+-- Name: pixel_logs; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.pixel_logs (
@@ -57,8 +50,10 @@ CREATE TABLE public.pixel_logs (
 );
 
 
+ALTER TABLE public.pixel_logs OWNER TO postgres;
+
 --
--- Name: pixel_logs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: pixel_logs_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.pixel_logs_id_seq
@@ -70,15 +65,30 @@ CREATE SEQUENCE public.pixel_logs_id_seq
     CACHE 1;
 
 
+ALTER TABLE public.pixel_logs_id_seq OWNER TO postgres;
+
 --
--- Name: pixel_logs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: pixel_logs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.pixel_logs_id_seq OWNED BY public.pixel_logs.id;
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: -
+-- Name: user_comments; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_comments (
+    from_user character varying(255) NOT NULL,
+    to_user character varying(255) NOT NULL,
+    comment character varying(1024)
+);
+
+
+ALTER TABLE public.user_comments OWNER TO postgres;
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.users (
@@ -87,15 +97,17 @@ CREATE TABLE public.users (
 );
 
 
+ALTER TABLE public.users OWNER TO postgres;
+
 --
--- Name: pixel_logs id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: pixel_logs id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pixel_logs ALTER COLUMN id SET DEFAULT nextval('public.pixel_logs_id_seq'::regclass);
 
 
 --
--- Name: hostel_rooms hostel_rooms_hostel_floor_room_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: hostel_rooms hostel_rooms_hostel_floor_room_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.hostel_rooms
@@ -103,7 +115,7 @@ ALTER TABLE ONLY public.hostel_rooms
 
 
 --
--- Name: hostel_rooms hostel_rooms_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: hostel_rooms hostel_rooms_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.hostel_rooms
@@ -111,7 +123,7 @@ ALTER TABLE ONLY public.hostel_rooms
 
 
 --
--- Name: pixel_logs pixel_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: pixel_logs pixel_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pixel_logs
@@ -119,7 +131,15 @@ ALTER TABLE ONLY public.pixel_logs
 
 
 --
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: user_comments user_comments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_comments
+    ADD CONSTRAINT user_comments_pkey PRIMARY KEY (from_user, to_user);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.users
@@ -127,7 +147,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: hostel_rooms hostel_rooms_user_email_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: hostel_rooms hostel_rooms_user_email_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.hostel_rooms
@@ -135,7 +155,7 @@ ALTER TABLE ONLY public.hostel_rooms
 
 
 --
--- Name: pixel_logs pixel_logs_email_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: pixel_logs pixel_logs_email_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pixel_logs
@@ -143,11 +163,11 @@ ALTER TABLE ONLY public.pixel_logs
 
 
 --
--- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
+-- Name: user_comments user_comments_to_user_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-REVOKE USAGE ON SCHEMA public FROM PUBLIC;
-GRANT ALL ON SCHEMA public TO PUBLIC;
+ALTER TABLE ONLY public.user_comments
+    ADD CONSTRAINT user_comments_to_user_fkey FOREIGN KEY (to_user) REFERENCES public.users(email);
 
 
 --

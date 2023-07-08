@@ -3,12 +3,11 @@ import React from "react";
 import Discription from "./Discription";
 import { Button } from "@mantine/core";
 import { IconBrandGoogle } from "@tabler/icons-react";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 const Login = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
-  console.log(session);
   if (status === "authenticated") {
     console.log("authenticated");
     router.push("/place");
@@ -52,7 +51,7 @@ const Login = () => {
                 height: "100vh",
                 padding: "0 5rem",
                 textAlign: "left",
-                backgroundColor: "#373A40",
+                backgroundColor: "#27272a",
                 color: "rgba(255, 255, 255, .9)",
               }}
             >
@@ -76,7 +75,6 @@ const Login = () => {
                 }}
                 onClick={() => {
                   signIn();
-                  console.log("clicked");
                 }}
               >
                 Continue with Google
@@ -105,7 +103,7 @@ const Login = () => {
               height: "100vh",
               padding: "0 2rem",
               textAlign: "left",
-              backgroundColor: "#373A40",
+              backgroundColor: "#171717",
               color: "rgba(255, 255, 255, .9)",
             }}
           >
@@ -139,6 +137,9 @@ const Login = () => {
                 height: "50px",
                 backgroundColor: "#AE3EC9",
                 "&:hover": { backgroundColor: "#AE3ED2" },
+              }}
+              onClick={() => {
+                signIn();
               }}
             >
               Continue with Google

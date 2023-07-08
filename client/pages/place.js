@@ -6,7 +6,6 @@ import {
   Drawer,
   MediaQuery,
   Menu,
-  Notification,
   Title,
   useMantineTheme,
 } from "@mantine/core";
@@ -17,7 +16,9 @@ import { useDisclosure } from "@mantine/hooks";
 import { IconX } from "@tabler/icons-react";
 import AppContext from "../AppContext";
 import Head from "next/head";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
+import { notifications } from '@mantine/notifications';
+import PlaceCanvas from "../components/skeletons/PlaceCanvas";
 
 export default function Place() {
   const theme = useMantineTheme();
@@ -34,8 +35,8 @@ export default function Place() {
   const [last_updated_by, setLastUpdatedBy] = useState("");
 
   // props for canvas
-  const [chosen, setChosen] = useState(""); // from 14 color palette
-  const [current, setCurrent] = useState(""); // current color of chosen pixel from canvas
+  const [chosen, setChosen] = useState("#ffffff"); // from 14 color palette
+  const [current, setCurrent] = useState("#ffffff"); // current color of chosen pixel from canvas
   const [colors, setColors] = useState([]);
   const [cooldown, setCooldown] = useState(0);
 
@@ -45,11 +46,12 @@ export default function Place() {
   // might break here, check what happens if pixel_logs table empty
   const [last_update, setLastUpdate] = useState(0);
 
+  const [loading, setLoading] = useState(true);
   async function loadCanvas() {
     try {
       console.log("loading canvas");
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/full_grid`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/grid/full_grid`,
         {
           method: "GET",
         }
@@ -63,16 +65,18 @@ export default function Place() {
       }
       setColors(colors);
       setLastUpdate(temp["last update"]);
+      setLoading(false);
     } catch (err) {
       console.log(err);
     }
   }
   async function postPixel() {
     try {
+      console.log(chosen);
       const response = await fetch(
         `${
           process.env.NEXT_PUBLIC_BACKEND_URL
-        }/pixel/${row}/${col}/${colorPalette.indexOf(chosen)}`,
+        }/grid/pixel/${row}/${col}/${colorPalette.indexOf(chosen)}`,
         {
           method: "POST",
           headers: {
@@ -83,7 +87,9 @@ export default function Place() {
         }
       );
       const temp = await response.json();
-      console.log(temp);
+      if (response.status === 498){
+        signIn();
+      }
       if (response.status === 429) {
         setCooldown(temp.cooldown);
       } else {
@@ -96,20 +102,18 @@ export default function Place() {
   async function getUpdates(colors) {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/updates/${last_update}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/grid/updates/${last_update}`,
         {
           method: "GET",
         }
       );
       const temp = await response.json();
       const updates = temp.updates;
+      const newColors = [...colors];
       for (let i = 0; i < updates.length; i++) {
-        const newColors = [...colors];
-        newColors[updates[i].row * gridSize + updates[i].col] =
-          updates[i].color;
-        setColors(newColors);
+        newColors[updates[i].row * gridSize + updates[i].col] = updates[i].color;
       }
-      console.log(updates);
+      setColors(newColors);
       setLastUpdate(temp["last update"]);
     } catch (err) {
       console.log(err);
@@ -119,13 +123,13 @@ export default function Place() {
   async function getPixelHistory() {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/pixel/${row}/${col}/history`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/grid/pixel/${row}/${col}/history`,
         {
           method: "GET",
         }
       );
       const temp = await response.json();
-      setLastUpdatedBy(temp[0].email);
+      setLastUpdatedBy(temp[0]?.email);
     } catch (err) {
       console.log(err);
       setLastUpdatedBy("None ㋡");
@@ -154,20 +158,30 @@ export default function Place() {
     }, pollingInterval);
     return () => clearInterval(interval);
   }, [colors]);
-
+  useEffect(()=>{
+    if (cooldown != 0){
+        notifications.show({
+        id: 'hello-there',
+        withCloseButton: true,
+        onClose: () => console.log('unmounted'),
+        onOpen: () => console.log('mounted'),
+        autoClose: 5000,
+        title: "Pixel update failed.",
+        message: `Please try again after ${Math.floor(cooldown * 100) / 100} seconds.`,
+        color: 'red',
+        icon: <IconX />,
+        className: 'my-notification-class',
+        loading: false,
+    });
+  }
+  },[cooldown])
   return (
     <>
-      <Head>
-        <title>r/IITH</title>
-      </Head>
       <MediaQuery smallerThan="lg" styles={{ display: "none" }}>
         <AppShell
           styles={{
             main: {
-              background:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[8]
-                  : theme.colors.gray[0],
+              background: '#f0f0f0'
             },
           }}
           navbarOffsetBreakpoint="sm"
@@ -185,28 +199,15 @@ export default function Place() {
           }
           header={<Nav setOpened={setOpened} setChosen={setChosen} />}
         >
-          {cooldown ? (
-            <Notification
-              icon={<IconX size={"1.1rem"} />}
-              withCloseButton={true}
-              onClose={(e) => {
-                setCooldown(false);
-              }}
-              color="red"
-              sx={{ marginBottom: "10px" }}
-            >
-              Pixel update failed. Please try again after{" "}
-              {Math.floor(cooldown * 100) / 100} seconds.
-            </Notification>
-          ) : (
-            <></>
-          )}
-          <Canvas
+          {loading?
+          <PlaceCanvas loading={loading}/>
+          :<Canvas
             setCol={setCol}
             setRow={setRow}
             setCurrent={setCurrent}
             colors={colors}
-          />
+          />}
+          
         </AppShell>
       </MediaQuery>
       <MediaQuery largerThan="lg" styles={{ display: "none" }}>
@@ -254,22 +255,6 @@ export default function Place() {
               height: "20%",
             }}
           >
-            {cooldown ? (
-              <Notification
-                icon={<IconX size={"1.1rem"} />}
-                withCloseButton={true}
-                onClose={(e) => {
-                  setCooldown(false);
-                }}
-                color="red"
-                sx={{ marginBottom: "10px", zIndex: "100" }}
-              >
-                Pixel update failed. Please try again after{" "}
-                {Math.floor(cooldown * 100) / 100} seconds.
-              </Notification>
-            ) : (
-              <></>
-            )}
             <Canvas
               setCol={setCol}
               setRow={setRow}
