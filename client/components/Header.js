@@ -7,7 +7,6 @@ import {
   Burger,
   rem,
   MediaQuery,
-  useMantineTheme,
   ColorSwatch,
   Title,
   Box,
@@ -20,6 +19,7 @@ import { CheckIcon } from '@mantine/core'
 import AppContext from '../AppContext'
 import { useRouter } from 'next/router'
 import { IconSearch } from '@tabler/icons-react'
+import styles from './Header.module.css'
 
 const useStyles = createStyles((theme) => ({
   inner: {
@@ -79,20 +79,6 @@ const useStyles = createStyles((theme) => ({
           : theme.colors.gray[0],
     },
   },
-  button: {
-    display: 'block',
-    lineHeight: 1,
-    padding: `${rem(8)} ${rem(12)}`,
-    borderRadius: theme.radius.sm,
-    textDecoration: 'none',
-    color: theme.colors.green[9],
-    fontSize: theme.fontSizes.sm,
-    fontWeight: 500,
-    backgroundColor: theme.colors.green[0],
-    '&:hover': {
-      backgroundColor: theme.colors.green[5],
-    },
-  },
   linkActive: {
     '&, &:hover': {
       backgroundColor: theme.fn.variant({
@@ -112,8 +98,6 @@ const useStyles = createStyles((theme) => ({
 }))
 
 export function Nav(props) {
-  const theme = useMantineTheme()
-  const [opened, setOpened] = useState(false)
   const [chosen, setChosen] = useState('#ffffff')
   const router = useRouter()
   const value = useContext(AppContext)
@@ -284,9 +268,14 @@ export function Nav(props) {
                       data={gradStudentsInfo}
                       value={searchValue}
                       onChange={setSearchValue}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          processRoute(searchValue)
+                        }
+                      }}
                     />
                     <Button
-                      className={classes.button}
+                      className={styles.search_button}
                       onClick={() => {
                         processRoute(searchValue)
                       }}
@@ -362,9 +351,14 @@ export function Nav(props) {
                     data={gradStudentsInfo}
                     value={searchValue}
                     onChange={setSearchValue}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        processRoute(searchValue);
+                      }
+                    }}
                   />
                   <Button
-                    className={classes.button}
+                    className={styles.search_button}
                     onClick={() => {
                       processRoute(searchValue)
                     }}
