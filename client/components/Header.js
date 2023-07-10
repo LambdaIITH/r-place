@@ -69,22 +69,20 @@ const useStyles = createStyles((theme) => ({
 }))
 
 export function Nav(props) {
+
   const router = useRouter()
   const { classes, cx } = useStyles()
   
 
   // change the below implementation of links 
   const links = [
-    { link: '/place', label: 'Basic' },
-    { link: '/hostels', label: 'Hostels' },
-    { link: '#', label: 'Acads' },
+    { link: '/place', label: 'Grid' },
+    { link: '/hostels', label: 'Yearbook' },
   ]
   const [active, setActive] = useState(
     router.pathname.includes('place')
       ? '/place'
-      : router.pathname.includes('hostels')
-      ? '/hostels'
-      : '/acads'
+      : '/hostels'
   )
   const link_items = links.map((link, index) => (
     <a
@@ -116,6 +114,7 @@ export function Nav(props) {
     }
     setGradInfo(gradData)
   }
+
 
   // search for grad students based on search value
   async function gradInfo() {
