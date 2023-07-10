@@ -19,7 +19,6 @@ import { CheckIcon } from '@mantine/core'
 import AppContext from '../AppContext'
 import { useRouter } from 'next/router'
 import { IconSearch } from '@tabler/icons-react'
-import styles from './Header.module.css'
 
 const useStyles = createStyles((theme) => ({
   inner: {
@@ -261,7 +260,6 @@ export function Nav(props) {
             ) : (
               <>
                 {gradStudentsInfo ? (
-                  <>
                     <Autocomplete
                       className={classes.search}
                       placeholder="Search"
@@ -273,17 +271,15 @@ export function Nav(props) {
                           processRoute(searchValue)
                         }
                       }}
-                    />
-                    <Button
-                      className={styles.search_button}
-                      onClick={() => {
+                      bg={theme.colors.gray[1]}
+                      icon={<IconSearch size="1rem" stroke={1.5}  onClick={(e)=>{
+                        processRoute(searchValue)
+                      }}/>}
+                      onSelect={(e)=>{
                         processRoute(searchValue)
                       }}
-                    >
-                      Search
-                      <IconSearch size="1rem" stroke={1.5} />
-                    </Button>
-                  </>
+                    />
+                    
                 ) : (
                   <></>
                 )}
@@ -344,29 +340,25 @@ export function Nav(props) {
             </Title>
             
             {gradStudentsInfo ? (
-                <Stack>
-                  <Autocomplete
-                    className={classes.search_small}
-                    placeholder="Search"
-                    data={gradStudentsInfo}
-                    value={searchValue}
-                    onChange={setSearchValue}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        processRoute(searchValue);
-                      }
-                    }}
-                  />
-                  <Button
-                    className={styles.search_button}
-                    onClick={() => {
-                      processRoute(searchValue)
-                    }}
-                  >
-                    Search
-                    <IconSearch size="1rem" stroke={1.5} />
-                  </Button>
-                </Stack>
+                <Autocomplete
+                className={classes.search}
+                placeholder="Search"
+                data={gradStudentsInfo}
+                value={searchValue}
+                onChange={setSearchValue}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    processRoute(searchValue)
+                  }
+                }}
+                bg={theme.colors.gray[1]}
+                icon={<IconSearch size="1rem" stroke={1.5}  onClick={(e)=>{
+                  processRoute(searchValue)
+                }}/>}
+                onSelect={(e)=>{
+                  processRoute(searchValue)
+                }}
+              />
               ) : (
                 <></>
               )}
