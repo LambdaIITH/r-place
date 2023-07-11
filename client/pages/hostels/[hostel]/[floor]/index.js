@@ -9,12 +9,14 @@ import Pods from '../../../../components/Pods'
 
 export default function Home() {
   const value = useContext(AppContext)
-  const router = useRouter()
-  const { hostel, floor } = router.query
   let globalData = value.state.globalData
   const { hostel_names } = globalData
-  const [floorData, setFloorData] = useState(null)
+  const router = useRouter()
+  const { hostel, floor } = router.query
   const [loading, setLoading] = useState(true)
+
+  // floorData is an array of objects containing the room number+owner and the quote
+  const [floorData, setFloorData] = useState(null)
 
   async function getFloorData() {
     const res = await fetch(
@@ -39,6 +41,7 @@ export default function Home() {
       setLoading(false)
     }
   }, [floorData])
+  
   return (
     <>
       {loading ? (

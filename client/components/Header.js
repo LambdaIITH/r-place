@@ -1,25 +1,18 @@
-import { useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import {
   createStyles,
   Header,
   Group,
   Container,
-  Burger,
   rem,
   MediaQuery,
-  useMantineTheme,
-  ColorSwatch,
   Title,
   Box,
   Autocomplete,
-  Button,
-  Menu,
-  Stack
 } from '@mantine/core'
-import { CheckIcon } from '@mantine/core'
-import AppContext from '../AppContext'
 import { useRouter } from 'next/router'
 import { IconSearch } from '@tabler/icons-react'
+import Pallete from './Pallete'
 
 const useStyles = createStyles((theme) => ({
   inner: {
@@ -35,27 +28,8 @@ const useStyles = createStyles((theme) => ({
   links: {
     width: rem(300),
     [theme.fn.smallerThan('sm')]: {
-      display: 'none',
-    },
-  },
-
-  pallete: {
-    width: rem(690),
-    [theme.fn.smallerThan('lg')]: {
-      width: rem(190),
-    },
-  },
-  swatches: {
-    border: '0.5px solid #FFF',
-    '&:hover': {
-      cursor: 'pointer',
-    },
-  },
-  burger: {
-    marginRight: theme.spacing.md,
-
-    [theme.fn.largerThan('sm')]: {
-      display: 'none',
+      display: 'flex',
+      justifyContent: 'space-between',
     },
   },
 
@@ -79,20 +53,6 @@ const useStyles = createStyles((theme) => ({
           : theme.colors.gray[0],
     },
   },
-  button: {
-    display: 'block',
-    lineHeight: 1,
-    padding: `${rem(8)} ${rem(12)}`,
-    borderRadius: theme.radius.sm,
-    textDecoration: 'none',
-    color: theme.colors.green[9],
-    fontSize: theme.fontSizes.sm,
-    fontWeight: 500,
-    backgroundColor: theme.colors.green[0],
-    '&:hover': {
-      backgroundColor: theme.colors.green[5],
-    },
-  },
   linkActive: {
     '&, &:hover': {
       backgroundColor: theme.fn.variant({
@@ -106,32 +66,25 @@ const useStyles = createStyles((theme) => ({
   search: {
     width: rem(300),
   },
-  search_small: {
-    width: rem(200),
-  },
 }))
 
 export function Nav(props) {
-  const theme = useMantineTheme()
-  const [opened, setOpened] = useState(false)
-  const [chosen, setChosen] = useState('#ffffff')
+
   const router = useRouter()
-  const value = useContext(AppContext)
+  const { classes, cx } = useStyles()
+  
+
+  // change the below implementation of links 
   const links = [
-    { link: '/place', label: 'Basic' },
-    { link: '/hostels', label: 'Hostels' },
-    { link: '#', label: 'Acads' },
+    { link: '/place', label: 'Grid' },
+    { link: '/hostels', label: 'Yearbook' },
   ]
   const [active, setActive] = useState(
     router.pathname.includes('place')
       ? '/place'
-      : router.pathname.includes('hostels')
-      ? '/hostels'
-      : '/acads'
+      : '/hostels'
   )
-  let globalData = value.state.globalData
-  const { classes, cx } = useStyles()
-  const items = links.map((link, index) => (
+  const link_items = links.map((link, index) => (
     <a
       key={index}
       href={link.link}
@@ -145,84 +98,78 @@ export function Nav(props) {
       {link.label}
     </a>
   ))
-  let { colorPalette } = globalData
-  const swatches = colorPalette.map((color, index) => (
-    <ColorSwatch
-      key={index}
-      color={color}
-      component="button"
-      className={classes.swatches}
-      // size={20}
-      onClick={() => {
-        props.setChosen(color)
-        setChosen(color)
-      }}
-    >
-      {chosen === color ? <CheckIcon width={rem(10)} /> : ''}
-    </ColorSwatch>
-  ))
+  
 
   const [searchValue, setSearchValue] = useState('')
-  const [gradStudentsInfo, setGradInfo] = useState([])
+  const [gradStudentsInfo, setGradInfo] = useState([]) // array of strings "RoomNumber:Name"
+  
+  // takes in searchValue results and updates the gradStudentsInfo
   function processGradData(data) {
     let gradData = []
     for (let i = 0; i < data.length; i++) {
-      let gradDataString = `${data[i].hostel}${data[i].floor * 100 + data[i].room_number}:${data[i].name}`
+      let gradDataString = `${data[i].hostel}${
+        data[i].floor * 100 + data[i].room_number
+      }:${data[i].name}`
       gradData.push(gradDataString)
     }
-    setGradInfo(gradData);
+    setGradInfo(gradData)
   }
 
 
+  // search for grad students based on search value
   async function gradInfo() {
-    if (searchValue.length === 0) return;
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/search/name?q=${(searchValue.indexOf(":")>-1)?searchValue.split(":")[1]:searchValue}`, {
-      method: 'GET',
-    });
-    const data = await res.json();
-    if (data.length > 0){
-      processGradData(data);
-    }
-    else {
-      let splitText = "";
-      if (searchValue.indexOf(":")>-1){
-        splitText = searchValue.split(":")[0]
+    if (searchValue.length === 0) return
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/search/name?q=${
+        searchValue.indexOf(':') > -1 ? searchValue.split(':')[1] : searchValue
+      }`,
+      {
+        method: 'GET',
       }
-      else {
-        splitText = searchValue;
+    )
+    const data = await res.json()
+    if (data.length > 0) {
+      processGradData(data)
+    } else { // if no name matches, search for room number
+      let splitText = ''
+      if (searchValue.indexOf(':') > -1) {
+        splitText = searchValue.split(':')[0]
+      } else {
+        splitText = searchValue
       }
-      let building = ""
+      let building = ''
       let floor = 0
       let room = 0
       try {
-        building = splitText[0].substring(0, 1);
+        building = splitText[0].substring(0, 1)
         floor = Math.floor(
           parseInt(splitText.substring(1, splitText.length)) / 100
-        );
-        room = parseInt(splitText.substring(1, splitText.length)) % 100;
-      }
-      catch (e){
+        )
+        room = parseInt(splitText.substring(1, splitText.length)) % 100
+      } catch (e) {
         console.log(e)
-        return;
+        return
       }
-      const res_single = await fetch (`${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/${building}/${floor}/${room}/owner`,{
-        method: 'GET',
-      })
-      const data1 = await res_single.json();
-      processGradData(data1);
-
+      const res_single = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/${building}/${floor}/${room}/owner`,
+        {
+          method: 'GET',
+        }
+      )
+      const data1 = await res_single.json()
+      processGradData(data1)
     }
   }
 
   useEffect(() => {
-    gradInfo();
+    gradInfo()
   }, [searchValue])
 
+  // navigating to grad students' room
   function processRoute(route) {
     if (gradStudentsInfo.indexOf(route) < 0) {
       return
     } else {
-      
       let splitText = route.split(':')[0]
       let building = splitText[0].substring(0, 1)
       let floor = Math.floor(
@@ -237,20 +184,8 @@ export function Nav(props) {
       <MediaQuery smallerThan="lg" styles={{ display: 'none' }}>
         <Header height={{ base: 100, md: 100 }} p="md">
           <Container className={classes.inner} size={'xl'}>
-            {/* <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
-              <Burger
-                opened={opened}
-                onClick={() => {
-                  setOpened((o) => !o)
-                  props.setOpened((o) => !o)
-                }}
-                size="sm"
-                color={theme.colors.gray[6]}
-                mr="xl"
-              />
-            </MediaQuery> */}
             <Group className={classes.links} spacing={5}>
-              {items}
+              {link_items}
             </Group>
             <Title
               order={1}
@@ -262,41 +197,26 @@ export function Nav(props) {
               r/IITH-2023
             </Title>
             {router.pathname.includes('place') ? (
-              <Group
-                className={classes.pallete}
-                position="center"
-                spacing="xs"
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(16, 1fr)',
-                  gridTemplateRows: 'repeat(2, 1fr)',
-                }}
-              >
-                {swatches}
-              </Group>
+              <Pallete setChosen={props.setChosen} />
             ) : (
               <>
-                {gradStudentsInfo ? (
-                  <>
-                    <Autocomplete
-                      className={classes.search}
-                      placeholder="Search"
-                      data={gradStudentsInfo}
-                      value={searchValue}
-                      onChange={setSearchValue}
-                    />
-                    <Button
-                      className={classes.button}
-                      onClick={() => {
+                {gradStudentsInfo && (
+                  <Autocomplete
+                    className={classes.search}
+                    placeholder="Search"
+                    data={gradStudentsInfo}
+                    value={searchValue}
+                    onChange={setSearchValue}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
                         processRoute(searchValue)
-                      }}
-                    >
-                      Search
-                      <IconSearch size="1rem" stroke={1.5} />
-                    </Button>
-                  </>
-                ) : (
-                  <></>
+                      }
+                    }}
+                    icon={<IconSearch size="1rem" stroke={1.5} />}
+                    onSelect={(e) => {
+                      processRoute(searchValue)
+                    }}
+                  />
                 )}
               </>
             )}
@@ -304,82 +224,49 @@ export function Nav(props) {
         </Header>
       </MediaQuery>
       <MediaQuery largerThan="lg" styles={{ display: 'none' }}>
-        
-          {router.pathname.includes('place') ? (
-            <Group
-              className={classes.pallete}
-              position="center"
-              spacing="xs"
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(8, 1fr)',
-                gridTemplateRows: 'repeat(4, 1fr)',
-              }}
-            >
-              {swatches}
-            </Group>
-          ) : (
-            <Box
-          sx={{
-            width: "100%",
-          }}
-        >
+        <Header height={{ base: 100, md: 100 }} p="md">
           <Box
             sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "100%",
-              backgroundColor: "rgba(255, 255, 255)",
-              padding: "10px",
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: '100%',
+              backgroundColor: 'rgba(255, 255, 255)',
+              padding: '10px',
             }}
           >
-            <Menu shadow="md" width={200}>
-              <Menu.Target>
-                <Button>menu</Button>
-              </Menu.Target>
-
-              <Menu.Dropdown>
-                <Menu.Item>Basic</Menu.Item>
-                <Menu.Item>Hostels</Menu.Item>
-                <Menu.Item>Acads</Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
+            <Group className={classes.links} spacing={5}>
+              {link_items}
+            </Group>
             <Title
               variant="gradient"
-              gradient={{ from: "#D6336C", to: "#AE3EC9", deg: 45 }}
-              sx={{ fontSize: "1.1rem" }}
+              gradient={{ from: '#D6336C', to: '#AE3EC9', deg: 45 }}
+              sx={{ fontSize: '1.6rem' }}
             >
               r/IITH-2023
             </Title>
-            
-            {gradStudentsInfo ? (
-                <Stack>
-                  <Autocomplete
-                    className={classes.search_small}
-                    placeholder="Search"
-                    data={gradStudentsInfo}
-                    value={searchValue}
-                    onChange={setSearchValue}
-                  />
-                  <Button
-                    className={classes.button}
-                    onClick={() => {
-                      processRoute(searchValue)
-                    }}
-                  >
-                    Search
-                    <IconSearch size="1rem" stroke={1.5} />
-                  </Button>
-                </Stack>
-              ) : (
-                <></>
-              )}
+
+            {router.pathname.includes('hostels') && gradStudentsInfo && (
+              <Autocomplete
+                className={classes.search}
+                placeholder="Search"
+                data={gradStudentsInfo}
+                value={searchValue}
+                onChange={setSearchValue}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    processRoute(searchValue)
+                  }
+                }}
+                icon={<IconSearch size="1rem" stroke={1.5} />}
+                onSelect={(e) => {
+                  processRoute(searchValue)
+                }}
+              />
+            )}
           </Box>
-        </Box>
-              
-          )}
+        </Header>
       </MediaQuery>
     </>
   )

@@ -1,8 +1,6 @@
 import {
   Button,
   Box,
-  createStyles,
-  rem,
   Modal,
   Stack,
   Text,
@@ -14,51 +12,27 @@ import { useState, useContext, useEffect } from 'react'
 import AppContext from '../../AppContext'
 import Layout from '../../components/layouts/hostel_layout'
 import HostelMapSkeleton from '../../components/skeletons/HostelMap'
+import styles from './../../styles/Hostels.module.css'
 
-const useStyles = createStyles((theme) => ({
-  button: {
-    display: 'block',
-    lineHeight: 1,
-    padding: `${rem(8)} ${rem(12)}`,
-    borderRadius: theme.radius.sm,
-    textDecoration: 'none',
-    color: theme.colors.green[9],
-    fontSize: theme.fontSizes.md,
-    fontWeight: 500,
-    backgroundColor: theme.colors.green[0],
-    position: 'absolute',
-    zIndex: '100',
-    width: '12rem',
-    height: '6rem',
-    // visibility: 'hidden',
-
-    opacity: 0,
-    '&:hover': {
-      transition: 'all linear .3s',
-      // visibility: 'visible',
-      opacity: 1,
-      cursor: 'pointer',
-      backgroundColor: theme.colors.green[2],
-    },
-  },
-}))
 
 export default function Home() {
-  const { classes, cx } = useStyles()
   const value = useContext(AppContext)
   let globalData = value.state.globalData
   const { hostel_names } = globalData
   const [page_loading, setPageLoading] = useState(true)
-  const [opened, { open, close }] = useDisclosure(false)
-  const [hostel, setHostel] = useState(null)
+  const [opened, { open, close }] = useDisclosure(false) // for lift modal
+  const [hostel, setHostel] = useState(null) 
+  
   useEffect(() => {
     setPageLoading(true)
   }, [])
+  
   useEffect(() => {
     if (hostel_names.length > 0) {
       setPageLoading(false)
     }
   }, [hostel_names])
+
   return (
     <>
       {page_loading ? (
@@ -149,7 +123,7 @@ export default function Home() {
               { bottom: '1.5rem', left: '6rem' },
             ].map((item, index) => (
               <button
-                className={classes.button}
+                className={styles.search_button}
                 style={{ ...item }}
                 onClick={() => {
                   setHostel(String.fromCharCode('A'.charCodeAt(0) + index))
