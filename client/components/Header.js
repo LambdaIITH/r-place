@@ -29,12 +29,12 @@ const useStyles = createStyles((theme) => ({
     width: rem(300),
     [theme.fn.smallerThan('sm')]: {
       display: 'flex',
-      justifyContent: 'space-between',
+      width: rem(180),
+      justifyContent: 'flex-start',
     },
   },
 
   link: {
-    display: 'block',
     lineHeight: 1,
     padding: `${rem(8)} ${rem(12)}`,
     borderRadius: theme.radius.sm,
@@ -69,20 +69,18 @@ const useStyles = createStyles((theme) => ({
 }))
 
 export function Nav(props) {
-
   const router = useRouter()
   const { classes, cx } = useStyles()
-  
 
-  // change the below implementation of links 
+  // change the below implementation of links
+
+  // change the below implementation of links
   const links = [
     { link: '/place', label: 'Grid' },
     { link: '/hostels', label: 'Yearbook' },
   ]
   const [active, setActive] = useState(
-    router.pathname.includes('place')
-      ? '/place'
-      : '/hostels'
+    router.pathname.includes('place') ? '/place' : '/hostels'
   )
   const link_items = links.map((link, index) => (
     <a
@@ -98,11 +96,10 @@ export function Nav(props) {
       {link.label}
     </a>
   ))
-  
 
   const [searchValue, setSearchValue] = useState('')
   const [gradStudentsInfo, setGradInfo] = useState([]) // array of strings "RoomNumber:Name"
-  
+
   // takes in searchValue results and updates the gradStudentsInfo
   function processGradData(data) {
     let gradData = []
@@ -114,7 +111,6 @@ export function Nav(props) {
     }
     setGradInfo(gradData)
   }
-
 
   // search for grad students based on search value
   async function gradInfo() {
@@ -130,7 +126,8 @@ export function Nav(props) {
     const data = await res.json()
     if (data.length > 0) {
       processGradData(data)
-    } else { // if no name matches, search for room number
+    } else {
+      // if no name matches, search for room number
       let splitText = ''
       if (searchValue.indexOf(':') > -1) {
         splitText = searchValue.split(':')[0]
@@ -182,11 +179,12 @@ export function Nav(props) {
   return (
     <>
       <MediaQuery smallerThan="lg" styles={{ display: 'none' }}>
-        <Header height={{ base: 100, md: 100 }} p="md">
+        <Header
+          height={{ base: 100, md: 100, zIndex: 100, position: 'fixed' }}
+          p="md"
+        >
           <Container className={classes.inner} size={'xl'}>
-            <Group className={classes.links} spacing={5}>
-              {link_items}
-            </Group>
+            <Group className={classes.links}>{link_items}</Group>
             <Title
               order={1}
               variant="gradient"
@@ -224,21 +222,27 @@ export function Nav(props) {
         </Header>
       </MediaQuery>
       <MediaQuery largerThan="lg" styles={{ display: 'none' }}>
-        <Header height={{ base: 100, md: 100 }} p="md">
+        <Header height={{ base: 160, md: 100 }} p="md">
           <Box
             sx={{
               display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              marginX: 'auto',
+              width: 'fit',
               alignItems: 'center',
-              width: '100%',
+              // width: '100vw',
               backgroundColor: 'rgba(255, 255, 255)',
+              // backgroundColor: 'red',
               padding: '10px',
+              position: 'fixed',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 100,
+              gap: 10,
             }}
           >
-            <Group className={classes.links} spacing={5}>
-              {link_items}
-            </Group>
+            <Group className={classes.links}>{link_items}</Group>
             <Title
               variant="gradient"
               gradient={{ from: '#D6336C', to: '#AE3EC9', deg: 45 }}

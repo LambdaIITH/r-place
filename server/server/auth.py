@@ -14,7 +14,6 @@ def get_user_email(token):
     try:
         # Specify the CLIENT_ID of the app that accesses the backend:
         # TODO: Source client ID from config and verfiy here
-        print(token)
         # try:
         idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
         # Or, if multiple clients access the backend server:

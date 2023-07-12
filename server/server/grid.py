@@ -47,11 +47,15 @@ async def pixel(row: int, col: int, color: int, response: Response, email: str =
         response.status_code = 429
         return {"message": "You are on cooldown.", "cooldown": cooldown}
 
-    insertion_lock.acquire()
-    latest_insertion = int(grid_queries.log_update(conn, x=row, y=col, color=color, email=email))
-    current_grid[row][col] = color
-    print(latest_insertion)
-    insertion_lock.release()
+    try:
+        insertion_lock.acquire()
+        latest_insertion = int(grid_queries.log_update(conn, x=row, y=col, color=color, email=email))
+        current_grid[row][col] = color
+        print(latest_insertion)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        insertion_lock.release()
 
     return {"message": "Pixel updated successfully."}
 

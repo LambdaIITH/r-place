@@ -53,8 +53,8 @@ const Discription = () => {
           },
         }}
       >
-        Welcome to our IITH Alumni r/place app where Graduating Students can
-        leave their mark on our digital canvas. In this
+        Welcome to our IITH Alumni r/place app where graduating students can
+        leave a mark on a digital canvas. In this
         collaborative art project, each alumnus can contribute a pixel to create
         a unique and beautiful image that represents our community. Let&apos;s
         come together and create something special that will last a lifetime.

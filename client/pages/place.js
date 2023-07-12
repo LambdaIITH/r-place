@@ -2,12 +2,9 @@ import { useState, useEffect, useContext } from "react";
 import {
   AppShell,
   Box,
-  Button,
   Drawer,
   MediaQuery,
-  Menu,
   Title,
-  useMantineTheme,
 } from "@mantine/core";
 import { Nav } from "../components/Header";
 import Sidebar from "../components/Sidebar";
@@ -15,14 +12,13 @@ import Canvas from "../components/Canvas";
 import { useDisclosure } from "@mantine/hooks";
 import { IconX } from "@tabler/icons-react";
 import AppContext from "../AppContext";
-import Head from "next/head";
 import { signIn, useSession } from "next-auth/react";
 import { notifications } from '@mantine/notifications';
 import PlaceCanvas from "../components/skeletons/PlaceCanvas";
 import Pallete from "../components/Pallete";
 
 export default function Place() {
-  const theme = useMantineTheme()
+
   const [opened, setOpened] = useState(false)
 
   const { data: session } = useSession()
@@ -212,6 +208,7 @@ export default function Place() {
               setRow={setRow}
               setCurrent={setCurrent}
               colors={colors}
+              
             />
           )}
         </AppShell>
