@@ -118,7 +118,7 @@ const Login = () => {
                 textAlign: "center",
               }}
             >
-              R-Place
+              R/IITH-2023
             </Title>
             <Image
               alt="r-place logo"
