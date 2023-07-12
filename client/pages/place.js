@@ -69,7 +69,6 @@ export default function Place() {
   }
   async function postPixel() {
     try {
-      console.log(chosen)
       const response = await fetch(
         `${
           process.env.NEXT_PUBLIC_BACKEND_URL
@@ -87,11 +86,28 @@ export default function Place() {
       if (response.status === 498) {
         signIn()
       }
-      if (response.status === 429) {
+      else if (response.status === 429) {
         setCooldown(temp.cooldown)
-      } else {
+      } 
+      else if (response.status === 500){
+        notifications.show({
+          id: 'hello-there',
+          withCloseButton: true,
+          onClose: () => console.log('unmounted'),
+          onOpen: () => console.log('mounted'),
+          autoClose: 5000,
+          title: 'Pixel update failed.',
+          message: `Invalid user.`,
+          color: 'red',
+          icon: <IconX />,
+          className: 'my-notification-class',
+          loading: false,
+        })
+      }
+      else {
         setNew()
       }
+
     } catch (err) {
       console.log(err)
     }

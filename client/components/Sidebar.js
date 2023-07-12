@@ -243,7 +243,7 @@ export default function Sidebar(props) {
                     radius="md"
                     fullWidth
                     onClick={() => {
-                      signOut();
+                      signOut({callbackUrl:"/"});
                     }}
                   >
                     <Group>

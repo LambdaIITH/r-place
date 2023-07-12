@@ -8,11 +8,14 @@ import {
   MediaQuery,
   Title,
   Box,
+  Button,
+  Text,
   Autocomplete,
 } from '@mantine/core'
 import { useRouter } from 'next/router'
 import { IconSearch } from '@tabler/icons-react'
 import Pallete from './Pallete'
+import { signOut, signIn, useSession } from 'next-auth/react'
 
 const useStyles = createStyles((theme) => ({
   inner: {
@@ -96,6 +99,8 @@ export function Nav(props) {
       {link.label}
     </a>
   ))
+
+  const { data: session, status } = useSession()
 
   const [searchValue, setSearchValue] = useState('')
   const [gradStudentsInfo, setGradInfo] = useState([]) // array of strings "RoomNumber:Name"
@@ -199,22 +204,51 @@ export function Nav(props) {
             ) : (
               <>
                 {gradStudentsInfo && (
-                  <Autocomplete
-                    className={classes.search}
-                    placeholder="Search"
-                    data={gradStudentsInfo}
-                    value={searchValue}
-                    onChange={setSearchValue}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
+                  <>
+                    <Autocomplete
+                      className={classes.search}
+                      placeholder="Search"
+                      data={gradStudentsInfo}
+                      value={searchValue}
+                      onChange={setSearchValue}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          processRoute(searchValue)
+                        }
+                      }}
+                      icon={<IconSearch size="1rem" stroke={1.5} />}
+                      onSelect={(e) => {
                         processRoute(searchValue)
-                      }
-                    }}
-                    icon={<IconSearch size="1rem" stroke={1.5} />}
-                    onSelect={(e) => {
-                      processRoute(searchValue)
-                    }}
-                  />
+                      }}
+                    />
+                    {status === 'authenticated' ? (
+                      <Button
+                        variant="light"
+                        color="red"
+                        radius="md"
+                        onClick={() => {
+                          signOut({ callbackUrl: '/' })
+                        }}
+                      >
+                        <Group>
+                          <Text>Logout</Text>
+                        </Group>
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="light"
+                        color="green"
+                        radius="md"
+                        onClick={() => {
+                          signIn()
+                        }}
+                      >
+                        <Group>
+                          <Text>Sign In</Text>
+                        </Group>
+                      </Button>
+                    )}
+                  </>
                 )}
               </>
             )}
@@ -252,22 +286,51 @@ export function Nav(props) {
             </Title>
 
             {router.pathname.includes('hostels') && gradStudentsInfo && (
-              <Autocomplete
-                className={classes.search}
-                placeholder="Search"
-                data={gradStudentsInfo}
-                value={searchValue}
-                onChange={setSearchValue}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
+              <>
+                <Autocomplete
+                  className={classes.search}
+                  placeholder="Search"
+                  data={gradStudentsInfo}
+                  value={searchValue}
+                  onChange={setSearchValue}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      processRoute(searchValue)
+                    }
+                  }}
+                  icon={<IconSearch size="1rem" stroke={1.5} />}
+                  onSelect={(e) => {
                     processRoute(searchValue)
-                  }
-                }}
-                icon={<IconSearch size="1rem" stroke={1.5} />}
-                onSelect={(e) => {
-                  processRoute(searchValue)
-                }}
-              />
+                  }}
+                />
+                {status === 'authenticated' ? (
+                  <Button
+                    variant="light"
+                    color="red"
+                    radius="md"
+                    onClick={() => {
+                      signOut({ callbackUrl: '/' })
+                    }}
+                  >
+                    <Group>
+                      <Text>Logout</Text>
+                    </Group>
+                  </Button>
+                ) : (
+                  <Button
+                    variant="light"
+                    color="green"
+                    radius="md"
+                    onClick={() => {
+                      signIn()
+                    }}
+                  >
+                    <Group>
+                      <Text>Sign In</Text>
+                    </Group>
+                  </Button>
+                )}
+              </>
             )}
           </Box>
         </Header>

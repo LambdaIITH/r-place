@@ -5,7 +5,7 @@ from fastapi import Depends, FastAPI, HTTPException, Response
 ROWS = 80
 COLUMNS = 80
 COLORS = 32
-COOLDOWN_TIME = 30  # in seconds
+COOLDOWN_TIME = 10  # in seconds
 INITIAL_COLOR = 0
 
 grid_app = FastAPI()

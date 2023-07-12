@@ -178,7 +178,12 @@ export default function Room() {
   // Get the room data, runs when there is a room change
   async function getRoomData() {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/${hostel}/${floor}/${room}`
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/hostel/${hostel}/${floor}/${room}`,
+      {
+        headers: {
+          Authorization: `${session?.id_token}`,
+        },
+      }
     )
     if (res.status == 400 || res.status == 404) {
       // router.push('/404')
@@ -335,7 +340,7 @@ export default function Room() {
                   {meme && (
                     <Carousel.Slide className={classes.slide} >
                       <Text className={classes.question} align="center">
-                        {'<'}Meme{'>'}
+                        College as a {'<'}Meme{'>'}
                       </Text>
                       <Box 
                       sx={{
@@ -358,7 +363,7 @@ export default function Room() {
                   {gang && (
                     <Carousel.Slide className={classes.slide}>
                       <Text className={classes.question} align="center">
-                        {'<'}Gang{'>'}
+                        My College {'<'}Gang{'>'}
                       </Text>
                       <Box 
                       sx={{
@@ -543,7 +548,7 @@ export default function Room() {
                     {meme && (
                     <Carousel.Slide className={classes.slide}>
                       <Text className={classes.question} align="center">
-                        {'<'}Meme{'>'}
+                        College as a {'<'}Meme{'>'}
                       </Text>
                       <Box 
                       sx={{
@@ -566,7 +571,7 @@ export default function Room() {
                     {gang && (
                     <Carousel.Slide className={classes.slide}>
                       <Text className={classes.question} align="center">
-                        {'<'}Gang{'>'}
+                        My College {'<'}Gang{'>'}
                       </Text>
                       <Box 
                       sx={{

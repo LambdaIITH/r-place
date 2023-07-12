@@ -51,8 +51,7 @@ def get_floor(hostel_name: str, floor: int, response: Response):
 
 
 @hostel_app.get("/{hostel_name}/{floor}/{room}")
-def get_room(hostel_name: str, floor: int, room: int,
-        email: str = Depends(verify_auth_token)):
+def get_room(hostel_name: str, floor: int, room: int, email: str = Depends(verify_auth_token)):
     verify_room(hostel_name, floor, room)
 
     room_data = hostel_queries.get_room(
