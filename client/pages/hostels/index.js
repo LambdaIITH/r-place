@@ -13,7 +13,7 @@ import AppContext from '../../AppContext'
 import Layout from '../../components/layouts/hostel_layout'
 import HostelMapSkeleton from '../../components/skeletons/HostelMap'
 import styles from './../../styles/Hostels.module.css'
-
+import { useMediaQuery } from '@mantine/hooks'
 
 export default function Home() {
   const value = useContext(AppContext)
@@ -21,12 +21,14 @@ export default function Home() {
   const { hostel_names } = globalData
   const [page_loading, setPageLoading] = useState(true)
   const [opened, { open, close }] = useDisclosure(false) // for lift modal
-  const [hostel, setHostel] = useState(null) 
-  
+  const [hostel, setHostel] = useState(null)
+
+  const isScreenSizeLessThanMd = useMediaQuery('(max-width: 768px)')
+
   useEffect(() => {
     setPageLoading(true)
   }, [])
-  
+
   useEffect(() => {
     if (hostel_names.length > 0) {
       setPageLoading(false)
@@ -46,7 +48,8 @@ export default function Home() {
             gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}
             ta="center"
             sx={{
-              fontSize: '3rem',
+              fontSize: isScreenSizeLessThanMd ? '1.8rem' : '3rem',
+              // marginTop: isScreenSizeLessThanMd ? '1rem' : '0',
             }}
             fw={700}
           >
@@ -97,25 +100,36 @@ export default function Home() {
             sx={{
               position: 'relative',
               margin: '3rem auto',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              overflowX: 'auto',
+              maxWidth: '100%',
             }}
-            maw={800}
+            w={800}
           >
-            <Image
-              src={'./assets/map.png'}
-              maw={800}
-              mx="auto"
-              radius="md"
-              alt={'hostels IITH'}
-            />
+            <div
+              style={{
+                maxWidth: '100%',
+              }}
+            >
+              <Image
+                src={'/assets/map.png'}
+                width={800}
+                mx="auto"
+                radius="md"
+                alt={'hostels IITH'}
+              />
+            </div>
 
             {[
               { top: '5rem', left: -20, transform: 'rotate(90deg)' },
               { top: '1.5rem', left: '11rem' },
-              { top: '5rem', right: '14rem', transform: 'rotate(90deg)' },
-              { top: '1.5rem', right: '2rem' },
+              { top: '5rem', left: '24rem', transform: 'rotate(90deg)' },
+              { top: '1.5rem', left: '36rem' },
               // round 2
-              { top: '14rem', right: -20, transform: 'rotate(90deg)' },
-              { top: '17rem', right: '11rem' },
+              { top: '14rem', left: '40rem', transform: 'rotate(90deg)' },
+              { top: '17rem', left: '28rem' },
               { top: '14rem', left: '14rem', transform: 'rotate(90deg)' },
               { top: '17rem', left: '2rem' },
               // round 3

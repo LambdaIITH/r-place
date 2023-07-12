@@ -6,6 +6,7 @@ import './index.module.css'
 import { useRouter } from 'next/router'
 import HostelFloorSkeleton from '../../../../components/skeletons/HostelFloor'
 import Pods from '../../../../components/Pods'
+import { useMediaQuery } from '@mantine/hooks'
 
 export default function Home() {
   const value = useContext(AppContext)
@@ -14,6 +15,8 @@ export default function Home() {
   const router = useRouter()
   const { hostel, floor } = router.query
   const [loading, setLoading] = useState(true)
+
+  const isScreenSizeLessThanMd = useMediaQuery('(max-width: 768px)')
 
   // floorData is an array of objects containing the room number+owner and the quote
   const [floorData, setFloorData] = useState(null)
@@ -41,7 +44,7 @@ export default function Home() {
       setLoading(false)
     }
   }, [floorData])
-  
+
   return (
     <>
       {loading ? (
@@ -55,7 +58,7 @@ export default function Home() {
             gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}
             ta="center"
             sx={{
-              fontSize: '3rem',
+              fontSize: isScreenSizeLessThanMd ? '1.8rem' : '3rem',
             }}
             fw={700}
           >
@@ -66,30 +69,35 @@ export default function Home() {
             sx={{
               position: 'relative',
               margin: '3rem auto',
-              width: 800,
-
-              '@media (max-width: 48em)': {
-                transform: 'rotate(90deg)',
-              },
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              overflowX: 'auto',
+              maxWidth: '100%',
             }}
+            w={800}
           >
-            <Image
-              src={
-                'https://res.cloudinary.com/dcpgsijmr/image/upload/v1687086660/r-place/hostel_without_bg_djzhu5.png'
-              }
-              maw={800}
-              mx="auto"
-              radius="md"
-              alt={'hostels IITH'}
-              sx={{
-                position: 'absolute',
-                top: '0px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                width: 800,
-                overflowX: 'scroll',
+            <div
+              style={{
+                maxWidth: '100%',
               }}
-            />
+            >
+              <Image
+                src={'/assets/floorMap.png'}
+                width={800}
+                // maw={800}
+                mx="auto"
+                radius="md"
+                alt={'Floor Map IITH'}
+                sx={{
+                  // position: 'absolute',
+                  // top: '0px',
+                  // left: '50%',
+                  // transform: 'translateX(-50%)',
+                  overflowX: 'scroll',
+                }}
+              />
+            </div>
             <Pods floorData={floorData} hostel={hostel} floor={floor} />
           </Box>
         </>
