@@ -1,5 +1,5 @@
 from threading import Lock
-from utils import grid_queries, conn, verify_auth_token
+from utils import grid_queries, conn, verify_auth_token, verify_auth_token_with_create
 from fastapi import Depends, FastAPI, HTTPException, Response
 
 ROWS = 80
@@ -36,7 +36,7 @@ def get_user_cooldown(email: str):
 
 
 @grid_app.post("/pixel/{row}/{col}/{color}")
-async def pixel(row: int, col: int, color: int, response: Response, email: str = Depends(verify_auth_token)):
+async def pixel(row: int, col: int, color: int, response: Response, email: str = Depends(verify_auth_token_with_create)):
     global insertion_lock, current_grid, latest_insertion
     if not are_bounds_valid(row, col) or not is_color_valid(color):
         response.status_code = 400

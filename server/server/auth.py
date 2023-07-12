@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def get_user_email(token):
+
+def get_user_details(token):
     GSUITE_DOMAIN_NAME = "iith.ac.in"
     CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 
@@ -22,6 +23,7 @@ def get_user_email(token):
         #     raise ValueError('Could not verify audience.')
 
         email = idinfo["email"]
+        name = idinfo["name"]
 
         # If auth request is from a G Suite domain:
         if idinfo["hd"] != GSUITE_DOMAIN_NAME:
@@ -30,7 +32,7 @@ def get_user_email(token):
         # ID token is valid. Get the user's Google Account ID from the decoded token.
         userid = idinfo["sub"]  # noqa: F841
 
-        return email
+        return email, name
     except exceptions.InvalidValue :
         raise exceptions.InvalidValue("Token is invalid")
     except ValueError:
