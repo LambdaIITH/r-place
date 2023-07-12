@@ -491,7 +491,7 @@ export default function Room() {
                   }}
                   fw={700}
                 >
-                  Welcome to {name}'s room!
+                  Welcome to {name}{"'"}s room!
                 </Text>
               </Title>
               <Container display="flex" sx={{ flexDirection: 'row' }} mb={16}>
