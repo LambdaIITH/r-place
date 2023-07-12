@@ -2,10 +2,8 @@ import { useState, useEffect, useContext } from "react";
 import {
   AppShell,
   Box,
-  Button,
   Drawer,
   MediaQuery,
-  Menu,
   Title,
   useMantineTheme,
 } from "@mantine/core";
@@ -212,6 +210,7 @@ export default function Place() {
               setRow={setRow}
               setCurrent={setCurrent}
               colors={colors}
+              
             />
           )}
         </AppShell>

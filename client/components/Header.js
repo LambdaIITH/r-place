@@ -29,12 +29,12 @@ const useStyles = createStyles((theme) => ({
     width: rem(300),
     [theme.fn.smallerThan('sm')]: {
       display: 'flex',
-      justifyContent: 'space-between',
+      width: rem(180),
+      justifyContent: 'flex-start',
     },
   },
 
   link: {
-    display: 'block',
     lineHeight: 1,
     padding: `${rem(8)} ${rem(12)}`,
     borderRadius: theme.radius.sm,
@@ -73,7 +73,6 @@ export function Nav(props) {
   const router = useRouter()
   const { classes, cx } = useStyles()
   
-
   // change the below implementation of links 
   const links = [
     { link: '/place', label: 'Grid' },
@@ -236,7 +235,7 @@ export function Nav(props) {
               padding: '10px',
             }}
           >
-            <Group className={classes.links} spacing={5}>
+            <Group className={classes.links} >
               {link_items}
             </Group>
             <Title

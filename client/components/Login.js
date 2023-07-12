@@ -103,7 +103,7 @@ const Login = () => {
               height: "100vh",
               padding: "0 2rem",
               textAlign: "left",
-              backgroundColor: "#171717",
+              backgroundColor: "#27272a",
               color: "rgba(255, 255, 255, .9)",
             }}
           >
@@ -122,7 +122,7 @@ const Login = () => {
             </Title>
             <Image
               alt="r-place logo"
-              src="https://res.cloudinary.com/dbmw0xoar/image/upload/v1680605084/ecell/lamda/lambda_logo_nkc8k8.png"
+              src="./assets/r-place.png"
               mx="auto"
               radius="md"
               maw={320}

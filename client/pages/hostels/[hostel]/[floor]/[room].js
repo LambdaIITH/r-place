@@ -335,7 +335,7 @@ export default function Room() {
                   {meme && (
                     <Carousel.Slide className={classes.slide} >
                       <Text className={classes.question} align="center">
-                        {'<'}Meme{'>'}
+                        College as a {'<'} Meme{'>'}
                       </Text>
                       <Box 
                       sx={{
