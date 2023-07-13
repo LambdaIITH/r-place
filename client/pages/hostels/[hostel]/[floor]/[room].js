@@ -582,7 +582,7 @@ export default function Room() {
                       }}
                       >
                       <ReactPanZoom
-                        image={`${process.env.NEXT_PUBLIC_PICTURE_URL}/meme_${email.replace('@iith.ac.in', '')}.webp`}
+                        image={`${process.env.NEXT_PUBLIC_PICTURE_URL}/gang_${email.replace('@iith.ac.in', '')}.webp`}
                         alt="Image not loaded"
                       />
                       </Box>
