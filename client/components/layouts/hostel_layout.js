@@ -1,11 +1,12 @@
-import { AppShell, useMantineTheme, } from '@mantine/core';
-import { Nav } from '../Header';
+import { AppShell, Box, useMantineTheme } from '@mantine/core'
+import { Nav } from '../Header'
 
 export default function Layout({ children }) {
-  const theme = useMantineTheme();
+  const theme = useMantineTheme()
   return (
-    <>
-      <AppShell
+    <Box>
+      <Nav />
+      <Box
         styles={{
           main: {
             background:
@@ -15,10 +16,9 @@ export default function Layout({ children }) {
           },
         }}
         navbarOffsetBreakpoint="sm"
-        header={<Nav />}
       >
-          {children}
-      </AppShell>
-    </>
+        {children}
+      </Box>
+    </Box>
   )
 }
