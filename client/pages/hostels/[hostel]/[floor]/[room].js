@@ -269,7 +269,6 @@ export default function Room() {
         <RoomSkeleton loading={page_loading} />
       ) : (
         <>
-          <MediaQuery smallerThan={'md'} styles={{ display: 'none' }}>
             <Container>
               <Title align="center" mt={12} mb={24}>
                 <Text
@@ -285,12 +284,18 @@ export default function Room() {
                 </Text>
               </Title>
 
-              <Container display="flex" sx={{ flexDirection: 'row' }} mb={16}>
-                <Card mr={40} sx={{ width: '800px' }}>
+              <Container display="flex" sx={({
+                  flexDirection: 'row', 
+                  '@media (max-width: 62em)': {
+                    flexDirection: 'column',
+                  },
+                })}
+              mb={16}>
+                <Card mr={40} w={{base:"70vw",md:"800px"}}>
                   <Card.Section
+                    w={{base:200, md: 300}}
+                    h={{base:200, md: 300}}
                     sx={{
-                      width: '300px',
-                      height: '300px',
                       overflow: 'hidden',
                       margin: 'auto',
                     }}
@@ -304,8 +309,8 @@ export default function Room() {
                       <Image
                         src="https://www.pngitem.com/pimgs/m/30-307416_profile-icon-png-image-free-download-searchpng-employee.png"
                         alt="Your Image"
-                        width={300}
-                        height={300}
+                        w={{base:200, md: 300}}
+                        h={{base:200, md: 300}}
                         m={'auto'}
                       />
                     )}
@@ -323,7 +328,6 @@ export default function Room() {
                   align="start"
                   loop
                   className={classes.carousel}
-                  draggable={false}
                 >
                   {questions.map(function (question, index) {
                     if (answers[index] != '') {
@@ -342,10 +346,10 @@ export default function Room() {
                       <Text className={classes.question} align="center">
                         College as a {'<'}Meme{'>'}
                       </Text>
-                      <Box 
+                      <Box
+                      w={{base:200, md: 300}}
+                      h={{base:200, md: 300}}
                       sx={{
-                        width: '300px',
-                        height: '300px',
                         overflow: 'hidden',
                         margin: 'auto',
                       }}
@@ -366,9 +370,9 @@ export default function Room() {
                         My College {'<'}Gang{'>'}
                       </Text>
                       <Box 
+                      w={{base:200, md: 300}}
+                      h={{base:200, md: 300}}
                       sx={{
-                        width: '300px',
-                        height: '300px',
                         overflow: 'hidden',
                         margin: 'auto',
                       }}
@@ -483,216 +487,6 @@ export default function Room() {
                 )}
               </Box>
             </Container>
-          </MediaQuery>
-          <MediaQuery largerThan={'md'} styles={{ display: 'none' }}>
-            <Container>
-              <Title align="center" mt={12} mb={24}>
-                <Text
-                  variant="gradient"
-                  gradient={{ from: 'indigo', to: 'cyan', deg: 45 }}
-                  ta="center"
-                  sx={{
-                    fontSize: '1.5rem',
-                  }}
-                  fw={700}
-                >
-                  Welcome to {name}{"'"}s room!
-                </Text>
-              </Title>
-              <Container display="flex" sx={{ flexDirection: 'row' }} mb={16}>
-                <Stack>
-                  <Card sx={{ width: '100%' }}>
-                  <Card.Section
-                    sx={{
-                      width: '200px',
-                      height: '200px',
-                      overflow: 'hidden',
-                      margin: 'auto',
-                    }}
-                  >
-                    {image ? (
-                      <ReactPanZoom
-                        image={`${process.env.NEXT_PUBLIC_PICTURE_URL}/photo_${email.replace('@iith.ac.in', '')}.webp`}
-                        alt="Image not loaded"
-                      />
-                    ) : (
-                      <Image
-                        src="https://www.pngitem.com/pimgs/m/30-307416_profile-icon-png-image-free-download-searchpng-employee.png"
-                        alt="Your Image"
-                        width={300}
-                        height={300}
-                        m={'auto'}
-                      />
-                    )}
-                  </Card.Section>
-                  <Blockquote cite={<Text size={12}>{name}</Text>}>
-                    <Text size={13}>{quote}</Text>
-                  </Blockquote>
-                  </Card>
-
-                  <Carousel
-                    maw={400}
-                    mx="auto"
-                    withIndicators
-                    slideGap="md"
-                    align="start"
-                    loop
-                    className={classes.carousel}
-                  >
-                    {questions.map((question, index) => (
-                      <Carousel.Slide key={index} className={classes.slide}>
-                        <Text className={classes.question}>{question} </Text>
-                        <Text className={classes.answer}>{answers[index]}</Text>
-                      </Carousel.Slide>
-                    ))}
-                    {meme && (
-                    <Carousel.Slide className={classes.slide}>
-                      <Text className={classes.question} align="center">
-                        College as a {'<'}Meme{'>'}
-                      </Text>
-                      <Box 
-                      sx={{
-                        width: '200px',
-                        height: '200px',
-                        overflow: 'hidden',
-                        margin: 'auto',
-                      }}
-                      >
-                      <ReactPanZoom
-                        image={`${process.env.NEXT_PUBLIC_PICTURE_URL}/meme_${email.replace('@iith.ac.in', '')}.webp`}
-                        alt="Image not loaded"
-                      />
-                      </Box>
-                      <Text className={classes.question} align="center">
-                        {'</'}Meme{'>'}
-                      </Text>
-                    </Carousel.Slide>
-                    )}
-                    {gang && (
-                    <Carousel.Slide className={classes.slide}>
-                      <Text className={classes.question} align="center">
-                        My College {'<'}Gang{'>'}
-                      </Text>
-                      <Box 
-                      sx={{
-                        width: '200px',
-                        height: '200px',
-                        overflow: 'hidden',
-                        margin: 'auto',
-                      }}
-                      >
-                      <ReactPanZoom
-                        image={`${process.env.NEXT_PUBLIC_PICTURE_URL}/gang_${email.replace('@iith.ac.in', '')}.webp`}
-                        alt="Image not loaded"
-                      />
-                      </Box>
-                      <Text className={classes.question} align="center">
-                        {'</'}Gang{'>'}
-                      </Text>
-                    </Carousel.Slide>
-                    )}
-                  </Carousel>
-                </Stack>
-              </Container>
-              <Box
-                sx={{ height: '250px', overflowY: 'scroll', mx: 16, mb: 16 }}
-              >
-                {owner ? (
-                  <>
-                    <Text>Comments for you</Text>
-                    <Table highlightOnHover>
-                      <thead>
-                        <tr>
-                          <th>From</th>
-                          <th>Comment</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {comments?.map((comment, index) => (
-                          <tr key={index}>
-                            <td>{comment.from_user}</td>
-                            <td>{comment.comment}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </Table>
-                  </>
-                ) : (
-                  <>
-                    <Textarea
-                      placeholder="Type your mind"
-                      label="Leave a comment"
-                      description="Comments are only visible to the room owner"
-                      radius="md"
-                      mx={16}
-                      value={commentValue}
-                      onChange={(event) => {
-                        setCommentValue(event.target.value)
-                      }}
-                      disabled={comments.length > 0 && !edit_comment}
-                    />
-                    <Button
-                      my={12}
-                      mx={16}
-                      onClick={(e) => {
-                        e.preventDefault()
-                        if (edit_comment) {
-                          editComment()
-                          setEditComment(false)
-                        } else {
-                          postComment()
-                        }
-                      }}
-                      disabled={comments.length > 0 && !edit_comment}
-                    >
-                      Post Comment
-                    </Button>
-                    <Text>Your Comment to {name}</Text>
-                    <Table highlightOnHover>
-                      <thead>
-                        <tr>
-                          <th>From</th>
-                          <th>Comment</th>
-                          <th>Delete</th>
-                          <th>Edit</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {comments?.map((comment, index) => (
-                          <tr key={index}>
-                            <td>{comment.from_user}</td>
-                            <td>{comment.comment}</td>
-                            <td>
-                              <ActionIcon
-                                variant="transparent"
-                                color="red"
-                                onClick={deleteComment}
-                              >
-                                <IconTrash />
-                              </ActionIcon>
-                            </td>
-                            <td>
-                              <ActionIcon
-                                variant="transparent"
-                                color="blue"
-                                onClick={(e) => {
-                                  e.preventDefault()
-                                  setCommentValue(comment.comment)
-                                  setEditComment(true)
-                                }}
-                              >
-                                <IconEdit />
-                              </ActionIcon>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </Table>
-                  </>
-                )}
-              </Box>
-            </Container>
-          </MediaQuery>
         </>
       )}
     </>
