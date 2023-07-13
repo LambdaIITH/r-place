@@ -1,24 +1,18 @@
-import { useState, useEffect, useContext } from "react";
-import {
-  AppShell,
-  Box,
-  Drawer,
-  MediaQuery,
-  Title,
-} from "@mantine/core";
-import { Nav } from "../components/Header";
-import Sidebar from "../components/Sidebar";
-import Canvas from "../components/Canvas";
-import { useDisclosure } from "@mantine/hooks";
-import { IconX } from "@tabler/icons-react";
-import AppContext from "../AppContext";
-import { signIn, useSession } from "next-auth/react";
-import { notifications } from '@mantine/notifications';
-import PlaceCanvas from "../components/skeletons/PlaceCanvas";
-import Pallete from "../components/Pallete";
+import { useState, useEffect, useContext } from 'react'
+import { useMediaQuery } from '@mantine/hooks'
+import { AppShell, Box, Drawer, MediaQuery, Title } from '@mantine/core'
+import { Nav } from '../components/Header'
+import Sidebar from '../components/Sidebar'
+import Canvas from '../components/Canvas'
+import { useDisclosure } from '@mantine/hooks'
+import { IconX } from '@tabler/icons-react'
+import AppContext from '../AppContext'
+import { signIn, useSession } from 'next-auth/react'
+import { notifications } from '@mantine/notifications'
+import PlaceCanvas from '../components/skeletons/PlaceCanvas'
+import Pallete from '../components/Pallete'
 
 export default function Place() {
-
   const [opened, setOpened] = useState(false)
 
   const { data: session } = useSession()
@@ -26,6 +20,7 @@ export default function Place() {
   let globalData = value.state.globalData
   let { colorPalette, gridSize, pollingInterval } = globalData
 
+  const isScreenSizeLessThanLg = useMediaQuery('(max-width: 768px)')
   // props for sidebar
   const [col, setCol] = useState(0)
   const [row, setRow] = useState(0)
@@ -85,11 +80,9 @@ export default function Place() {
       const temp = await response.json()
       if (response.status === 498) {
         signIn()
-      }
-      else if (response.status === 429) {
+      } else if (response.status === 429) {
         setCooldown(temp.cooldown)
-      } 
-      else if (response.status === 500){
+      } else if (response.status === 500) {
         notifications.show({
           id: 'hello-there',
           withCloseButton: true,
@@ -103,11 +96,9 @@ export default function Place() {
           className: 'my-notification-class',
           loading: false,
         })
-      }
-      else {
+      } else {
         setNew()
       }
-
     } catch (err) {
       console.log(err)
     }
@@ -224,44 +215,33 @@ export default function Place() {
               setRow={setRow}
               setCurrent={setCurrent}
               colors={colors}
-              
             />
           )}
         </AppShell>
       </MediaQuery>
       <MediaQuery largerThan="lg" styles={{ display: 'none' }}>
-        <AppShell
-          styles={{
-            main: {
-              background: '#f0f0f0',
-            },
-          }}
-          header={<Nav setOpened={setOpened} setChosen={setChosen} />}
-        >
+        <Box>
+          <Nav setOpened={setOpened} setChosen={setChosen} />
+
           {loading ? (
             <PlaceCanvas loading={loading} />
           ) : (
             <Box
               sx={{
-                height: '100vh',
-                // overflow: "auto",
-                width: '100%',
-                // backgroundColor: "rgba(0,0,0,0.2)",
+                // height: '100vh',
+                overflow: 'auto',
+                margin: 10,
+                width: '100vw',
+                backgroundColor: 'red',
               }}
             >
-              <Box
-                sx={{
-                  height: '20%',
-                }}
-              >
-                <Canvas
-                  setCol={setCol}
-                  setRow={setRow}
-                  setCurrent={setCurrent}
-                  colors={colors}
-                  paletteOpen={open_d}
-                />
-              </Box>
+              <Canvas
+                setCol={setCol}
+                setRow={setRow}
+                setCurrent={setCurrent}
+                colors={colors}
+                paletteOpen={open_d}
+              />
 
               <Drawer
                 opened={opened_d}
@@ -300,7 +280,7 @@ export default function Place() {
               </Drawer>
             </Box>
           )}
-        </AppShell>
+        </Box>
       </MediaQuery>
     </>
   )

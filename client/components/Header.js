@@ -184,10 +184,7 @@ export function Nav(props) {
   return (
     <>
       <MediaQuery smallerThan="lg" styles={{ display: 'none' }}>
-        <Header
-          height={{ base: 100, md: 100, zIndex: 100, position: 'fixed' }}
-          p="md"
-        >
+        <Header height={{ base: 100, md: 100, zIndex: 100 }} p="md">
           <Container className={classes.inner} size={'xl'}>
             <Group className={classes.links}>{link_items}</Group>
             <Title
@@ -256,7 +253,7 @@ export function Nav(props) {
         </Header>
       </MediaQuery>
       <MediaQuery largerThan="lg" styles={{ display: 'none' }}>
-        <Header height={{ base: 160, md: 100 }} p="md">
+        <div height={{ base: 160, md: 100 }} p="md">
           <Box
             sx={{
               display: 'flex',
@@ -268,10 +265,10 @@ export function Nav(props) {
               // width: '100vw',
               backgroundColor: 'rgba(255, 255, 255)',
               // backgroundColor: 'red',
-              padding: '10px',
-              position: 'fixed',
-              left: '50%',
-              transform: 'translateX(-50%)',
+              // padding: '10px',
+              // position: 'fixed',
+              // left: '50%',
+              // transform: 'translateX(-50%)',
               zIndex: 100,
               gap: 10,
             }}
@@ -333,7 +330,7 @@ export function Nav(props) {
               </>
             )}
           </Box>
-        </Header>
+        </div>
       </MediaQuery>
     </>
   )
