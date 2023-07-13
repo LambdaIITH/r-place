@@ -2,6 +2,8 @@ import { useRef, useEffect, useContext } from 'react'
 import { Box, Button, createStyles, rem, Stack } from '@mantine/core'
 import { IconFileDownload } from '@tabler/icons-react'
 import AppContext from '../AppContext'
+import { useMediaQuery } from '@mantine/hooks'
+
 const useStyles = createStyles((theme) => ({
   button: {
     display: 'block',
@@ -28,6 +30,8 @@ export default function Canvas({
 }) {
   const canvasRef = useRef(null)
   const { classes, cx } = useStyles()
+
+  const isScreenSizeLessThanMd = useMediaQuery('(max-width: 672px)')
 
   const value = useContext(AppContext)
   let globalData = value.state.globalData
@@ -69,37 +73,34 @@ export default function Canvas({
     }
   }, [colors, cellSize])
 
+  const canvasStylesMobile = {}
+
   return (
     <Stack
       sx={{
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        // padding: "0 100px",
+        // padding: '0 100px',
         width: '100%',
+        height: '100vh',
       }}
     >
       <Box
         sx={{
-          // padding: "50px 100px",
-          // marginTop: "5rem",
           overflow: 'auto',
-          // height: '10%',
-          // width: '80%',
           marginX: 'auto',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           marginTop: '10px',
-          // paddingLeft: '300px',
-          // width: '100%',
-          // height: 'fit',
-          // width: 'fit',
-          // position: 'absolute',
-          // top: '50%',
-          // transform: 'translate(-50%, -50%)',
-          // overflow: 'auto',
-          // left: '50%',
+          height: 'fit',
+          '@media (max-width: 672px)': {
+            width: 'fit',
+            position: 'absolute',
+            top: 0,
+            left: 10,
+          },
         }}
       >
         {/* box-shadow: ; */}
@@ -136,6 +137,13 @@ export default function Canvas({
           width: '50%',
           justifyContent: 'center',
           marginBottom: '10px',
+          '@media (max-width: 672px)': {
+            width: 'fit',
+            position: 'absolute',
+            bottom: 10,
+            left: '50%',
+            transform: 'translateX(-50%)',
+          },
         }}
       >
         Download <IconFileDownload />{' '}

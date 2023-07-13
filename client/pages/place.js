@@ -220,7 +220,9 @@ export default function Place() {
         </AppShell>
       </MediaQuery>
       <MediaQuery largerThan="lg" styles={{ display: 'none' }}>
-        <Box>
+        <Box
+          style={{ paddingBottom: 10, backgroundColor: 'rgba(0, 0, 0, .1)' }}
+        >
           <Nav setOpened={setOpened} setChosen={setChosen} />
 
           {loading ? (
@@ -230,9 +232,9 @@ export default function Place() {
               sx={{
                 // height: '100vh',
                 overflow: 'auto',
-                margin: 10,
-                width: '100vw',
-                backgroundColor: 'red',
+                margin: 2,
+                // width: '100vw',
+                position: 'relative',
               }}
             >
               <Canvas

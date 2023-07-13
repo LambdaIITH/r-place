@@ -30,10 +30,15 @@ const useStyles = createStyles((theme) => ({
 
   links: {
     width: rem(300),
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: '0 auto',
     [theme.fn.smallerThan('sm')]: {
       display: 'flex',
       width: rem(180),
-      justifyContent: 'flex-start',
+      justifyContent: 'center',
+      alignItems: 'center',
+      margin: '0 auto',
     },
   },
 
@@ -253,7 +258,7 @@ export function Nav(props) {
         </Header>
       </MediaQuery>
       <MediaQuery largerThan="lg" styles={{ display: 'none' }}>
-        <div height={{ base: 160, md: 100 }} p="md">
+        <div>
           <Box
             sx={{
               display: 'flex',
@@ -261,14 +266,9 @@ export function Nav(props) {
               justifyContent: 'center',
               marginX: 'auto',
               width: 'fit',
+              padding: 10,
               alignItems: 'center',
-              // width: '100vw',
               backgroundColor: 'rgba(255, 255, 255)',
-              // backgroundColor: 'red',
-              // padding: '10px',
-              // position: 'fixed',
-              // left: '50%',
-              // transform: 'translateX(-50%)',
               zIndex: 100,
               gap: 10,
             }}
