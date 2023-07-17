@@ -185,6 +185,10 @@ export default function Room() {
         },
       }
     )
+    if (res.status == 498){
+        signIn();
+        return;
+    }
     if (res.status == 400 || res.status == 404) {
       // router.push('/404')
       router.push('/hostels')
