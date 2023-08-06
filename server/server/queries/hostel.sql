@@ -5,7 +5,7 @@ SELECT name, quote, room, email
   WHERE hostel = :hostel AND floor = :floor;
 
 -- name: get_room^
-SELECT name, form_response, email
+SELECT name, form_response, email, quote
   FROM hostel_rooms JOIN users ON hostel_rooms.user_email = users.email
   WHERE hostel = :hostel AND floor = :floor AND room = :room;
 

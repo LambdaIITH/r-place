@@ -1,11 +1,11 @@
 from threading import Lock
-from utils import grid_queries, conn, verify_auth_token
+from utils import grid_queries, conn, verify_auth_token, verify_auth_token_with_create
 from fastapi import Depends, FastAPI, HTTPException, Response
 
 ROWS = 80
 COLUMNS = 80
 COLORS = 32
-COOLDOWN_TIME = 30  # in seconds
+COOLDOWN_TIME = 10  # in seconds
 INITIAL_COLOR = 0
 
 grid_app = FastAPI()
@@ -36,7 +36,7 @@ def get_user_cooldown(email: str):
 
 
 @grid_app.post("/pixel/{row}/{col}/{color}")
-async def pixel(row: int, col: int, color: int, response: Response, email: str = Depends(verify_auth_token)):
+async def pixel(row: int, col: int, color: int, response: Response, email: str = Depends(verify_auth_token_with_create)):
     global insertion_lock, current_grid, latest_insertion
     if not are_bounds_valid(row, col) or not is_color_valid(color):
         response.status_code = 400
@@ -47,11 +47,15 @@ async def pixel(row: int, col: int, color: int, response: Response, email: str =
         response.status_code = 429
         return {"message": "You are on cooldown.", "cooldown": cooldown}
 
-    insertion_lock.acquire()
-    latest_insertion = int(grid_queries.log_update(conn, x=row, y=col, color=color, email=email))
-    current_grid[row][col] = color
-    print(latest_insertion)
-    insertion_lock.release()
+    try:
+        insertion_lock.acquire()
+        latest_insertion = int(grid_queries.log_update(conn, x=row, y=col, color=color, email=email))
+        current_grid[row][col] = color
+        print(latest_insertion)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        insertion_lock.release()
 
     return {"message": "Pixel updated successfully."}
 

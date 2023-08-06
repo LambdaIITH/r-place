@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  useMantineTheme,
   Text,
   Aside,
   Card,
@@ -16,7 +15,6 @@ import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function Sidebar(props) {
   const { data: session, status } = useSession();
-  const theme = useMantineTheme();
   function handleClick() {
     props.postPixel();
   }
@@ -110,7 +108,7 @@ export default function Sidebar(props) {
                     radius="md"
                     fullWidth
                     onClick={() => {
-                      signOut();
+                      signOut({callbackUrl:"/"});
                     }}
                   >
                     <Group>
@@ -158,7 +156,7 @@ export default function Sidebar(props) {
               <Card.Section>
                 <div
                   style={{
-                    backgroundColor: `${props?.current}`,
+                    backgroundColor: `${props?`${props?.current}`:`white`}`,
                     height: "80px",
                     width: "80px",
                     margin: "0 auto",
@@ -203,7 +201,7 @@ export default function Sidebar(props) {
               <Card.Section>
                 <div
                   style={{
-                    backgroundColor: `${props.chosen}`,
+                    backgroundColor:  `${props?`${props?.chosen}`:`white`}`,
                     height: "80px",
                     width: "80px",
                     margin: "0 auto",
@@ -245,7 +243,7 @@ export default function Sidebar(props) {
                     radius="md"
                     fullWidth
                     onClick={() => {
-                      signOut();
+                      signOut({callbackUrl:"/"});
                     }}
                   >
                     <Group>
