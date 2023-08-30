@@ -34,8 +34,8 @@ let globalData = {
     '#ffb470',
   ],
   cellSize: 8,
-  gridSize: 80,
-  pollingInterval: 1000000,
+  gridSize: 70,
+  pollingInterval: 30000,
   hostel_names: [
     'ARYABHATTA',
     'BHASKARA',
