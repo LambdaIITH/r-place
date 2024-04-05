@@ -26,11 +26,11 @@ def get_user_details(token):
         name = idinfo["name"]
 
         # If auth request is from a G Suite domain:
-        if idinfo["hd"] != GSUITE_DOMAIN_NAME:
-            raise ValueError("Wrong hosted domain. Only IITH Users are allowed")
+        # if idinfo["hd"] != GSUITE_DOMAIN_NAME:
+        #     raise ValueError("Wrong hosted domain. Only IITH Users are allowed")
 
-        # ID token is valid. Get the user's Google Account ID from the decoded token.
-        userid = idinfo["sub"]  # noqa: F841
+        # # ID token is valid. Get the user's Google Account ID from the decoded token.
+        # userid = idinfo["sub"]  # noqa: F841
 
         return email, name
     except exceptions.InvalidValue :

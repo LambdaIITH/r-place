@@ -35,6 +35,15 @@ def try_details(Authorization: str = Header()):
             raise HTTPException(
                 status_code=401, detail="We are not able to authenticate you."
             )
+        
+        GSUITE_DOMAIN_NAME = "iith.ac.in"
+        domain = details[0].split("@")[-1]
+
+        if domain != GSUITE_DOMAIN_NAME and not domain.endswith("." + GSUITE_DOMAIN_NAME):
+            raise HTTPException(
+                status_code=498, detail="Only IITH users are allowed."
+            )
+
     except exceptions.InvalidValue:
         raise HTTPException(
             status_code=498, detail="Invalid Token, please login again."
